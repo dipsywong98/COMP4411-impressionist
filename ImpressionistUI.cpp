@@ -496,7 +496,7 @@ ImpressionistUI::ImpressionistUI() {
 		m_LineWidthSlider->step(1);
 		m_LineWidthSlider->value(m_LineWidth);
 		m_LineWidthSlider->align(FL_ALIGN_RIGHT);
-		m_LineWidthSlider->callback(cb_sizeSlides);
+		m_LineWidthSlider->callback(cb_lineWidthSlides);
 
 		m_LineWidthSlider = new Fl_Value_Slider(10, 120, 300, 20, "Line Angle");
 		m_LineWidthSlider->user_data((void*)(this));	// record self to be used by static callback functions
@@ -508,7 +508,7 @@ ImpressionistUI::ImpressionistUI() {
 		m_LineWidthSlider->step(1);
 		m_LineWidthSlider->value(m_LineAngle);
 		m_LineWidthSlider->align(FL_ALIGN_RIGHT);
-		m_LineWidthSlider->callback(cb_sizeSlides);
+		m_LineWidthSlider->callback(cb_lineAngleSlides);
 
 		m_LineWidthSlider = new Fl_Value_Slider(10, 140, 300, 20, "Alpha");
 		m_LineWidthSlider->user_data((void*)(this));	// record self to be used by static callback functions
@@ -520,7 +520,7 @@ ImpressionistUI::ImpressionistUI() {
 		m_LineWidthSlider->step(0.01);
 		m_LineWidthSlider->value(m_Alpha);
 		m_LineWidthSlider->align(FL_ALIGN_RIGHT);
-		m_LineWidthSlider->callback(cb_sizeSlides);
+		m_LineWidthSlider->callback(cb_alphaSlides);
 
     m_brushDialog->end();	
 
