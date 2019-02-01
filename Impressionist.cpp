@@ -48,3 +48,8 @@ int irand(int max)
 {
 	return rand()%max;
 }
+
+double degToRad(double deg)
+{
+	return deg * 2 * M_PI / 360.0f;
+}

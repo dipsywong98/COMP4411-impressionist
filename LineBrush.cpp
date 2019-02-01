@@ -8,8 +8,11 @@
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
 #include "LineBrush.h"
+#include <ostream>
+#include <iostream>
 
 extern float frand();
+extern double degToRad(double);
 
 LineBrush::LineBrush(ImpressionistDoc* pDoc, char* name) :
 	ImpBrush(pDoc, name)
@@ -23,10 +26,10 @@ void LineBrush::BrushBegin(const Point source, const Point target)
 
 	int width = pDoc->getLineWidth();
 	int size = pDoc->getSize();
+	int angle = pDoc->getLineAngle();
 
 	glPointSize((float) size);
 	glLineWidth((float)width);
-	//glRotate((float) angle, 0, 0, 1);
 
 	BrushMove(source, target);
 }
@@ -47,29 +50,27 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	int angle = pDoc->getLineAngle();
 
 	// glPointSize((float)size);
-	glLineWidth((float)size);
-
-	// glVertex2d(target.x, target.y);
-
-	// glEnd();
-	// double angle = pDoc->getLineAngle();
-	// glBegin(GL_LINES);
-	// glVertex2d(source.x-width/2, source.y);
-	// glVertex2d(target.x+width/2, target.y);
-	// SetColor(source);
-	// //glRotate(angle, 0, 0, 1);
-	// glEnd();
-	glLineWidth(width);
 	SetColor(source);
+
 	glBegin(GL_LINES);
-	glVertex2d(source.x+size,source.y);
-	glVertex2d(target.x-size,target.y);
-	glRotatef(angle, 0.0f, 0.0f, 1.0f);
+	double dsin = size*sin(degToRad(angle));
+	double dcos = size*cos(degToRad(angle));
+	glVertex2d(source.x + dcos,source.y + dsin);
+	glVertex2d(target.x - dcos,target.y - dsin);
 	glEnd();
+
+	// glPopMatrix();
 }
 
 void LineBrush::BrushEnd(const Point source, const Point target)
 {
-	// do nothing so far
+	// ImpressionistDoc* pDoc = GetDocument();
+	// int width = pDoc->getLineWidth();
+	// int size = pDoc->getSize();
+	// int angle = pDoc->getLineAngle();
+	// glTranslated(-source.x, -source.y, 0);
+	// glRotated(-angle, 0, 0, 1);
+	// glTranslated(source.x, source.y, 0);
+	glPopMatrix();
 }
 

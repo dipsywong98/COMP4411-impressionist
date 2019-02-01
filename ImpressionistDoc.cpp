@@ -88,9 +88,14 @@ int ImpressionistDoc::getLineWidth()
 {
 	return m_pUI->getLineWidth();
 }
-double ImpressionistDoc::getLineAngle()
+int ImpressionistDoc::getLineAngle()
 {
 	return m_pUI->getLineAngle();
+}
+
+double ImpressionistDoc::getAlpha()
+{
+	return m_pUI->getAlpha();
 }
 
 //---------------------------------------------------------
