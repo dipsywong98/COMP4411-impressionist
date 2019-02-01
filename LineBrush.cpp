@@ -25,10 +25,6 @@ void LineBrush::BrushBegin(const Point source, const Point target)
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
 	int width = pDoc->getLineWidth();
-	int size = pDoc->getSize();
-	int angle = pDoc->getLineAngle();
-
-	glPointSize((float) size);
 	glLineWidth((float)width);
 
 	BrushMove(source, target);
@@ -44,33 +40,20 @@ void LineBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 
-	// glBegin(GL_POINTS);
-	int width = pDoc->getLineWidth();
 	int size = pDoc->getSize();
 	int angle = pDoc->getLineAngle();
 
-	// glPointSize((float)size);
 	SetColor(source);
 
 	glBegin(GL_LINES);
-	double dsin = size*sin(degToRad(angle));
-	double dcos = size*cos(degToRad(angle));
+	double dsin = size*sin(degToRad(angle))/2.0f;
+	double dcos = size*cos(degToRad(angle))/2.0f;
 	glVertex2d(source.x + dcos,source.y + dsin);
 	glVertex2d(target.x - dcos,target.y - dsin);
 	glEnd();
-
-	// glPopMatrix();
 }
 
 void LineBrush::BrushEnd(const Point source, const Point target)
 {
-	// ImpressionistDoc* pDoc = GetDocument();
-	// int width = pDoc->getLineWidth();
-	// int size = pDoc->getSize();
-	// int angle = pDoc->getLineAngle();
-	// glTranslated(-source.x, -source.y, 0);
-	// glRotated(-angle, 0, 0, 1);
-	// glTranslated(source.x, source.y, 0);
-	glPopMatrix();
 }
 
