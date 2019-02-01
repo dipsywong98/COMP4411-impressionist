@@ -20,9 +20,11 @@ public:
 	void RightBegin(const Point source, const Point target) override;
 	void RightMove(const Point source, const Point target) override;
 	void RightEnd(const Point source, const Point target) override;
+	void DrawLine(const Point source, const Point target, const double rad);
 	char* BrushName(void);
 private:
 	Point start;
+	Point prev;
 };
 
 #endif

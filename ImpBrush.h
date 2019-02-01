@@ -46,6 +46,7 @@ class ImpBrush
 {
 protected:
 	ImpBrush::ImpBrush( ImpressionistDoc* pDoc = NULL, char* name = NULL );
+	int m_DirectionType;
 
 public:
 	// The implementation of your brush should realize these virtual functions
@@ -74,7 +75,6 @@ private:
 
 	// Brush's name (not used in this version).
 	char*				m_pBrushName;
-	int m_DirectionType;
 };
 
 #endif

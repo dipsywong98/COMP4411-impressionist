@@ -15,7 +15,8 @@ ImpBrush**	ImpBrush::c_pBrushes	= NULL;
 ImpBrush::ImpBrush(ImpressionistDoc*	pDoc, 
 				   char*				name) :
 					m_pDoc(pDoc), 
-					m_pBrushName(name)
+					m_pBrushName(name),
+					m_DirectionType(SLIDER_RIGHT_CLICK)
 {
 }
 
