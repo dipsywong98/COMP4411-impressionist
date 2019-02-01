@@ -258,6 +258,17 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
 	pDoc->setBrushType(type);
 }
 
+void ImpressionistUI::cb_directionChoice(Fl_Widget* o, void* v)
+{
+	ImpressionistUI* pUI = ((ImpressionistUI *)(o->user_data()));
+	ImpressionistDoc* pDoc = pUI->getDocument();
+
+	int type = (int)v;
+
+
+	pDoc->setDirectionType(type);
+}
+
 //------------------------------------------------------------
 // Clears the paintview canvas.
 // Called by the UI when the clear canvas button is pushed
@@ -422,6 +433,13 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE+1] = {
   {0}
 };
 
+Fl_Menu_Item ImpressionistUI::brushDirectionMenu[NUM_DIRECTION_TYPE+1] = {
+  {"Slider/Right Mouse",			FL_ALT+'s', (Fl_Callback *)ImpressionistUI::cb_directionChoice, (void *)SLIDER_RIGHT_CLICK },
+  {"Gradient",				FL_ALT+'g', (Fl_Callback *)ImpressionistUI::cb_directionChoice, (void *)GRADIENT},
+  {"Brush Direction",			FL_ALT+'b', (Fl_Callback *)ImpressionistUI::cb_directionChoice, (void *)BRUSH_DIRECTION},
+  {0}
+};
+
 
 
 //----------------------------------------------------
@@ -467,6 +485,11 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
 		m_BrushTypeChoice->menu(brushTypeMenu);
 		m_BrushTypeChoice->callback(cb_brushChoice);
+	
+		m_BrushDirectionChoice = new Fl_Choice(80,50,150,25,"&Direction");
+		m_BrushDirectionChoice->user_data((void*)(this));	// record self to be used by static callback functions
+		m_BrushDirectionChoice->menu(brushDirectionMenu);
+		m_BrushDirectionChoice->callback(cb_directionChoice);
 
 		m_ClearCanvasButton = new Fl_Button(240,10,150,25,"&Clear Canvas");
 		m_ClearCanvasButton->user_data((void*)(this));
@@ -498,29 +521,29 @@ ImpressionistUI::ImpressionistUI() {
 		m_LineWidthSlider->align(FL_ALIGN_RIGHT);
 		m_LineWidthSlider->callback(cb_lineWidthSlides);
 
-		m_LineWidthSlider = new Fl_Value_Slider(10, 120, 300, 20, "Line Angle");
-		m_LineWidthSlider->user_data((void*)(this));	// record self to be used by static callback functions
-		m_LineWidthSlider->type(FL_HOR_NICE_SLIDER);
-		m_LineWidthSlider->labelfont(FL_COURIER);
-		m_LineWidthSlider->labelsize(12);
-		m_LineWidthSlider->minimum(0);
-		m_LineWidthSlider->maximum(359);
-		m_LineWidthSlider->step(1);
-		m_LineWidthSlider->value(m_LineAngle);
-		m_LineWidthSlider->align(FL_ALIGN_RIGHT);
-		m_LineWidthSlider->callback(cb_lineAngleSlides);
+		m_LineAngleSlider = new Fl_Value_Slider(10, 120, 300, 20, "Line Angle");
+		m_LineAngleSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_LineAngleSlider->type(FL_HOR_NICE_SLIDER);
+		m_LineAngleSlider->labelfont(FL_COURIER);
+		m_LineAngleSlider->labelsize(12);
+		m_LineAngleSlider->minimum(0);
+		m_LineAngleSlider->maximum(359);
+		m_LineAngleSlider->step(1);
+		m_LineAngleSlider->value(m_LineAngle);
+		m_LineAngleSlider->align(FL_ALIGN_RIGHT);
+		m_LineAngleSlider->callback(cb_lineAngleSlides);
 
-		m_LineWidthSlider = new Fl_Value_Slider(10, 140, 300, 20, "Alpha");
-		m_LineWidthSlider->user_data((void*)(this));	// record self to be used by static callback functions
-		m_LineWidthSlider->type(FL_HOR_NICE_SLIDER);
-		m_LineWidthSlider->labelfont(FL_COURIER);
-		m_LineWidthSlider->labelsize(12);
-		m_LineWidthSlider->minimum(0);
-		m_LineWidthSlider->maximum(1);
-		m_LineWidthSlider->step(0.01);
-		m_LineWidthSlider->value(m_Alpha);
-		m_LineWidthSlider->align(FL_ALIGN_RIGHT);
-		m_LineWidthSlider->callback(cb_alphaSlides);
+		m_AlphaSlider = new Fl_Value_Slider(10, 140, 300, 20, "Alpha");
+		m_AlphaSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_AlphaSlider->type(FL_HOR_NICE_SLIDER);
+		m_AlphaSlider->labelfont(FL_COURIER);
+		m_AlphaSlider->labelsize(12);
+		m_AlphaSlider->minimum(0);
+		m_AlphaSlider->maximum(1);
+		m_AlphaSlider->step(0.01);
+		m_AlphaSlider->value(m_Alpha);
+		m_AlphaSlider->align(FL_ALIGN_RIGHT);
+		m_AlphaSlider->callback(cb_alphaSlides);
 
     m_brushDialog->end();	
 

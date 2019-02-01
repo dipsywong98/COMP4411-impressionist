@@ -53,3 +53,8 @@ double degToRad(double deg)
 {
 	return deg * 2 * M_PI / 360.0f;
 }
+
+double radToDeg(double rad)
+{
+	return rad / 2.f / M_PI * 360.0f;
+}

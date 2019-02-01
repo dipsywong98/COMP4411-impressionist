@@ -21,6 +21,14 @@ enum
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
 };
 
+enum
+{
+	SLIDER_RIGHT_CLICK = 0,
+	GRADIENT,
+	BRUSH_DIRECTION,
+	NUM_DIRECTION_TYPE
+};
+
 
 class ImpressionistDoc; // Pre-declaring class
 
@@ -29,6 +37,7 @@ class Point
 public:
 	Point() {};
 	Point(int xx, int yy) { x = xx; y = yy; };
+	Point operator =(Point pt) { x = pt.x; y = pt.y; return *this; }
 
 	int x, y;
 };
@@ -43,6 +52,10 @@ public:
 	virtual void BrushBegin( const Point source, const Point target ) = 0;
 	virtual void BrushMove( const Point source, const Point target ) = 0;
 	virtual void BrushEnd( const Point source, const Point target ) = 0;
+	virtual void RightBegin(const Point source, const Point target){}
+	void setDirectionType(int type);
+	virtual void RightMove(const Point source, const Point target){};
+	virtual void RightEnd(const Point source, const Point target){};
 
 	// according to the source image and the position, determine the draw color
 	void SetColor( const Point source );
@@ -61,6 +74,7 @@ private:
 
 	// Brush's name (not used in this version).
 	char*				m_pBrushName;
+	int m_DirectionType;
 };
 
 #endif

@@ -31,9 +31,10 @@ public:
 	int getLineAngle();
 	double getAlpha();
 	char*	getImageName();					// get the current image name
-	
+	void setDirectionType(int type);
 
-// Attributes
+
+	// Attributes
 public:
 	// Dimensions of original window.
 	int				m_nWidth, 

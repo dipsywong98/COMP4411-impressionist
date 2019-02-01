@@ -35,6 +35,11 @@ char* ImpBrush::BrushName(void)
 	return m_pBrushName;
 }
 
+void ImpBrush::setDirectionType(int type)
+{
+	m_DirectionType = type;
+}
+
 //----------------------------------------------------
 // Set the color to paint with to the color at source,
 // which is the coord at the original window to sample 

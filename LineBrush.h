@@ -17,7 +17,12 @@ public:
 	void BrushBegin(const Point source, const Point target);
 	void BrushMove(const Point source, const Point target);
 	void BrushEnd(const Point source, const Point target);
+	void RightBegin(const Point source, const Point target) override;
+	void RightMove(const Point source, const Point target) override;
+	void RightEnd(const Point source, const Point target) override;
 	char* BrushName(void);
+private:
+	Point start;
 };
 
 #endif
