@@ -36,17 +36,43 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
-	if (pDoc == NULL) {
+	if (pDoc == NULL)
+	{
 		printf("LineBrush::BrushMove  document is NULL\n");
 		return;
 	}
 
 	SetColor(source);
 
-	switch(ImpBrush::m_DirectionType)
+	switch (ImpBrush::m_DirectionType)
 	{
 	case SLIDER_RIGHT_CLICK:
 		DrawLine(source, target, degToRad(pDoc->getLineAngle()));
+		break;
+	case GRADIENT:
+		{
+			const int sobel[][3] = {
+				{1, 0, -1},
+				{2, 0, -2},
+				{1, 0, -1}
+			};
+			int gx = 0, gy = 0;
+			// const int img[3][3] = {};
+			for (int i = 0; i < 3; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					const int x = source.x - 1 + i;
+					const int y = source.y - 1 + j;
+					const int pix = *pDoc->GetOriginalPixel(x, y);
+					gx += sobel[j][i] * pix;
+					gy += sobel[i][j] * pix;
+				}
+			}
+			const double rad_ = atan2(gy, gx);
+			DrawLine(source, target, rad_);
+		}
+
 		break;
 	case BRUSH_DIRECTION:
 		const double rad = atan2(prev.y - source.y, prev.x - source.x);
@@ -54,7 +80,6 @@ void LineBrush::BrushMove(const Point source, const Point target)
 		prev = source;
 		break;
 	}
-
 }
 
 void LineBrush::BrushEnd(const Point source, const Point target)
@@ -88,8 +113,8 @@ void LineBrush::DrawLine(const Point source, const Point target, const double ra
 	ImpressionistDoc* pDoc = GetDocument();
 	int size = pDoc->getSize();
 	glBegin(GL_LINES);
-	const double dsin = size*sin(rad) / 2.0f;
-	const double dcos = size*cos(rad) / 2.0f;
+	const double dsin = size * sin(rad) / 2.0f;
+	const double dcos = size * cos(rad) / 2.0f;
 	glVertex2d(source.x + dcos, source.y + dsin);
 	glVertex2d(target.x - dcos, target.y - dsin);
 	glEnd();
