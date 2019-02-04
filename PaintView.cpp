@@ -106,6 +106,7 @@ void PaintView::draw()
 		switch (eventToDo) 
 		{
 		case LEFT_MOUSE_DOWN:
+			m_pDoc->recordHistory();
 			m_pDoc->m_pCurrentBrush->BrushBegin( source, target );
 			break;
 		case LEFT_MOUSE_DRAG:
@@ -113,7 +114,6 @@ void PaintView::draw()
 			break;
 		case LEFT_MOUSE_UP:
 			m_pDoc->m_pCurrentBrush->BrushEnd( source, target );
-
 			SaveCurrentContent();
 			RestoreContent();
 			break;

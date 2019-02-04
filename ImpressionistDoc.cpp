@@ -30,6 +30,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_nWidth		= -1;
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
+	m_history	= NULL;
 
 
 	// create one instance of each brush
@@ -86,11 +87,6 @@ void ImpressionistDoc::setDirectionType(int type)
 	m_pCurrentBrush->setDirectionType(type);
 }
 
-void ImpressionistDoc::undo()
-{
-	m_ucPainting;
-}
-
 void ImpressionistDoc::swapContent()
 {
 	unsigned char* temp = m_ucPainting;
@@ -98,6 +94,17 @@ void ImpressionistDoc::swapContent()
 	m_ucBitmap = temp;
 	m_pUI->m_origView->refresh();
 	m_pUI->m_paintView->refresh();
+}
+
+void ImpressionistDoc::undo()
+{
+	memcpy(m_ucPainting, m_history, m_nWidth*m_nHeight * 3 * sizeof(unsigned char));
+	m_pUI->m_paintView->refresh();
+}
+
+void ImpressionistDoc::recordHistory()
+{
+	memcpy(m_history, m_ucPainting, m_nWidth*m_nHeight * 3 * sizeof(unsigned char));
 }
 
 //---------------------------------------------------------
@@ -146,6 +153,7 @@ int ImpressionistDoc::loadImage(char *iname)
 	m_nPaintHeight	= height;
 
 	// release old storage
+	if (m_history) delete[] m_history;
 	if ( m_ucBitmap ) delete [] m_ucBitmap;
 	if ( m_ucPainting ) delete [] m_ucPainting;
 
@@ -153,7 +161,9 @@ int ImpressionistDoc::loadImage(char *iname)
 
 	// allocate space for draw view
 	m_ucPainting	= new unsigned char [width*height*3];
+	m_history = new unsigned char [width*height*3];
 	memset(m_ucPainting, 0, width*height*3);
+	memset(m_history, 0, width*height*3);
 
 	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(), 
 								m_pUI->m_mainWindow->y(), 
