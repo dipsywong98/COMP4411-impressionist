@@ -41,18 +41,22 @@ void ScatteredLineBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 
+	if (source.x > pDoc->m_nPaintWidth || source.y < 0)
+	{
+		return;
+	}
+
 	int size = dlg->getSize();
 
 	SetColor(source);
 
 	for (int i = 0; i < 0.3*irand(size); i++)
 	{
-
-		// glBegin(GL_POINTS);
-		Point pt(target.x - size / 2.f + irand(size), target.y - size / 2.f + irand(size));
-		LineBrush::BrushMove(pt, pt);
-
-		// glEnd();
+		const double dx = -size / 2.f + irand(size);
+		const double dy = -size / 2.f + irand(size);
+		const Point sourcePt(source.x + dx, source.y + dy);
+		const Point targetPt(target.x + dx, target.y + dy);
+		LineBrush::BrushMove(sourcePt, targetPt);
 	}
 }
 

@@ -42,6 +42,11 @@ void LineBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 
+	if (source.x > pDoc->m_nPaintWidth || source.y < 0)
+	{
+		return;
+	}
+
 	SetColor(source);
 
 	switch (ImpBrush::m_DirectionType)
@@ -112,10 +117,46 @@ void LineBrush::DrawLine(const Point source, const Point target, const double ra
 {
 	ImpressionistDoc* pDoc = GetDocument();
 	int size = pDoc->getSize();
-	glBegin(GL_LINES);
+
+	const int w = pDoc->m_nPaintWidth;
+	const int h = pDoc->m_nPaintHeight;
+
 	const double dsin = size * sin(rad) / 2.0f;
 	const double dcos = size * cos(rad) / 2.0f;
-	glVertex2d(source.x + dcos, source.y + dsin);
+	// double x1 = ;
+	// double x2 = ;
+	// double y1 = ;
+	// double y2 = ;
+	//
+	// if(x1 > w || x2 > w)
+	// {
+	// 	const double m = (y1 - y2) / (x1 - x2);
+	// 	if(x1 > w)
+	// 	{
+	// 		y1 -= m*(x1 - w);
+	// 		x1 = w;
+	// 	} else
+	// 	{
+	// 		y2 -= m*(x2 - w);
+	// 		x2 = w;
+	// 	}
+	// }
+	// if(y1 > h || y2 > h)
+	// {
+	// 	const double m = (x1 - x2) / (y1 - y2);
+	// 	if(y1>h)
+	// 	{
+	// 		x1 -= m*(y1 - h);
+	// 		y1 = h;
+	// 	} else
+	// 	{
+	// 		x2 -= m*(y2 - h);
+	// 		y2 = h;
+	// 	}
+	// }
+
+	glBegin(GL_LINES);
+	glVertex2d(target.x + dcos, target.y + dsin);
 	glVertex2d(target.x - dcos, target.y - dsin);
 	glEnd();
 }

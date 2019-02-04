@@ -37,6 +37,11 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 
+	if (source.x > pDoc->m_nPaintWidth || source.y < 0)
+	{
+		return;
+	}
+
 	int size = pDoc->getSize();
 
 	SetColor(source);
@@ -47,8 +52,8 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 	{
 		double rad = degToRad(i);
 		glVertex2f(
-			static_cast<GLfloat>(source.x)+cos(rad)*size/2.f, 
-			static_cast<GLfloat>(source.y)+sin(rad)*size/2.f
+			static_cast<GLfloat>(target.x)+cos(rad)*size/2.f, 
+			static_cast<GLfloat>(target.y)+sin(rad)*size/2.f
 		);
 	}
 

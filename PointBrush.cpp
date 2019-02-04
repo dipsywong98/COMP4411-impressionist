@@ -38,6 +38,11 @@ void PointBrush::BrushMove( const Point source, const Point target )
 		return;
 	}
 
+	if( source.x > pDoc->m_nPaintWidth || source.y < 0)
+	{
+		return;
+	}
+
 	glBegin( GL_POINTS );
 		SetColor( source );
 
