@@ -86,6 +86,20 @@ void ImpressionistDoc::setDirectionType(int type)
 	m_pCurrentBrush->setDirectionType(type);
 }
 
+void ImpressionistDoc::undo()
+{
+	m_ucPainting;
+}
+
+void ImpressionistDoc::swapContent()
+{
+	unsigned char* temp = m_ucPainting;
+	m_ucPainting = m_ucBitmap;
+	m_ucBitmap = temp;
+	m_pUI->m_origView->refresh();
+	m_pUI->m_paintView->refresh();
+}
+
 //---------------------------------------------------------
 // Returns the size of the brush.
 //---------------------------------------------------------

@@ -306,6 +306,18 @@ void ImpressionistUI::cb_alphaSlides(Fl_Widget* o, void* v)
 	((ImpressionistUI*)(o->user_data()))->m_Alpha = double(((Fl_Slider *)o)->value());
 }
 
+void ImpressionistUI::cb_undo(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+	pDoc->undo();
+}
+
+void ImpressionistUI::cb_swap_content(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+	pDoc->swapContent();
+}
+
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -414,7 +426,10 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
-
+	{ "&Bonus",		0, 0, 0, FL_SUBMENU },
+		{"&Swap Content", FL_ALT +'S', (Fl_Callback*)ImpressionistUI::cb_swap_content },
+		{"&Undo", FL_ALT +'Z', (Fl_Callback*)ImpressionistUI::cb_undo},
+		{ 0 },
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
 		{ "&About",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about },
 		{ 0 },

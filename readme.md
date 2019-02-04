@@ -12,10 +12,10 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
 >
 > Underline: wanted to do
 
-- [ ] (1W) more brushes
+- [ ] (1W each) more brushes
 - [x] **(1W)** clipped bushes
-- [ ] **(1W)** cursor on original image
-- [ ] **(1W)** swap content and original
+- [x] **(1W)** cursor on original image
+- [x] (1W) swap content and original
 - [ ] (1B) change color of image (change channel)
 - [ ] **(1B)** blur brush and sharpen brush
 - [ ] **(1B)** undo
