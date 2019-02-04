@@ -29,12 +29,15 @@ public:
 	void refresh();
 
 	void resizeWindow(int width, int height);
+	void setCursor(Point pt);
+	void displayCursor();
 
 	ImpressionistDoc*	m_pDoc;
 
 private:
 	int	m_nWindowWidth, 
 		m_nWindowHeight;
+	Point cursor;
 
 };
 

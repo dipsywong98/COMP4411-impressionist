@@ -74,7 +74,10 @@ void OriginalView::draw()
 		glPixelStorei( GL_UNPACK_ROW_LENGTH, m_pDoc->m_nWidth );
 		glDrawBuffer( GL_BACK );
 		glDrawPixels( drawWidth, drawHeight, GL_RGB, GL_UNSIGNED_BYTE, bitstart );
-
+		if(cursor.x >= 0 && cursor.y >= 0 && cursor.x < m_nWindowWidth && cursor.y < m_nWindowHeight)
+		{
+			displayCursor();
+		}
 	}
 			
 	glFlush();
@@ -89,5 +92,20 @@ void OriginalView::resizeWindow(int	width,
 								int	height)
 {
 	resize(x(), y(), width, height);
+}
+
+void OriginalView::setCursor(const Point pt)
+{
+	cursor = pt;
+	redraw();
+}
+
+void OriginalView::displayCursor()
+{
+	glPointSize(5);
+	glBegin(GL_POINTS);
+		glColor3d(1, 0, 0);
+		glVertex2d(cursor.x, m_nWindowHeight - cursor.y);
+	glEnd();
 }
 
