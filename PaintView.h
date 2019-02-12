@@ -20,6 +20,7 @@ class PaintView : public Fl_Gl_Window
 public:
 	PaintView(int x, int y, int w, int h, const char* l);
 	void draw();
+	void prepareAutoFill();
 	int handle(int event);
 
 	void refresh();
@@ -29,6 +30,8 @@ public:
 	void SaveCurrentContent();
 
 	void RestoreContent();
+
+	void autoFill();
 
 	ImpressionistDoc *m_pDoc;
 
@@ -42,6 +45,7 @@ private:
 			m_nEndCol,
 			m_nWindowWidth, 
 			m_nWindowHeight;
+	bool willAutoFill = false;
 
 };
 

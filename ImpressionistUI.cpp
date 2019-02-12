@@ -280,6 +280,12 @@ void ImpressionistUI::cb_clear_canvas_button(Fl_Widget* o, void* v)
 	pDoc->clearCanvas();
 }
 
+void ImpressionistUI::cb_auto_fill(Fl_Widget* o, void* v)
+{
+	ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
+	pDoc->autoFill();
+}
+
 
 //-----------------------------------------------------------
 // Updates the brush size to use from the value of the size
@@ -316,6 +322,12 @@ void ImpressionistUI::cb_swap_content(Fl_Menu_* o, void* v)
 {
 	ImpressionistDoc *pDoc = whoami(o)->getDocument();
 	pDoc->swapContent();
+}
+
+void ImpressionistUI::cb_auto_fill_menu(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+	pDoc->autoFill();
 }
 
 //---------------------------------- per instance functions --------------------------------------
@@ -416,6 +428,16 @@ void ImpressionistUI::setAlpha(double angle)
 		m_LineAngleSlider->value(angle);
 }
 
+int ImpressionistUI::getAutoFillStrike()
+{
+	return m_AutoFillStrike;
+}
+
+void ImpressionistUI::setAutoFillStrike(int strike)
+{
+	m_AutoFillStrike = strike;
+}
+
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
@@ -427,8 +449,9 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
 	{ "&Bonus",		0, 0, 0, FL_SUBMENU },
-		{"&Swap Content", FL_ALT +'S', (Fl_Callback*)ImpressionistUI::cb_swap_content },
-		{"&Undo", FL_ALT +'Z', (Fl_Callback*)ImpressionistUI::cb_undo},
+		{"&Swap Content", FL_ALT +'s', (Fl_Callback*)ImpressionistUI::cb_swap_content },
+		{"&Undo", FL_ALT +'z', (Fl_Callback*)ImpressionistUI::cb_undo},
+		{"&Auto Fill", FL_ALT +'f', (Fl_Callback*)ImpressionistUI::cb_auto_fill_menu},
 		{ 0 },
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
 		{ "&About",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about },
@@ -559,6 +582,10 @@ ImpressionistUI::ImpressionistUI() {
 		m_AlphaSlider->value(m_Alpha);
 		m_AlphaSlider->align(FL_ALIGN_RIGHT);
 		m_AlphaSlider->callback(cb_alphaSlides);
+
+		m_AutoFillButton = new Fl_Button(240, 160, 150, 25, "&Auto Fill");
+		m_AutoFillButton->user_data((void*)(this));
+		m_AutoFillButton->callback(cb_auto_fill);
 
     m_brushDialog->end();	
 

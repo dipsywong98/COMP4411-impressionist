@@ -135,13 +135,36 @@ void PaintView::draw()
 		}
 	}
 
-	glFlush();
+	if(willAutoFill)
+	{
+		autoFill();
+		SaveCurrentContent();
+		glFlush();
 
-	#ifndef MESA
-	// To avoid flicker on some machines.
-	glDrawBuffer(GL_BACK);
-	#endif // !MESA
 
+#ifndef MESA
+		// To avoid flicker on some machines.
+		glDrawBuffer(GL_BACK);
+#endif // !MESA
+		SaveCurrentContent();
+	}else
+	{
+		glFlush();
+
+
+#ifndef MESA
+		// To avoid flicker on some machines.
+		glDrawBuffer(GL_BACK);
+#endif // !MESA
+	}
+
+		
+
+}
+
+void PaintView::prepareAutoFill()
+{
+	willAutoFill = true;
 }
 
 
@@ -244,4 +267,34 @@ void PaintView::RestoreContent()
 				  m_pPaintBitstart);
 
 //	glDrawBuffer(GL_FRONT);
+}
+
+void PaintView::autoFill()
+{
+	willAutoFill = false;
+
+	// const double r = 0.2;//max percentage different
+
+	const int size = m_pDoc->getSize();
+	const int lineWidth = m_pDoc->getLineWidth();
+	const int lineAngle = m_pDoc->getLineAngle();
+	const int w = m_pDoc->m_nWidth;
+	const int h = m_pDoc->m_nHeight;
+	const int s = 4;//m_pDoc->m_pUI->getAutoFillStrike();
+	for (int i = 0; i<w; i += s)
+	{
+		for (int j = 0; j<h; j += s)
+		{
+			// const Point source(i + m_nStartCol, m_nEndRow - j);
+			const Point target(i, j + m_nWindowHeight - m_nDrawHeight);
+			m_pDoc->m_pCurrentBrush->BrushBegin(target, target);
+			m_pDoc->m_pCurrentBrush->BrushEnd(target, target);
+		}
+	}
+
+	// SaveCurrentContent();
+	// RestoreContent();
+	m_pDoc->m_pUI->setSize(size);
+	m_pDoc->m_pUI->setLineWidth(lineWidth);
+	m_pDoc->m_pUI->setLineAngle(lineAngle);
 }

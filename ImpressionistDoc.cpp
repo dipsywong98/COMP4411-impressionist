@@ -107,6 +107,16 @@ void ImpressionistDoc::recordHistory()
 	memcpy(m_history, m_ucPainting, m_nWidth*m_nHeight * 3 * sizeof(unsigned char));
 }
 
+void ImpressionistDoc::autoFill()
+{
+	recordHistory();
+
+	// m_pUI->m_origView->refresh();
+	m_pUI->m_paintView->prepareAutoFill();
+		// m_pUI->m_paintView->draw();
+	m_pUI->m_origView->refresh();
+}
+
 //---------------------------------------------------------
 // Returns the size of the brush.
 //---------------------------------------------------------
