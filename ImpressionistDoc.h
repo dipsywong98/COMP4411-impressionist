@@ -32,6 +32,10 @@ public:
 	double getAlpha();
 	char*	getImageName();					// get the current image name
 	void setDirectionType(int type);
+	void undo();
+	void swapContent();
+	void recordHistory();
+	void autoFill();
 
 
 	// Attributes
@@ -54,7 +58,9 @@ public:
 
 	ImpressionistUI*	m_pUI;
 
-// Operations
+	unsigned char* m_history; //for undo
+
+	// Operations
 public:
 	// Get the color of the original picture at the specified coord
 	GLubyte* GetOriginalPixel( int x, int y );   

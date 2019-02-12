@@ -138,8 +138,8 @@ void PaintView::draw()
 	if(willAutoFill)
 	{
 		autoFill();
-		SaveCurrentContent();
 		glFlush();
+		SaveCurrentContent();
 
 
 #ifndef MESA
@@ -150,6 +150,7 @@ void PaintView::draw()
 	}else
 	{
 		glFlush();
+		SaveCurrentContent();
 
 
 #ifndef MESA
@@ -173,7 +174,8 @@ int PaintView::handle(int event)
 	switch(event)
 	{
 	case FL_ENTER:
-	    redraw();
+		refresh();
+	    // redraw();
 		break;
 	case FL_PUSH:
 		coord.x = Fl::event_x();
