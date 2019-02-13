@@ -58,3 +58,8 @@ double radToDeg(double rad)
 {
 	return rad / 2.f / M_PI * 360.0f;
 }
+
+double randAlter(double original, double maxAbsPercentageDiff)
+{
+	return original + original*maxAbsPercentageDiff*(frand()-0.5)*2;
+}

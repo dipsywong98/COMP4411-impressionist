@@ -157,6 +157,16 @@ in links on the fltk help session page.
 
 //------------------------------------- Help Functions --------------------------------------------
 
+double ImpressionistUI::getAutoFillRandom() const
+{
+	return m_AutoFillRandom;
+}
+
+void ImpressionistUI::setAutoFillRandom(double auto_fill_random)
+{
+	m_AutoFillRandom = auto_fill_random;
+}
+
 //------------------------------------------------------------
 // This returns the UI, given the menu item.  It provides a
 // link from the menu items to the UI
@@ -280,6 +290,12 @@ void ImpressionistUI::cb_clear_canvas_button(Fl_Widget* o, void* v)
 	pDoc->clearCanvas();
 }
 
+void ImpressionistUI::cb_auto_fill(Fl_Widget* o, void* v)
+{
+	ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
+	pDoc->autoFill();
+}
+
 
 //-----------------------------------------------------------
 // Updates the brush size to use from the value of the size
@@ -316,6 +332,22 @@ void ImpressionistUI::cb_swap_content(Fl_Menu_* o, void* v)
 {
 	ImpressionistDoc *pDoc = whoami(o)->getDocument();
 	pDoc->swapContent();
+}
+
+void ImpressionistUI::cb_auto_fill_menu(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+	pDoc->autoFill();
+}
+
+void ImpressionistUI::cb_autoFillStrikeSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_AutoFillStrike = int(((Fl_Slider *)o)->value());
+}
+
+void ImpressionistUI::cb_autoFillRandomSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_AutoFillRandom = int(((Fl_Slider *)o)->value());
 }
 
 //---------------------------------- per instance functions --------------------------------------
@@ -416,6 +448,16 @@ void ImpressionistUI::setAlpha(double angle)
 		m_LineAngleSlider->value(angle);
 }
 
+int ImpressionistUI::getAutoFillStrike()
+{
+	return m_AutoFillStrike;
+}
+
+void ImpressionistUI::setAutoFillStrike(int strike)
+{
+	m_AutoFillStrike = strike;
+}
+
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
@@ -427,8 +469,9 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
 	{ "&Bonus",		0, 0, 0, FL_SUBMENU },
-		{"&Swap Content", FL_ALT +'S', (Fl_Callback*)ImpressionistUI::cb_swap_content },
-		{"&Undo", FL_ALT +'Z', (Fl_Callback*)ImpressionistUI::cb_undo},
+		{"&Swap Content", FL_ALT +'s', (Fl_Callback*)ImpressionistUI::cb_swap_content },
+		{"&Undo", FL_ALT +'z', (Fl_Callback*)ImpressionistUI::cb_undo},
+		{"&Auto Fill", FL_ALT +'f', (Fl_Callback*)ImpressionistUI::cb_auto_fill_menu},
 		{ 0 },
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
 		{ "&About",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about },
@@ -559,6 +602,34 @@ ImpressionistUI::ImpressionistUI() {
 		m_AlphaSlider->value(m_Alpha);
 		m_AlphaSlider->align(FL_ALIGN_RIGHT);
 		m_AlphaSlider->callback(cb_alphaSlides);
+
+		m_AutoFillStrikeSlider = new Fl_Value_Slider(10, 160, 200, 20, "Strike");
+		m_AutoFillStrikeSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_AutoFillStrikeSlider->type(FL_HOR_NICE_SLIDER);
+		m_AutoFillStrikeSlider->labelfont(FL_COURIER);
+		m_AutoFillStrikeSlider->labelsize(12);
+		m_AutoFillStrikeSlider->minimum(1);
+		m_AutoFillStrikeSlider->maximum(10);
+		m_AutoFillStrikeSlider->step(1);
+		m_AutoFillStrikeSlider->value(m_AutoFillStrike);
+		m_AutoFillStrikeSlider->align(FL_ALIGN_RIGHT);
+		m_AutoFillStrikeSlider->callback(cb_autoFillStrikeSlides);
+	
+		m_AutoFillRandomSlider = new Fl_Value_Slider(10, 180, 200, 20, "% Dif");
+		m_AutoFillRandomSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_AutoFillRandomSlider->type(FL_HOR_NICE_SLIDER);
+		m_AutoFillRandomSlider->labelfont(FL_COURIER);
+		m_AutoFillRandomSlider->labelsize(12);
+		m_AutoFillRandomSlider->minimum(0);
+		m_AutoFillRandomSlider->maximum(1);
+		m_AutoFillRandomSlider->step(0.01);
+		m_AutoFillRandomSlider->value(m_AutoFillRandom);
+		m_AutoFillRandomSlider->align(FL_ALIGN_RIGHT);
+		m_AutoFillRandomSlider->callback(cb_autoFillRandomSlides);
+
+		m_AutoFillButton = new Fl_Button(240, 160, 150, 25, "&Auto Fill");
+		m_AutoFillButton->user_data((void*)(this));
+		m_AutoFillButton->callback(cb_auto_fill);
 
     m_brushDialog->end();	
 

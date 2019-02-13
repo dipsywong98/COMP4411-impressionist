@@ -43,7 +43,11 @@ public:
 	Fl_Slider*			m_LineAngleSlider;
 	Fl_Slider*			m_AlphaSlider;
 
+	Fl_Slider*			m_AutoFillStrikeSlider;
+	Fl_Slider*			m_AutoFillRandomSlider;
+
 	Fl_Button*          m_ClearCanvasButton;
+	Fl_Button*			m_AutoFillButton;
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -62,6 +66,10 @@ public:
 	void setLineAngle(int angle);
 	double getAlpha();
 	void setAlpha(double alpha);
+	int getAutoFillStrike();
+	void setAutoFillStrike(int strike);
+	double getAutoFillRandom() const;
+	void setAutoFillRandom(double auto_fill_random);
 
 private:
 	ImpressionistDoc*	m_pDoc;		// pointer to document to communicate with the document
@@ -71,7 +79,10 @@ private:
 	int m_LineWidth;
 	int m_LineAngle;
 	double m_Alpha;
+	int m_AutoFillStrike = 1;
+	double m_AutoFillRandom = 0;
 
+private:
 	// Static class members
 	static Fl_Menu_Item		menuitems[];
 	static Fl_Menu_Item		brushTypeMenu[NUM_BRUSH_TYPE+1];
@@ -90,12 +101,16 @@ private:
 	static void	cb_brushChoice(Fl_Widget* o, void* v);
 	static void	cb_directionChoice(Fl_Widget* o, void* v);
 	static void	cb_clear_canvas_button(Fl_Widget* o, void* v);
+	static void	cb_auto_fill(Fl_Widget* o, void* v);
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
 	static void	cb_lineWidthSlides(Fl_Widget* o, void* v);
 	static void	cb_lineAngleSlides(Fl_Widget* o, void* v);
 	static void	cb_alphaSlides(Fl_Widget* o, void* v);
 	static void	cb_undo(Fl_Menu_* o, void* v);
 	static void cb_swap_content(Fl_Menu_* o, void* v);
+	static void cb_auto_fill_menu(Fl_Menu_* o, void* v);
+	static void	cb_autoFillStrikeSlides(Fl_Widget* o, void* v);
+	static void	cb_autoFillRandomSlides(Fl_Widget* o, void* v);
 };
 
 #endif
