@@ -23,11 +23,11 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
   - [ ] (1B1W) original image overlay
 - [ ] _(1B1W)_ mural image (load another image without resetting)
 - [ ] (1B1W) alpha mapping brush
-- [ ] **(1B1W)** auto paint
+- [x] **(1B1W)** auto paint
   - [x] button
   - [x] whole image
-  - [ ] alter attributes randomly
-  - [ ] random sequence
+  - [x] alter attributes randomly
+  - [x] random sequence
 - [ ] **(1B1W)** gradient according to another image
 - [ ] _(1B1W)_ edge clipping
 - [ ] _(2B)_ filter kernel

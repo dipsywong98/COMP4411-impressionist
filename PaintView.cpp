@@ -9,7 +9,13 @@
 #include "impressionistUI.h"
 #include "paintview.h"
 #include "ImpBrush.h"
+#include <vector>
+#include <algorithm>
+#include <random>
+#include <chrono>
 
+
+extern double randAlter(double, double);
 
 #define LEFT_MOUSE_DOWN		1
 #define LEFT_MOUSE_DRAG		2
@@ -274,7 +280,8 @@ void PaintView::autoFill()
 	m_pDoc->recordHistory();
 	willAutoFill = false;
 
-	// const double r = 0.2;//max percentage different
+	const double r = m_pDoc->m_pUI->getAutoFillRandom();//max percentage different
+	const bool randAttr = true;//randomize attributes
 
 	const int size = m_pDoc->getSize();
 	const int lineWidth = m_pDoc->getLineWidth();
@@ -282,18 +289,32 @@ void PaintView::autoFill()
 	const int w = m_pDoc->m_nWidth;
 	const int h = m_pDoc->m_nHeight;
 	const int s = m_pDoc->m_pUI->getAutoFillStrike();
-	for (int i = 0; i<w; i += s)
+
+	std::vector<Point> points;
+	for (int i = 0; i < w; i += s)
 	{
-		for (int j = 0; j<h; j += s)
+		for (int j = 0; j < h; j += s)
 		{
-			// const Point source(i + m_nStartCol, m_nEndRow - j);
-			m_pDoc->m_pUI->setSize(size);
-			m_pDoc->m_pUI->setLineWidth(lineWidth);
-			m_pDoc->m_pUI->setLineAngle(lineAngle);
-			const Point target(i, j + m_nWindowHeight - m_nDrawHeight);
-			m_pDoc->m_pCurrentBrush->BrushBegin(target, target);
-			m_pDoc->m_pCurrentBrush->BrushEnd(target, target);
+			points.emplace_back(randAlter(i,r), randAlter(j,r));
 		}
+	}
+	unsigned const seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::shuffle(points.begin(), points.end(),std::default_random_engine(seed));
+
+	for(auto& pt: points){
+		const int i = pt.x;
+		const int j = pt.y;
+		// const Point source(i + m_nStartCol, m_nEndRow - j);
+		if(randAttr)
+		{
+			m_pDoc->m_pUI->setSize(randAlter(size,r));
+			m_pDoc->m_pUI->setLineWidth(randAlter(lineWidth,r));
+			m_pDoc->m_pUI->setLineAngle(randAlter(lineAngle,r));
+		}
+		const Point target(i, j + m_nWindowHeight - m_nDrawHeight);
+		m_pDoc->m_pCurrentBrush->BrushBegin(target, target);
+		m_pDoc->m_pCurrentBrush->BrushEnd(target, target);
+		
 	}
 	// glFlush();
 

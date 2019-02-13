@@ -157,6 +157,16 @@ in links on the fltk help session page.
 
 //------------------------------------- Help Functions --------------------------------------------
 
+double ImpressionistUI::getAutoFillRandom() const
+{
+	return m_AutoFillRandom;
+}
+
+void ImpressionistUI::setAutoFillRandom(double auto_fill_random)
+{
+	m_AutoFillRandom = auto_fill_random;
+}
+
 //------------------------------------------------------------
 // This returns the UI, given the menu item.  It provides a
 // link from the menu items to the UI
@@ -333,6 +343,11 @@ void ImpressionistUI::cb_auto_fill_menu(Fl_Menu_* o, void* v)
 void ImpressionistUI::cb_autoFillStrikeSlides(Fl_Widget* o, void* v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_AutoFillStrike = int(((Fl_Slider *)o)->value());
+}
+
+void ImpressionistUI::cb_autoFillRandomSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_AutoFillRandom = int(((Fl_Slider *)o)->value());
 }
 
 //---------------------------------- per instance functions --------------------------------------
@@ -588,7 +603,7 @@ ImpressionistUI::ImpressionistUI() {
 		m_AlphaSlider->align(FL_ALIGN_RIGHT);
 		m_AlphaSlider->callback(cb_alphaSlides);
 
-		m_AutoFillStrikeSlider = new Fl_Value_Slider(10, 160, 230, 20, "Strike");
+		m_AutoFillStrikeSlider = new Fl_Value_Slider(10, 160, 200, 20, "Strike");
 		m_AutoFillStrikeSlider->user_data((void*)(this));	// record self to be used by static callback functions
 		m_AutoFillStrikeSlider->type(FL_HOR_NICE_SLIDER);
 		m_AutoFillStrikeSlider->labelfont(FL_COURIER);
@@ -599,6 +614,18 @@ ImpressionistUI::ImpressionistUI() {
 		m_AutoFillStrikeSlider->value(m_AutoFillStrike);
 		m_AutoFillStrikeSlider->align(FL_ALIGN_RIGHT);
 		m_AutoFillStrikeSlider->callback(cb_autoFillStrikeSlides);
+	
+		m_AutoFillRandomSlider = new Fl_Value_Slider(10, 180, 200, 20, "% Dif");
+		m_AutoFillRandomSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_AutoFillRandomSlider->type(FL_HOR_NICE_SLIDER);
+		m_AutoFillRandomSlider->labelfont(FL_COURIER);
+		m_AutoFillRandomSlider->labelsize(12);
+		m_AutoFillRandomSlider->minimum(0);
+		m_AutoFillRandomSlider->maximum(1);
+		m_AutoFillRandomSlider->step(0.01);
+		m_AutoFillRandomSlider->value(m_AutoFillRandom);
+		m_AutoFillRandomSlider->align(FL_ALIGN_RIGHT);
+		m_AutoFillRandomSlider->callback(cb_autoFillRandomSlides);
 
 		m_AutoFillButton = new Fl_Button(240, 160, 150, 25, "&Auto Fill");
 		m_AutoFillButton->user_data((void*)(this));
