@@ -32,6 +32,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
 	m_history	= NULL;
+	m_another	= NULL;
 
 
 	// create one instance of each brush
@@ -196,6 +197,33 @@ int ImpressionistDoc::loadImage(char *iname)
 	return 1;
 }
 
+int ImpressionistDoc::loadAnotherImage(char *iname)
+{
+	// try to open the image to read
+	unsigned char*	data;
+	int				width, height;
+
+	if ((data = readBMP(iname, width, height)) == NULL)
+	{
+		fl_alert("Can't load bitmap file");
+		return 0;
+	}
+
+	// check if the dimension matches the original image
+	if(m_nWidth != width || m_nPaintWidth != width || m_nHeight != height || m_nPaintHeight != height)
+	{
+		fl_alert("Dimension does not match");
+		return 0;
+	}
+
+	// release old another image
+	if (m_another) delete[] m_another;
+
+	m_another = data;
+
+	return 1;
+}
+
 
 //----------------------------------------------------------------
 // Save the specified image
@@ -252,11 +280,30 @@ GLubyte* ImpressionistDoc::GetOriginalPixel( int x, int y )
 	return (GLubyte*)(m_ucBitmap + 3 * (y*m_nWidth + x));
 }
 
+GLubyte* ImpressionistDoc::GetAnotherPixel(int x, int y)
+{
+	if (x < 0)
+		x = 0;
+	else if (x >= m_nWidth)
+		x = m_nWidth - 1;
+
+	if (y < 0)
+		y = 0;
+	else if (y >= m_nHeight)
+		y = m_nHeight - 1;
+
+	return (GLubyte*)(m_another + 3 * (y*m_nWidth + x));
+}
+
 //----------------------------------------------------------------
 // Get the color of the pixel in the original image at point p
 //----------------------------------------------------------------
 GLubyte* ImpressionistDoc::GetOriginalPixel( const Point p )
 {
 	return GetOriginalPixel( p.x, p.y );
+}
+GLubyte* ImpressionistDoc::GetAnotherPixel( const Point p )
+{
+	return GetAnotherPixel( p.x, p.y );
 }
 

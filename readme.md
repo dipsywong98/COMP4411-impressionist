@@ -28,7 +28,7 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
   - [x] whole image
   - [x] alter attributes randomly
   - [x] random sequence
-- [ ] **(1B1W)** gradient according to another image
+- [x] **(1B1W)** gradient according to another image
 - [ ] _(1B1W)_ edge clipping
 - [ ] _(2B)_ filter kernel
   - [ ] need arbitrary size

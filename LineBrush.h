@@ -8,6 +8,7 @@
 #define LINEBRUSH_H
 
 #include "ImpBrush.h"
+#include <functional>
 
 class LineBrush : public ImpBrush
 {
@@ -21,6 +22,7 @@ public:
 	void RightMove(const Point source, const Point target) override;
 	void RightEnd(const Point source, const Point target) override;
 	void DrawLine(const Point source, const Point target, const double rad);
+	Point CalGradient(Point source, Point target, const std::function<GLubyte*(int, int)> getPixel);
 	char* BrushName(void);
 private:
 	Point start;

@@ -10,6 +10,7 @@
 #include "LineBrush.h"
 #include <ostream>
 #include <iostream>
+#include <functional>
 
 extern float frand();
 extern double degToRad(double);
@@ -56,28 +57,17 @@ void LineBrush::BrushMove(const Point source, const Point target)
 		break;
 	case GRADIENT:
 		{
-			const int sobel[][3] = {
-				{1, 0, -1},
-				{2, 0, -2},
-				{1, 0, -1}
-			};
-			int gx = 0, gy = 0;
-			// const int img[3][3] = {};
-			for (int i = 0; i < 3; i++)
-			{
-				for (int j = 0; j < 3; j++)
-				{
-					const int x = source.x - 1 + i;
-					const int y = source.y - 1 + j;
-					const int pix = *pDoc->GetOriginalPixel(x, y);
-					gx += sobel[j][i] * pix;
-					gy += sobel[i][j] * pix;
-				}
-			}
-			const double rad_ = atan2(gy, gx);
+			Point grad = CalGradient(source, target, [&](int x, int y) {return pDoc->GetOriginalPixel(x,y); });
+			const double rad_ = atan2(grad.y, grad.x);
 			DrawLine(source, target, rad_);
 		}
-
+		break;
+	case GRADIENT_ANOTHER:
+		{
+			Point grad = CalGradient(source, target, [&](int x, int y) {return pDoc->GetAnotherPixel(x,y); });
+			const double rad_ = atan2(grad.y, grad.x);
+			DrawLine(source, target, rad_);
+		}
 		break;
 	case BRUSH_DIRECTION:
 		const double rad = atan2(prev.y - source.y, prev.x - source.x);
@@ -159,4 +149,28 @@ void LineBrush::DrawLine(const Point source, const Point target, const double ra
 	glVertex2d(target.x + dcos, target.y + dsin);
 	glVertex2d(target.x - dcos, target.y - dsin);
 	glEnd();
+}
+
+Point LineBrush::CalGradient(const Point source, const Point target, const std::function<GLubyte*(int, int)> getPixel)
+{
+	ImpressionistDoc* pDoc = GetDocument();
+	const int sobel[][3] = {
+		{ 1, 0, -1 },
+		{ 2, 0, -2 },
+		{ 1, 0, -1 }
+	};
+	int gx = 0, gy = 0;
+	// const int img[3][3] = {};
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			const int x = source.x - 1 + i;
+			const int y = source.y - 1 + j;
+			const int pix = *getPixel(x, y);
+			gx += sobel[j][i] * pix;
+			gy += sobel[i][j] * pix;
+		}
+	}
+	return Point(gx, gy);
 }

@@ -20,6 +20,7 @@ public:
 	void	setUI(ImpressionistUI* ui);		// Assign the UI to use
 
 	int		loadImage(char *iname);			// called by the UI to load image
+	int loadAnotherImage(char* iname);
 	int		saveImage(char *iname);			// called by the UI to save image
 
 
@@ -59,13 +60,16 @@ public:
 	ImpressionistUI*	m_pUI;
 
 	unsigned char* m_history; //for undo
+	unsigned char* m_another; //for another image
 
 	// Operations
 public:
 	// Get the color of the original picture at the specified coord
-	GLubyte* GetOriginalPixel( int x, int y );   
+	GLubyte* GetOriginalPixel( int x, int y );
+	GLubyte* GetAnotherPixel(int x, int y);
 	// Get the color of the original picture at the specified point	
 	GLubyte* GetOriginalPixel( const Point p );  
+	GLubyte* GetAnotherPixel( const Point p );  
 
 
 private:

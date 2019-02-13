@@ -193,6 +193,16 @@ void ImpressionistUI::cb_load_image(Fl_Menu_* o, void* v)
 	}
 }
 
+void ImpressionistUI::cb_load_anther_image(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL) {
+		pDoc->loadAnotherImage(newfile);
+	}
+}
+
 
 //------------------------------------------------------------------
 // Brings up a file chooser and then saves the painted image
@@ -275,6 +285,16 @@ void ImpressionistUI::cb_directionChoice(Fl_Widget* o, void* v)
 
 	int type = (int)v;
 
+	if(type == GRADIENT_ANOTHER)
+	{
+		if(pDoc->m_another == NULL)
+		{
+			fl_alert("Please Load Another Image First");
+			type = 0;
+			pUI->m_BrushDirectionChoice->value(0);
+			return;
+		}
+	}
 
 	pDoc->setDirectionType(type);
 }
@@ -472,6 +492,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{"&Swap Content", FL_ALT +'s', (Fl_Callback*)ImpressionistUI::cb_swap_content },
 		{"&Undo", FL_ALT +'z', (Fl_Callback*)ImpressionistUI::cb_undo},
 		{"&Auto Fill", FL_ALT +'f', (Fl_Callback*)ImpressionistUI::cb_auto_fill_menu},
+		{"&Load Another Img", FL_ALT +'l', (Fl_Callback*)ImpressionistUI::cb_load_anther_image },
 		{ 0 },
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
 		{ "&About",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about },
@@ -495,6 +516,7 @@ Fl_Menu_Item ImpressionistUI::brushDirectionMenu[NUM_DIRECTION_TYPE+1] = {
   {"Slider/Right Mouse",			FL_ALT+'s', (Fl_Callback *)ImpressionistUI::cb_directionChoice, (void *)SLIDER_RIGHT_CLICK },
   {"Gradient",				FL_ALT+'g', (Fl_Callback *)ImpressionistUI::cb_directionChoice, (void *)GRADIENT},
   {"Brush Direction",			FL_ALT+'b', (Fl_Callback *)ImpressionistUI::cb_directionChoice, (void *)BRUSH_DIRECTION},
+  {"Gradient of Another Img",			FL_ALT+'i', (Fl_Callback *)ImpressionistUI::cb_directionChoice, (void *)GRADIENT_ANOTHER},
   {0}
 };
 
