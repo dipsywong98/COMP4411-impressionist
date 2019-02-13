@@ -19,6 +19,7 @@
 #include "ScatteredPointBrush.h"
 #include "ScatteredLineBrush.h"
 #include "ScatteredCircleBrush.h"
+#include <future>
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -109,12 +110,15 @@ void ImpressionistDoc::recordHistory()
 
 void ImpressionistDoc::autoFill()
 {
-	recordHistory();
 
 	// m_pUI->m_origView->refresh();
 	m_pUI->m_paintView->prepareAutoFill();
+	// m_pUI->m_paintView->willAutoFill = true;
 		// m_pUI->m_paintView->draw();
-	m_pUI->m_origView->refresh();
+	// m_pUI->m_origView->refresh();
+
+	// std::future<void> result_future = std::async([&]{m_pUI->m_origView->refresh(); });
+	// result_future.get();
 }
 
 //---------------------------------------------------------

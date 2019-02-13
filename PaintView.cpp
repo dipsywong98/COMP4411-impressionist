@@ -90,8 +90,9 @@ void PaintView::draw()
 	if ( m_pDoc->m_ucPainting && !isAnEvent) 
 	{
 		RestoreContent();
-
 	}
+
+	bool willSave = false;
 
 	if ( m_pDoc->m_ucPainting && isAnEvent) 
 	{
@@ -114,8 +115,9 @@ void PaintView::draw()
 			break;
 		case LEFT_MOUSE_UP:
 			m_pDoc->m_pCurrentBrush->BrushEnd( source, target );
-			SaveCurrentContent();
-			RestoreContent();
+			// SaveCurrentContent();
+			// RestoreContent();
+			willSave = true;
 			break;
 		case RIGHT_MOUSE_DOWN:
 			m_pDoc->m_pCurrentBrush->RightBegin(source, target);
@@ -138,34 +140,30 @@ void PaintView::draw()
 	if(willAutoFill)
 	{
 		autoFill();
-		glFlush();
-		SaveCurrentContent();
-
-
-#ifndef MESA
-		// To avoid flicker on some machines.
-		glDrawBuffer(GL_BACK);
-#endif // !MESA
-		SaveCurrentContent();
-	}else
-	{
-		glFlush();
-		SaveCurrentContent();
-
-
-#ifndef MESA
-		// To avoid flicker on some machines.
-		glDrawBuffer(GL_BACK);
-#endif // !MESA
+		willAutoFill = false;
+		willSave = true;
 	}
 
-		
 
+	glFlush();
+
+
+#ifndef MESA
+	// To avoid flicker on some machines.
+	glDrawBuffer(GL_BACK);
+#endif // !MESA
+
+	if(willSave)
+	{
+		SaveCurrentContent();
+		// RestoreContent();
+	}
 }
 
 void PaintView::prepareAutoFill()
 {
 	willAutoFill = true;
+	redraw();
 }
 
 
@@ -174,7 +172,7 @@ int PaintView::handle(int event)
 	switch(event)
 	{
 	case FL_ENTER:
-		refresh();
+		// refresh();
 	    // redraw();
 		break;
 	case FL_PUSH:
@@ -273,6 +271,7 @@ void PaintView::RestoreContent()
 
 void PaintView::autoFill()
 {
+	m_pDoc->recordHistory();
 	willAutoFill = false;
 
 	// const double r = 0.2;//max percentage different
@@ -282,17 +281,21 @@ void PaintView::autoFill()
 	const int lineAngle = m_pDoc->getLineAngle();
 	const int w = m_pDoc->m_nWidth;
 	const int h = m_pDoc->m_nHeight;
-	const int s = 4;//m_pDoc->m_pUI->getAutoFillStrike();
+	const int s = m_pDoc->m_pUI->getAutoFillStrike();
 	for (int i = 0; i<w; i += s)
 	{
 		for (int j = 0; j<h; j += s)
 		{
 			// const Point source(i + m_nStartCol, m_nEndRow - j);
+			m_pDoc->m_pUI->setSize(size);
+			m_pDoc->m_pUI->setLineWidth(lineWidth);
+			m_pDoc->m_pUI->setLineAngle(lineAngle);
 			const Point target(i, j + m_nWindowHeight - m_nDrawHeight);
 			m_pDoc->m_pCurrentBrush->BrushBegin(target, target);
 			m_pDoc->m_pCurrentBrush->BrushEnd(target, target);
 		}
 	}
+	// glFlush();
 
 	// SaveCurrentContent();
 	// RestoreContent();

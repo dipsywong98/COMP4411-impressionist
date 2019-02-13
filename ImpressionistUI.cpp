@@ -330,6 +330,11 @@ void ImpressionistUI::cb_auto_fill_menu(Fl_Menu_* o, void* v)
 	pDoc->autoFill();
 }
 
+void ImpressionistUI::cb_autoFillStrikeSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_AutoFillStrike = int(((Fl_Slider *)o)->value());
+}
+
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -582,6 +587,18 @@ ImpressionistUI::ImpressionistUI() {
 		m_AlphaSlider->value(m_Alpha);
 		m_AlphaSlider->align(FL_ALIGN_RIGHT);
 		m_AlphaSlider->callback(cb_alphaSlides);
+
+		m_AutoFillStrikeSlider = new Fl_Value_Slider(10, 160, 230, 20, "Strike");
+		m_AutoFillStrikeSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_AutoFillStrikeSlider->type(FL_HOR_NICE_SLIDER);
+		m_AutoFillStrikeSlider->labelfont(FL_COURIER);
+		m_AutoFillStrikeSlider->labelsize(12);
+		m_AutoFillStrikeSlider->minimum(1);
+		m_AutoFillStrikeSlider->maximum(10);
+		m_AutoFillStrikeSlider->step(1);
+		m_AutoFillStrikeSlider->value(m_AutoFillStrike);
+		m_AutoFillStrikeSlider->align(FL_ALIGN_RIGHT);
+		m_AutoFillStrikeSlider->callback(cb_autoFillStrikeSlides);
 
 		m_AutoFillButton = new Fl_Button(240, 160, 150, 25, "&Auto Fill");
 		m_AutoFillButton->user_data((void*)(this));

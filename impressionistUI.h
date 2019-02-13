@@ -43,6 +43,8 @@ public:
 	Fl_Slider*			m_LineAngleSlider;
 	Fl_Slider*			m_AlphaSlider;
 
+	Fl_Slider*			m_AutoFillStrikeSlider;
+
 	Fl_Button*          m_ClearCanvasButton;
 	Fl_Button*			m_AutoFillButton;
 
@@ -102,6 +104,7 @@ private:
 	static void	cb_undo(Fl_Menu_* o, void* v);
 	static void cb_swap_content(Fl_Menu_* o, void* v);
 	static void cb_auto_fill_menu(Fl_Menu_* o, void* v);
+	static void	cb_autoFillStrikeSlides(Fl_Widget* o, void* v);
 };
 
 #endif

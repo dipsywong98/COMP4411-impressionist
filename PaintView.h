@@ -35,6 +35,7 @@ public:
 
 	ImpressionistDoc *m_pDoc;
 
+	bool willAutoFill = false;
 private:
 	GLvoid* m_pPaintBitstart;
 	int		m_nDrawWidth,
@@ -45,7 +46,6 @@ private:
 			m_nEndCol,
 			m_nWindowWidth, 
 			m_nWindowHeight;
-	bool willAutoFill = false;
 
 };
 
