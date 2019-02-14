@@ -48,6 +48,7 @@ public:
 
 	Fl_Button*          m_ClearCanvasButton;
 	Fl_Button*			m_AutoFillButton;
+	Fl_Check_Button* m_AutoFillEnableRandomButton;
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -70,6 +71,8 @@ public:
 	void setAutoFillStrike(int strike);
 	double getAutoFillRandom() const;
 	void setAutoFillRandom(double auto_fill_random);
+	bool getAutoFillEnableRandom();
+	void setAutoFillEnableRandom(bool flag);
 
 private:
 	ImpressionistDoc*	m_pDoc;		// pointer to document to communicate with the document
@@ -81,6 +84,7 @@ private:
 	double m_Alpha;
 	int m_AutoFillStrike = 1;
 	double m_AutoFillRandom = 0;
+	bool m_AutoFillEnableRandom = true;
 
 private:
 	// Static class members
@@ -112,6 +116,7 @@ private:
 	static void cb_auto_fill_menu(Fl_Menu_* o, void* v);
 	static void	cb_autoFillStrikeSlides(Fl_Widget* o, void* v);
 	static void	cb_autoFillRandomSlides(Fl_Widget* o, void* v);
+	static void	cb_enable_random(Fl_Widget* o, void* v);
 };
 
 #endif

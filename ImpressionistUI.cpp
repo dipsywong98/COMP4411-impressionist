@@ -167,6 +167,16 @@ void ImpressionistUI::setAutoFillRandom(double auto_fill_random)
 	m_AutoFillRandom = auto_fill_random;
 }
 
+bool ImpressionistUI::getAutoFillEnableRandom()
+{
+	return m_AutoFillEnableRandom;
+}
+
+void ImpressionistUI::setAutoFillEnableRandom(bool flag)
+{
+	m_AutoFillEnableRandom = flag;
+}
+
 //------------------------------------------------------------
 // This returns the UI, given the menu item.  It provides a
 // link from the menu items to the UI
@@ -368,6 +378,11 @@ void ImpressionistUI::cb_autoFillStrikeSlides(Fl_Widget* o, void* v)
 void ImpressionistUI::cb_autoFillRandomSlides(Fl_Widget* o, void* v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_AutoFillRandom = int(((Fl_Slider *)o)->value());
+}
+
+void ImpressionistUI::cb_enable_random(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_AutoFillEnableRandom = bool(((Fl_Check_Button *)o)->value());
 }
 
 //---------------------------------- per instance functions --------------------------------------
@@ -652,6 +667,11 @@ ImpressionistUI::ImpressionistUI() {
 		m_AutoFillButton = new Fl_Button(240, 160, 150, 25, "&Auto Fill");
 		m_AutoFillButton->user_data((void*)(this));
 		m_AutoFillButton->callback(cb_auto_fill);
+
+		m_AutoFillEnableRandomButton = new Fl_Check_Button(240, 185, 150, 25, "Enable Random");
+		m_AutoFillEnableRandomButton->value(m_AutoFillEnableRandom);
+		m_AutoFillEnableRandomButton->user_data((void*)(this));
+		m_AutoFillEnableRandomButton->callback(cb_enable_random);
 
     m_brushDialog->end();	
 

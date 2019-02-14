@@ -281,7 +281,7 @@ void PaintView::autoFill()
 	willAutoFill = false;
 
 	const double r = m_pDoc->m_pUI->getAutoFillRandom();//max percentage different
-	const bool randAttr = true;//randomize attributes
+	const bool randAttr = m_pDoc->m_pUI->getAutoFillEnableRandom();//true;//randomize attributes
 
 	const int size = m_pDoc->getSize();
 	const int lineWidth = m_pDoc->getLineWidth();
