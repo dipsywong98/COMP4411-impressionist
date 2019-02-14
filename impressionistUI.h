@@ -49,6 +49,8 @@ public:
 	Fl_Button*          m_ClearCanvasButton;
 	Fl_Button*			m_AutoFillButton;
 	Fl_Check_Button* m_AutoFillEnableRandomButton;
+	Fl_Slider*			m_EdgeThresholdSlider;
+	Fl_Button*			m_FindEdgeButton;
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -73,6 +75,8 @@ public:
 	void setAutoFillRandom(double auto_fill_random);
 	bool getAutoFillEnableRandom();
 	void setAutoFillEnableRandom(bool flag);
+	int getEdgeThreshold();
+	void setEdgeThreshold(int threshold);
 
 private:
 	ImpressionistDoc*	m_pDoc;		// pointer to document to communicate with the document
@@ -85,6 +89,7 @@ private:
 	int m_AutoFillStrike = 1;
 	double m_AutoFillRandom = 0;
 	bool m_AutoFillEnableRandom = true;
+	int m_EdgeThreshold = 0;
 
 private:
 	// Static class members
@@ -117,6 +122,8 @@ private:
 	static void	cb_autoFillStrikeSlides(Fl_Widget* o, void* v);
 	static void	cb_autoFillRandomSlides(Fl_Widget* o, void* v);
 	static void	cb_enable_random(Fl_Widget* o, void* v);
+	static void	cb_edgeThresholdSlides(Fl_Widget* o, void* v);
+	static void	cb_find_edge(Fl_Widget* o, void* v);
 };
 
 #endif

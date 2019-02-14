@@ -177,6 +177,16 @@ void ImpressionistUI::setAutoFillEnableRandom(bool flag)
 	m_AutoFillEnableRandom = flag;
 }
 
+int ImpressionistUI::getEdgeThreshold()
+{
+	return m_EdgeThreshold;
+}
+
+void ImpressionistUI::setEdgeThreshold(int threshold)
+{
+	m_EdgeThreshold = threshold;
+}
+
 //------------------------------------------------------------
 // This returns the UI, given the menu item.  It provides a
 // link from the menu items to the UI
@@ -377,12 +387,22 @@ void ImpressionistUI::cb_autoFillStrikeSlides(Fl_Widget* o, void* v)
 
 void ImpressionistUI::cb_autoFillRandomSlides(Fl_Widget* o, void* v)
 {
-	((ImpressionistUI*)(o->user_data()))->m_AutoFillRandom = int(((Fl_Slider *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->m_AutoFillRandom = double(((Fl_Slider *)o)->value());
 }
 
 void ImpressionistUI::cb_enable_random(Fl_Widget* o, void* v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_AutoFillEnableRandom = bool(((Fl_Check_Button *)o)->value());
+}
+
+void ImpressionistUI::cb_edgeThresholdSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_EdgeThreshold = int(((Fl_Slider *)o)->value());
+}
+
+void ImpressionistUI::cb_find_edge(Fl_Widget* o, void* v)
+{
+	fl_alert("find edge");
 }
 
 //---------------------------------- per instance functions --------------------------------------
@@ -672,6 +692,23 @@ ImpressionistUI::ImpressionistUI() {
 		m_AutoFillEnableRandomButton->value(m_AutoFillEnableRandom);
 		m_AutoFillEnableRandomButton->user_data((void*)(this));
 		m_AutoFillEnableRandomButton->callback(cb_enable_random);
+
+
+		m_EdgeThresholdSlider= new Fl_Value_Slider(10, 210, 200, 20, "Edge Threshold");
+		m_EdgeThresholdSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_EdgeThresholdSlider->type(FL_HOR_NICE_SLIDER);
+		m_EdgeThresholdSlider->labelfont(FL_COURIER);
+		m_EdgeThresholdSlider->labelsize(12);
+		m_EdgeThresholdSlider->minimum(1);
+		m_EdgeThresholdSlider->maximum(500);
+		m_EdgeThresholdSlider->step(1);
+		m_EdgeThresholdSlider->value(m_EdgeThreshold);
+		m_EdgeThresholdSlider->align(FL_ALIGN_RIGHT);
+		m_EdgeThresholdSlider->callback(cb_edgeThresholdSlides);
+
+		m_FindEdgeButton= new Fl_Button(240, 210, 150, 25, "Find Edge");
+		m_FindEdgeButton->user_data((void*)(this));
+		m_FindEdgeButton->callback(cb_find_edge);
 
     m_brushDialog->end();	
 
