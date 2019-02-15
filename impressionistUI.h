@@ -124,6 +124,9 @@ private:
 	static void	cb_enable_random(Fl_Widget* o, void* v);
 	static void	cb_edgeThresholdSlides(Fl_Widget* o, void* v);
 	static void	cb_find_edge(Fl_Widget* o, void* v);
+	static void cb_view_original(Fl_Menu_* o, void* v);
+	static void cb_view_another(Fl_Menu_* o, void* v);
+	static void cb_view_edge(Fl_Menu_* o, void* v);
 };
 
 #endif

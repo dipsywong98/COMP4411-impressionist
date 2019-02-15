@@ -307,7 +307,7 @@ void ImpressionistUI::cb_directionChoice(Fl_Widget* o, void* v)
 
 	if(type == GRADIENT_ANOTHER)
 	{
-		if(pDoc->m_another == NULL)
+		if(pDoc->m_ucAnother == NULL)
 		{
 			fl_alert("Please Load Another Image First");
 			type = 0;
@@ -403,6 +403,30 @@ void ImpressionistUI::cb_edgeThresholdSlides(Fl_Widget* o, void* v)
 void ImpressionistUI::cb_find_edge(Fl_Widget* o, void* v)
 {
 	fl_alert("find edge");
+}
+
+void ImpressionistUI::cb_view_original(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+
+	pDoc->m_ucBitmap = pDoc->m_ucOriginal;
+	pDoc->m_pUI->m_origView->refresh();
+}
+
+void ImpressionistUI::cb_view_another(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+
+	pDoc->m_ucBitmap = pDoc->m_ucAnother;
+	pDoc->m_pUI->m_origView->refresh();
+}
+
+void ImpressionistUI::cb_view_edge(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+
+	pDoc->m_ucBitmap = pDoc->m_ucEdge;
+	pDoc->m_pUI->m_origView->refresh();
 }
 
 //---------------------------------- per instance functions --------------------------------------
@@ -523,6 +547,11 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
+	{"&Display",0,0,0,FL_SUBMENU},
+		{"Original",0,(Fl_Callback*)ImpressionistUI::cb_view_original},
+		{"Another",0,(Fl_Callback*)ImpressionistUI::cb_view_another},
+		{"Edge",0,(Fl_Callback*)ImpressionistUI::cb_view_edge},
+		{0},
 	{ "&Bonus",		0, 0, 0, FL_SUBMENU },
 		{"&Swap Content", FL_ALT +'s', (Fl_Callback*)ImpressionistUI::cb_swap_content },
 		{"&Undo", FL_ALT +'z', (Fl_Callback*)ImpressionistUI::cb_undo},
