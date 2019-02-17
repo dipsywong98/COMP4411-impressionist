@@ -402,7 +402,7 @@ void ImpressionistUI::cb_edgeThresholdSlides(Fl_Widget* o, void* v)
 
 void ImpressionistUI::cb_find_edge(Fl_Widget* o, void* v)
 {
-	fl_alert("find edge");
+	((ImpressionistUI*)(o->user_data()))->m_origView->prepareFindEdge();
 }
 
 void ImpressionistUI::cb_view_original(Fl_Menu_* o, void* v)

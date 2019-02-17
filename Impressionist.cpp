@@ -15,6 +15,7 @@
 
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
+#include <functional>
 
 ImpressionistUI *impUI;
 ImpressionistDoc *impDoc;
@@ -62,4 +63,27 @@ double radToDeg(double rad)
 double randAlter(double original, double maxAbsPercentageDiff)
 {
 	return original + original*maxAbsPercentageDiff*(frand()-0.5)*2;
+}
+
+Point CalGradient(const Point source, const Point target, const std::function<GLubyte*(int, int)> getPixel)
+{
+	const int sobel[][3] = {
+		{ 1, 0, -1 },
+		{ 2, 0, -2 },
+		{ 1, 0, -1 }
+	};
+	int gx = 0, gy = 0;
+	// const int img[3][3] = {};
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			const int x = source.x - 1 + i;
+			const int y = source.y - 1 + j;
+			const int pix = *getPixel(x, y);
+			gx += sobel[j][i] * pix;
+			gy += sobel[i][j] * pix;
+		}
+	}
+	return Point(gx, gy);
 }

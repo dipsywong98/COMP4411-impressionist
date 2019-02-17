@@ -31,8 +31,11 @@ public:
 	void resizeWindow(int width, int height);
 	void setCursor(Point pt);
 	void displayCursor();
+	void findEdge();
+	void prepareFindEdge();
 
 	ImpressionistDoc*	m_pDoc;
+	bool willFindEdge = false;
 
 private:
 	int	m_nWindowWidth, 

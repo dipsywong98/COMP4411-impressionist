@@ -16,6 +16,8 @@ extern float frand();
 extern double degToRad(double);
 extern double radToDeg(double);
 
+extern Point CalGradient(const Point source, const Point target, const std::function<GLubyte*(int, int)> getPixel);
+
 LineBrush::LineBrush(ImpressionistDoc* pDoc, char* name) :
 	ImpBrush(pDoc, name)
 {
@@ -149,28 +151,4 @@ void LineBrush::DrawLine(const Point source, const Point target, const double ra
 	glVertex2d(target.x + dcos, target.y + dsin);
 	glVertex2d(target.x - dcos, target.y - dsin);
 	glEnd();
-}
-
-Point LineBrush::CalGradient(const Point source, const Point target, const std::function<GLubyte*(int, int)> getPixel)
-{
-	ImpressionistDoc* pDoc = GetDocument();
-	const int sobel[][3] = {
-		{ 1, 0, -1 },
-		{ 2, 0, -2 },
-		{ 1, 0, -1 }
-	};
-	int gx = 0, gy = 0;
-	// const int img[3][3] = {};
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			const int x = source.x - 1 + i;
-			const int y = source.y - 1 + j;
-			const int pix = *getPixel(x, y);
-			gx += sobel[j][i] * pix;
-			gy += sobel[i][j] * pix;
-		}
-	}
-	return Point(gx, gy);
 }

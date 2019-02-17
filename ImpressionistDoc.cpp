@@ -124,6 +124,11 @@ void ImpressionistDoc::autoFill()
 	// result_future.get();
 }
 
+int ImpressionistDoc::getEdgeThreshold()
+{
+	return m_pUI->getEdgeThreshold();
+}
+
 //---------------------------------------------------------
 // Returns the size of the brush.
 //---------------------------------------------------------
