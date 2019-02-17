@@ -479,6 +479,7 @@ void ImpressionistUI::cb_apply_kernel(Fl_Widget* o, void* v)
 {
 	ImpressionistUI* pUI = (ImpressionistUI*)(o->user_data());
 	pUI->parseKernel();
+	pUI->m_paintView->applyKernel();
 }
 
 void ImpressionistUI::cb_normalize_kernel(Fl_Widget* o, void* v)

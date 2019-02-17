@@ -85,6 +85,7 @@ public:
 	void setEdgeThreshold(int threshold);
 	bool getEdgeClip();
 	void setEdgeClip(bool flag);
+	std::vector<std::vector<float>> kernel;
 
 private:
 	ImpressionistDoc*	m_pDoc;		// pointer to document to communicate with the document
@@ -99,7 +100,6 @@ private:
 	bool m_AutoFillEnableRandom = true;
 	int m_EdgeThreshold = 0;
 	bool m_EdgeClip = true;
-	std::vector<std::vector<float>> kernel;
 	float parseKernel();	//return total
 
 private:

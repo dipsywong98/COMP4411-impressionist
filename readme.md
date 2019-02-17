@@ -30,10 +30,10 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
   - [x] random sequence
 - [x] **(1B1W)** gradient according to another image
 - [x] _(1B1W)_ edge clipping
-- [ ] _(2B)_ filter kernel
-  - [ ] need arbitrary size
-  - [ ] apply button for do whole convolution
-  - [ ] normalize
+- [x] _(2B)_ filter kernel
+  - [x] need arbitrary size
+  - [x] apply button for do whole convolution
+  - [x] normalize
 - [x] _(2B)_ find edges
 - [ ] _(2B)_ multiresolution automatic painting technique http://mrl.nyu.edu/projects/npr/painterly/
 - [ ] _(2B)_ stretch and pull image http://mostfungames.com/warp-george-bush.htm

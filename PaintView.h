@@ -33,6 +33,8 @@ public:
 
 	void autoFill();
 
+	void applyKernel();
+
 	ImpressionistDoc *m_pDoc;
 
 	bool willAutoFill = false;
