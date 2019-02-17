@@ -21,6 +21,7 @@
 #include "PaintView.h"
 
 #include "ImpBrush.h"
+#include <vector>
 
 class ImpressionistUI {
 public:
@@ -52,6 +53,10 @@ public:
 	Fl_Slider*			m_EdgeThresholdSlider;
 	Fl_Button*			m_FindEdgeButton;
 	Fl_Check_Button* m_EdgeClipButton;
+	Fl_Input* m_KernelInput;
+	Fl_Button*			m_KernelApplyButton;
+	Fl_Button*			m_KernelNormalizeButton;
+	char* m_KernelStr;
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -94,6 +99,8 @@ private:
 	bool m_AutoFillEnableRandom = true;
 	int m_EdgeThreshold = 0;
 	bool m_EdgeClip = true;
+	std::vector<std::vector<float>> kernel;
+	float parseKernel();	//return total
 
 private:
 	// Static class members
@@ -102,6 +109,7 @@ private:
 	static Fl_Menu_Item		brushDirectionMenu[NUM_DIRECTION_TYPE+1];
 
 	static ImpressionistUI*	whoami(Fl_Menu_* o);
+
 
 	// All callbacks here.  Callbacks are declared 
 	// static
@@ -132,6 +140,9 @@ private:
 	static void cb_view_original(Fl_Menu_* o, void* v);
 	static void cb_view_another(Fl_Menu_* o, void* v);
 	static void cb_view_edge(Fl_Menu_* o, void* v);
+	static void	cb_edit_kernel(Fl_Widget* o, void* v);
+	static void	cb_apply_kernel(Fl_Widget* o, void* v);
+	static void	cb_normalize_kernel(Fl_Widget* o, void* v);
 };
 
 #endif
