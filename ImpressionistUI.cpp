@@ -187,6 +187,16 @@ void ImpressionistUI::setEdgeThreshold(int threshold)
 	m_EdgeThreshold = threshold;
 }
 
+bool ImpressionistUI::getEdgeClip()
+{
+	return m_EdgeClip;
+}
+
+void ImpressionistUI::setEdgeClip(bool flag)
+{
+	m_EdgeClip = flag;
+}
+
 //------------------------------------------------------------
 // This returns the UI, given the menu item.  It provides a
 // link from the menu items to the UI
@@ -393,6 +403,11 @@ void ImpressionistUI::cb_autoFillRandomSlides(Fl_Widget* o, void* v)
 void ImpressionistUI::cb_enable_random(Fl_Widget* o, void* v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_AutoFillEnableRandom = bool(((Fl_Check_Button *)o)->value());
+}
+
+void ImpressionistUI::cb_edge_clip(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_EdgeClip = bool(((Fl_Check_Button *)o)->value());
 }
 
 void ImpressionistUI::cb_edgeThresholdSlides(Fl_Widget* o, void* v)
@@ -721,6 +736,7 @@ ImpressionistUI::ImpressionistUI() {
 		m_AutoFillEnableRandomButton->value(m_AutoFillEnableRandom);
 		m_AutoFillEnableRandomButton->user_data((void*)(this));
 		m_AutoFillEnableRandomButton->callback(cb_enable_random);
+	
 
 
 		m_EdgeThresholdSlider= new Fl_Value_Slider(10, 210, 200, 20, "Edge Threshold");
@@ -738,6 +754,11 @@ ImpressionistUI::ImpressionistUI() {
 		m_FindEdgeButton= new Fl_Button(240, 210, 150, 25, "Find Edge");
 		m_FindEdgeButton->user_data((void*)(this));
 		m_FindEdgeButton->callback(cb_find_edge);
+
+		m_EdgeClipButton = new Fl_Check_Button(240, 235, 150, 25, "Edge Clip");
+		m_EdgeClipButton ->value(m_EdgeClip);
+		m_EdgeClipButton ->user_data((void*)(this));
+		m_EdgeClipButton ->callback(cb_edge_clip);
 
     m_brushDialog->end();	
 

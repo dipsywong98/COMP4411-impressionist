@@ -112,7 +112,7 @@ void LineBrush::DrawLine(const Point source, const Point target, const double ra
 
 	const int w = pDoc->m_nPaintWidth;
 	const int h = pDoc->m_nPaintHeight;
-	const bool edgeClipping = true;
+	const bool edgeClipping = pDoc->m_pUI->getEdgeClip();
 
 	const double dsin = size * sin(rad) / 2.0f;
 	const double dcos = size * cos(rad) / 2.0f;

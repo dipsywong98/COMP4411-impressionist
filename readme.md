@@ -29,7 +29,7 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
   - [x] alter attributes randomly
   - [x] random sequence
 - [x] **(1B1W)** gradient according to another image
-- [ ] _(1B1W)_ edge clipping
+- [x] _(1B1W)_ edge clipping
 - [ ] _(2B)_ filter kernel
   - [ ] need arbitrary size
   - [ ] apply button for do whole convolution
