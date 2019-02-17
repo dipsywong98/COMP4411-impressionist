@@ -11,6 +11,7 @@
 
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
+#include <sstream>
 
 /*
 //------------------------------ Widget Examples -------------------------------------------------
@@ -204,6 +205,27 @@ void ImpressionistUI::setEdgeClip(bool flag)
 ImpressionistUI* ImpressionistUI::whoami(Fl_Menu_* o)	
 {
 	return ( (ImpressionistUI*)(o->parent()->user_data()) );
+}
+
+float ImpressionistUI::parseKernel()
+{
+	kernel.clear();
+	std::string input(m_KernelStr);
+	std::stringstream ss(input);
+	int size;
+	ss >> size;
+	float total = 0;
+	for (int i = 0; i<size; i++) {
+		std::vector<float> row;
+		for (int j = 0; j<size; j++) {
+			float tmp;
+			ss >> tmp;
+			row.push_back(tmp);
+			total += tmp;
+		}
+		kernel.push_back(row);
+	}
+	return total;
 }
 
 
@@ -444,6 +466,43 @@ void ImpressionistUI::cb_view_edge(Fl_Menu_* o, void* v)
 	pDoc->m_pUI->m_origView->refresh();
 }
 
+void ImpressionistUI::cb_edit_kernel(Fl_Widget* o, void* v)
+{
+	// ((ImpressionistUI*)(o->user_data()))->m_KernelStr = (char*)(((Fl_Input *)o)->value());
+	ImpressionistUI* pUI = (ImpressionistUI*)(o->user_data());
+
+	const char* str = ((Fl_Input *)o)->value();
+	strcpy(pUI->m_KernelStr, str);
+}
+
+void ImpressionistUI::cb_apply_kernel(Fl_Widget* o, void* v)
+{
+	ImpressionistUI* pUI = (ImpressionistUI*)(o->user_data());
+	pUI->parseKernel();
+	pUI->m_paintView->applyKernel();
+}
+
+void ImpressionistUI::cb_normalize_kernel(Fl_Widget* o, void* v)
+{
+	ImpressionistUI* pUI = (ImpressionistUI*)(o->user_data());
+	float total = pUI->parseKernel();
+	std::string newKernelStr;
+	std::stringstream ss(newKernelStr);
+	int size = pUI->kernel.size();
+	ss << size;
+	for(int i = 0; i<size; i++)
+	{
+		for(int j=0; j<size; j++)
+		{
+			pUI->kernel[i][j] /= total;
+			ss<< " " << pUI->kernel[i][j];
+		}
+	}
+	newKernelStr = ss.str();
+	strcpy(pUI->m_KernelStr, newKernelStr.c_str());
+	pUI->m_KernelInput->value(pUI->m_KernelStr);
+}
+
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -606,6 +665,10 @@ Fl_Menu_Item ImpressionistUI::brushDirectionMenu[NUM_DIRECTION_TYPE+1] = {
 // Add new widgets here
 //----------------------------------------------------
 ImpressionistUI::ImpressionistUI() {
+
+	m_KernelStr = new char[100];
+	memset(m_KernelStr, 0, 100);
+
 	// Create the main window
 	m_mainWindow = new Fl_Window(600, 300, "Impressionist");
 		m_mainWindow->user_data((void*)(this));	// record self to be used by static callback functions
@@ -759,6 +822,19 @@ ImpressionistUI::ImpressionistUI() {
 		m_EdgeClipButton ->value(m_EdgeClip);
 		m_EdgeClipButton ->user_data((void*)(this));
 		m_EdgeClipButton ->callback(cb_edge_clip);
+
+		m_KernelInput = new Fl_Input(40, 250, 150, 50, "Kernel");
+		m_KernelInput->value(m_KernelStr);
+		m_KernelInput->user_data((void*)(this));
+		m_KernelInput->callback(cb_edit_kernel);
+
+		m_KernelApplyButton = new Fl_Button(240, 260, 150, 25, "Apply");
+		m_KernelApplyButton->user_data((void*)(this));
+		m_KernelApplyButton->callback(cb_apply_kernel);
+	
+		m_KernelNormalizeButton = new Fl_Button(240, 285, 150, 25, "Normalize");
+		m_KernelNormalizeButton->user_data((void*)(this));
+		m_KernelNormalizeButton->callback(cb_normalize_kernel);
 
     m_brushDialog->end();	
 

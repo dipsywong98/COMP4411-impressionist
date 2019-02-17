@@ -324,3 +324,31 @@ void PaintView::autoFill()
 	m_pDoc->m_pUI->setLineWidth(lineWidth);
 	m_pDoc->m_pUI->setLineAngle(lineAngle);
 }
+
+void PaintView::applyKernel()
+{
+	int size = m_pDoc->m_pUI->kernel.size();
+	const int w = m_pDoc->m_nWidth;
+	const int h = m_pDoc->m_nHeight;
+	for (int i = 0; i < w; i++)
+	{
+		for (int j = 0; j< h; j++)
+		{
+			int c[]={0,0,0};
+			for (int a=0; a<size; a++)
+			{
+				for(int b=0; b<size; b++)
+				{
+					for(int d=0;d<3;d++)
+					{
+						c[d] += m_pDoc->m_pUI->kernel[a][b] * m_pDoc->GetOriginalPixel(i + a - size / 2, j + b - size / 2)[d];
+					}
+				}
+			}
+			m_pDoc->m_ucPainting[(j*m_nWindowWidth + i) * 3] = c[0];
+			m_pDoc->m_ucPainting[(j*m_nWindowWidth + i) * 3 + 1] = c[1];
+			m_pDoc->m_ucPainting[(j*m_nWindowWidth + i) * 3 + 2] = c[2];
+		}
+	}
+	refresh();
+}
