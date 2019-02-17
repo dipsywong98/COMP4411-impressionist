@@ -23,6 +23,7 @@ public:
 	void RightEnd(const Point source, const Point target) override;
 	void DrawLine(const Point source, const Point target, const double rad);
 	char* BrushName(void);
+	Point ClippedPoint(const Point origin, const int size, const double rad);
 private:
 	Point start;
 	Point prev;

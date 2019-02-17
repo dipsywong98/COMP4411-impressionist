@@ -307,6 +307,21 @@ GLubyte* ImpressionistDoc::GetAnotherPixel(int x, int y)
 	return (GLubyte*)(m_ucAnother + 3 * (y*m_nWidth + x));
 }
 
+bool ImpressionistDoc::IsEdge(int x, int y)
+{
+	if (x < 0)
+		x = 0;
+	else if (x >= m_nWidth)
+		x = m_nWidth - 1;
+
+	if (y < 0)
+		y = 0;
+	else if (y >= m_nHeight)
+		y = m_nHeight - 1;
+
+	return *(m_ucEdge + 3 * (y*m_nWidth + x)) == 255;
+}
+
 //----------------------------------------------------------------
 // Get the color of the pixel in the original image at point p
 //----------------------------------------------------------------
@@ -319,3 +334,7 @@ GLubyte* ImpressionistDoc::GetAnotherPixel( const Point p )
 	return GetAnotherPixel( p.x, p.y );
 }
 
+bool ImpressionistDoc::IsEdge(const Point p)
+{
+	return IsEdge(p.x, p.y);
+}
