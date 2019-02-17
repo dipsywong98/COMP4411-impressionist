@@ -22,8 +22,8 @@ public:
 	void RightMove(const Point source, const Point target) override;
 	void RightEnd(const Point source, const Point target) override;
 	void DrawLine(const Point source, const Point target, const double rad);
-	Point CalGradient(Point source, Point target, const std::function<GLubyte*(int, int)> getPixel);
 	char* BrushName(void);
+	Point ClippedPoint(const Point origin, const int size, const double rad);
 private:
 	Point start;
 	Point prev;

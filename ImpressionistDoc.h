@@ -49,7 +49,9 @@ public:
 					m_nPaintHeight;	
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;
+	unsigned char*	m_ucOriginal;
 	unsigned char*	m_ucPainting;
+	unsigned char*	m_ucEdge;
 
 
 	// The current active brush.
@@ -59,8 +61,8 @@ public:
 
 	ImpressionistUI*	m_pUI;
 
-	unsigned char* m_history; //for undo
-	unsigned char* m_another; //for another image
+	unsigned char* m_ucHistory; //for undo
+	unsigned char* m_ucAnother; //for another image
 
 	// Operations
 public:

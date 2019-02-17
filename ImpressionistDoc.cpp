@@ -31,8 +31,10 @@ ImpressionistDoc::ImpressionistDoc()
 	m_nWidth		= -1;
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
-	m_history	= NULL;
-	m_another	= NULL;
+	m_ucHistory	= NULL;
+	m_ucAnother	= NULL;
+	m_ucEdge = NULL;
+	m_ucOriginal = NULL;
 
 
 	// create one instance of each brush
@@ -100,13 +102,13 @@ void ImpressionistDoc::swapContent()
 
 void ImpressionistDoc::undo()
 {
-	memcpy(m_ucPainting, m_history, m_nWidth*m_nHeight * 3 * sizeof(unsigned char));
+	memcpy(m_ucPainting, m_ucHistory, m_nWidth*m_nHeight * 3 * sizeof(unsigned char));
 	m_pUI->m_paintView->refresh();
 }
 
 void ImpressionistDoc::recordHistory()
 {
-	memcpy(m_history, m_ucPainting, m_nWidth*m_nHeight * 3 * sizeof(unsigned char));
+	memcpy(m_ucHistory, m_ucPainting, m_nWidth*m_nHeight * 3 * sizeof(unsigned char));
 }
 
 void ImpressionistDoc::autoFill()
@@ -120,6 +122,11 @@ void ImpressionistDoc::autoFill()
 
 	// std::future<void> result_future = std::async([&]{m_pUI->m_origView->refresh(); });
 	// result_future.get();
+}
+
+int ImpressionistDoc::getEdgeThreshold()
+{
+	return m_pUI->getEdgeThreshold();
 }
 
 //---------------------------------------------------------
@@ -168,17 +175,22 @@ int ImpressionistDoc::loadImage(char *iname)
 	m_nPaintHeight	= height;
 
 	// release old storage
-	if (m_history) delete[] m_history;
+	if (m_ucHistory) delete[] m_ucHistory;
 	if ( m_ucBitmap ) delete [] m_ucBitmap;
+	if ( m_ucOriginal ) delete [] m_ucOriginal;
 	if ( m_ucPainting ) delete [] m_ucPainting;
+	if (m_ucEdge) delete[] m_ucEdge;
 
 	m_ucBitmap		= data;
+	m_ucOriginal = data;
 
 	// allocate space for draw view
 	m_ucPainting	= new unsigned char [width*height*3];
-	m_history = new unsigned char [width*height*3];
+	m_ucHistory = new unsigned char [width*height*3];
+	m_ucEdge = new unsigned char [width*height*3];
 	memset(m_ucPainting, 0, width*height*3);
-	memset(m_history, 0, width*height*3);
+	memset(m_ucHistory, 0, width*height*3);
+	memset(m_ucEdge, 0, width*height*3);
 
 	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(), 
 								m_pUI->m_mainWindow->y(), 
@@ -217,9 +229,9 @@ int ImpressionistDoc::loadAnotherImage(char *iname)
 	}
 
 	// release old another image
-	if (m_another) delete[] m_another;
+	if (m_ucAnother) delete[] m_ucAnother;
 
-	m_another = data;
+	m_ucAnother = data;
 
 	return 1;
 }
@@ -277,7 +289,7 @@ GLubyte* ImpressionistDoc::GetOriginalPixel( int x, int y )
 	else if ( y >= m_nHeight ) 
 		y = m_nHeight-1;
 
-	return (GLubyte*)(m_ucBitmap + 3 * (y*m_nWidth + x));
+	return (GLubyte*)(m_ucOriginal + 3 * (y*m_nWidth + x));
 }
 
 GLubyte* ImpressionistDoc::GetAnotherPixel(int x, int y)
@@ -292,7 +304,22 @@ GLubyte* ImpressionistDoc::GetAnotherPixel(int x, int y)
 	else if (y >= m_nHeight)
 		y = m_nHeight - 1;
 
-	return (GLubyte*)(m_another + 3 * (y*m_nWidth + x));
+	return (GLubyte*)(m_ucAnother + 3 * (y*m_nWidth + x));
+}
+
+bool ImpressionistDoc::IsEdge(int x, int y)
+{
+	if (x < 0)
+		x = 0;
+	else if (x >= m_nWidth)
+		x = m_nWidth - 1;
+
+	if (y < 0)
+		y = 0;
+	else if (y >= m_nHeight)
+		y = m_nHeight - 1;
+
+	return *(m_ucEdge + 3 * (y*m_nWidth + x)) == 255;
 }
 
 //----------------------------------------------------------------
@@ -307,3 +334,7 @@ GLubyte* ImpressionistDoc::GetAnotherPixel( const Point p )
 	return GetAnotherPixel( p.x, p.y );
 }
 
+bool ImpressionistDoc::IsEdge(const Point p)
+{
+	return IsEdge(p.x, p.y);
+}

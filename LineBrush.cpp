@@ -16,6 +16,8 @@ extern float frand();
 extern double degToRad(double);
 extern double radToDeg(double);
 
+extern Point CalGradient(const Point source, const Point target, const std::function<GLubyte*(int, int)> getPixel);
+
 LineBrush::LineBrush(ImpressionistDoc* pDoc, char* name) :
 	ImpBrush(pDoc, name)
 {
@@ -110,6 +112,7 @@ void LineBrush::DrawLine(const Point source, const Point target, const double ra
 
 	const int w = pDoc->m_nPaintWidth;
 	const int h = pDoc->m_nPaintHeight;
+	const bool edgeClipping = pDoc->m_pUI->getEdgeClip();
 
 	const double dsin = size * sin(rad) / 2.0f;
 	const double dcos = size * cos(rad) / 2.0f;
@@ -145,32 +148,41 @@ void LineBrush::DrawLine(const Point source, const Point target, const double ra
 	// 	}
 	// }
 
+	Point pt0 = Point( target.x + dcos, target.y + dsin), pt1 = Point( target.x - dcos, target.y - dsin);
+
+	if(edgeClipping)
+	{
+		pt0 = ClippedPoint(target, size/2, rad);
+		pt1 = ClippedPoint(target, size/2, M_PI +rad);
+	}
+
 	glBegin(GL_LINES);
-	glVertex2d(target.x + dcos, target.y + dsin);
-	glVertex2d(target.x - dcos, target.y - dsin);
+	glVertex2d(pt0.x, pt0.y);
+	glVertex2d(pt1.x, pt1.y);
 	glEnd();
 }
 
-Point LineBrush::CalGradient(const Point source, const Point target, const std::function<GLubyte*(int, int)> getPixel)
+Point LineBrush::ClippedPoint(const Point origin, const int size, const double rad)
 {
 	ImpressionistDoc* pDoc = GetDocument();
-	const int sobel[][3] = {
-		{ 1, 0, -1 },
-		{ 2, 0, -2 },
-		{ 1, 0, -1 }
-	};
-	int gx = 0, gy = 0;
-	// const int img[3][3] = {};
-	for (int i = 0; i < 3; i++)
+	const int w = pDoc->m_nPaintWidth;
+	const int h = pDoc->m_nPaintHeight;
+	// int dist = sqrt(pow(origin.x - target.x, 2) + pow(origin.y + target.y,2)) + 1;
+	for(int i = 0; i < size; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		const Point pt = Point(origin.x + i*cos(rad), origin.y + i*sin(rad));
+		if(pDoc->IsEdge(pt))
 		{
-			const int x = source.x - 1 + i;
-			const int y = source.y - 1 + j;
-			const int pix = *getPixel(x, y);
-			gx += sobel[j][i] * pix;
-			gy += sobel[i][j] * pix;
+			return pt;
+		}
+		if(pt.x<=0 || pt.y<=0 || pt.x>= w-1 || pt.y >= h-1)
+		{
+			return pt;
+		}
+		if(i == size - 1)
+		{
+			return pt;
 		}
 	}
-	return Point(gx, gy);
+	return origin;
 }

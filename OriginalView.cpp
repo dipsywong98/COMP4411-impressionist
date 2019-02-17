@@ -7,10 +7,14 @@
 #include "impressionist.h"
 #include "impressionistDoc.h"
 #include "originalview.h"
+#include <functional>
+#include "impressionistUI.h"
 
 #ifndef WIN32
 #define min(a, b)	( ( (a)<(b) ) ? (a) : (b) )
 #endif
+
+extern Point CalGradient(const Point source, const Point target, const std::function<GLubyte*(int, int)> getPixel);
 
 OriginalView::OriginalView(int			x, 
 						   int			y, 
@@ -42,6 +46,8 @@ void OriginalView::draw()
 
 	glClear( GL_COLOR_BUFFER_BIT );
 
+	int drawWidth, drawHeight;
+
 	if ( m_pDoc->m_ucBitmap ) 
 	{
 		// note that both OpenGL pixel storage and the Windows BMP format
@@ -51,7 +57,6 @@ void OriginalView::draw()
 		m_nWindowWidth=w();
 		m_nWindowHeight=h();
 
-		int drawWidth, drawHeight;
 		GLvoid* bitstart;
 
 		// we are not using a scrollable window, so ignore it
@@ -65,6 +70,28 @@ void OriginalView::draw()
 		if ( startrow < 0 ) 
 			startrow = 0;
 
+		// if (willFindEdge)
+		// {
+		// 	findEdge();
+		// 	willFindEdge = false;
+		//
+		// 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		// 	glPixelStorei(GL_PACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+		//
+		// 	glReadPixels(0,
+		// 		m_nWindowHeight - drawHeight,
+		// 		drawWidth,
+		// 		drawHeight,
+		// 		GL_RGB,
+		// 		GL_UNSIGNED_BYTE,
+		// 		m_pDoc->m_ucEdge + 3 * ((m_pDoc->m_nWidth * startrow) + scrollpos.x));
+		// 	glFlush();
+		// }
+		if(willFindEdge)
+		{
+			findEdge();
+			willFindEdge = false;
+		}
 
 		bitstart = m_pDoc->m_ucBitmap + 3 * ((m_pDoc->m_nWidth * startrow) + scrollpos.x);
 
@@ -107,5 +134,50 @@ void OriginalView::displayCursor()
 		glColor3d(1, 0, 0);
 		glVertex2d(cursor.x, m_nWindowHeight - cursor.y);
 	glEnd();
+}
+
+void OriginalView::findEdge()
+{
+	const int threshold = m_pDoc->m_pUI->getEdgeThreshold();
+
+	// glPointSize(1);
+	// glBegin(GL_POINTS);
+	for(int i=0;i < m_nWindowWidth; i++)
+	{
+		for(int j=0; j<m_nWindowHeight; j++)
+		{
+			Point grad = CalGradient(Point(i, j), Point(i, j), [&](int x, int y) {return m_pDoc->GetOriginalPixel(x, y); });
+			// if(grad.x !=0 || grad.y != 0)
+			// {
+			// 	printf("hey");
+				const bool color = sqrt(pow(grad.x, 2) + pow(grad.y, 2)) > threshold;
+				if(color)
+				{
+					
+				// glColor3d(color, color, color);
+				// glVertex2d(i, j);
+				m_pDoc->m_ucEdge[(j*m_nWindowWidth + i) * 3] = 255;
+				m_pDoc->m_ucEdge[(j*m_nWindowWidth + i) * 3 + 1] = 255;
+				m_pDoc->m_ucEdge[(j*m_nWindowWidth + i) * 3 + 2] = 255;
+				}
+				else
+				{
+					m_pDoc->m_ucEdge[(j*m_nWindowWidth + i) * 3] = 0;
+					m_pDoc->m_ucEdge[(j*m_nWindowWidth + i) * 3 + 1] = 0;
+					m_pDoc->m_ucEdge[(j*m_nWindowWidth + i) * 3 + 2] = 0;
+				}
+			// }
+		}
+	}
+	// glEnd();
+	// glFlush();
+
+}
+
+void OriginalView::prepareFindEdge()
+{
+	m_pDoc->m_ucBitmap = m_pDoc->m_ucEdge;
+	willFindEdge = true;
+	refresh();
 }
 
