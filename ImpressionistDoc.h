@@ -37,6 +37,7 @@ public:
 	void swapContent();
 	void recordHistory();
 	void autoFill();
+	int getEdgeThreshold();
 
 
 	// Attributes
@@ -69,9 +70,11 @@ public:
 	// Get the color of the original picture at the specified coord
 	GLubyte* GetOriginalPixel( int x, int y );
 	GLubyte* GetAnotherPixel(int x, int y);
+	bool IsEdge(int x, int y);
 	// Get the color of the original picture at the specified point	
 	GLubyte* GetOriginalPixel( const Point p );  
-	GLubyte* GetAnotherPixel( const Point p );  
+	GLubyte* GetAnotherPixel( const Point p );
+	bool IsEdge(const Point p);
 
 
 private:
