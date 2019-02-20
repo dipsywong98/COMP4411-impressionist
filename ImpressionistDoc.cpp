@@ -20,6 +20,7 @@
 #include "ScatteredLineBrush.h"
 #include "ScatteredCircleBrush.h"
 #include <future>
+#include "AlphaMapBrush.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -35,6 +36,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_ucAnother	= NULL;
 	m_ucEdge = NULL;
 	m_ucOriginal = NULL;
+	m_ucAlphaMap = NULL;
 
 
 	// create one instance of each brush
@@ -54,6 +56,8 @@ ImpressionistDoc::ImpressionistDoc()
 		= new ScatteredLineBrush( this, "Scattered Lines" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_CIRCLES]	
 		= new ScatteredCircleBrush( this, "Scattered Circles" );
+	ImpBrush::c_pBrushes[ALPHA_MAP]
+		= new AlphaMapBrush( this, "Alpha Map" );
 
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
@@ -264,6 +268,28 @@ int ImpressionistDoc::loadMuralImage(char* iname)
 	return 1;
 }
 
+int ImpressionistDoc::loadAlphaMap(char* iname)
+{
+	unsigned char*	data;
+	int				width, height;
+
+	if ((data = readBMP(iname, width, height)) == NULL)
+	{
+		fl_alert("Can't load bitmap file");
+		return 0;
+	}
+
+	m_alphaMapWidth = width;
+	m_alphaMapHeight = height;
+
+	// release old another image
+	if (m_ucAlphaMap) delete[] m_ucAlphaMap;
+
+	m_ucAlphaMap = data;
+
+	return 1;
+}
+
 
 //----------------------------------------------------------------
 // Save the specified image
@@ -318,6 +344,21 @@ GLubyte* ImpressionistDoc::GetOriginalPixel( int x, int y )
 		y = m_nHeight-1;
 
 	return (GLubyte*)(m_ucOriginal + 3 * (y*m_nWidth + x));
+}
+
+double ImpressionistDoc::GetAlpha(int x, int y)
+{
+	if (x < 0)
+		x = 0;
+	else if (x >= m_alphaMapWidth)
+		x = m_alphaMapWidth - 1;
+
+	if (y < 0)
+		y = 0;
+	else if (y >= m_alphaMapHeight)
+		y = m_alphaMapHeight - 1;
+	GLubyte* p = m_ucAlphaMap + 3 * (y*m_alphaMapWidth + x);
+	return (p[0] + p[1] + p[2]) / 765.0f;
 }
 
 GLubyte* ImpressionistDoc::GetAnotherPixel(int x, int y)

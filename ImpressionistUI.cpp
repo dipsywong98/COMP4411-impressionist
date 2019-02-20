@@ -270,6 +270,16 @@ void ImpressionistUI::cb_load_mural_image(Fl_Menu_* o, void* v)
 	}
 }
 
+void ImpressionistUI::cb_load_alpha_map_image(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL) {
+		pDoc->loadAlphaMap(newfile);
+	}
+}
+
 
 //------------------------------------------------------------------
 // Brings up a file chooser and then saves the painted image
@@ -341,6 +351,15 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
 
 	int type=(int)v;
 
+	if(type == (int)ALPHA_MAP)
+	{
+		if(pDoc->m_ucAlphaMap == NULL)
+		{
+			fl_alert("Please load alpha map first");
+			pUI->m_BrushTypeChoice->value(0);
+			return;
+		}
+	}
 
 	pDoc->setBrushType(type);
 }
@@ -650,6 +669,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{"&Auto Fill", FL_ALT +'f', (Fl_Callback*)ImpressionistUI::cb_auto_fill_menu},
 		{"&Load Another Img", FL_ALT +'l', (Fl_Callback*)ImpressionistUI::cb_load_another_image },
 		{"&Load Mural Img", FL_ALT +'m', (Fl_Callback*)ImpressionistUI::cb_load_mural_image },
+		{"&Load Alpha Map Img", FL_ALT +'a', (Fl_Callback*)ImpressionistUI::cb_load_alpha_map_image },
 		{ 0 },
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
 		{ "&About",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about },
@@ -666,6 +686,7 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE+1] = {
   {"Scattered Points",	FL_ALT+'q', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_POINTS},
   {"Scattered Lines",	FL_ALT+'m', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_LINES},
   {"Scattered Circles",	FL_ALT+'d', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_CIRCLES},
+  {"Alpha Map",	FL_ALT+'a', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)ALPHA_MAP },
   {0}
 };
 

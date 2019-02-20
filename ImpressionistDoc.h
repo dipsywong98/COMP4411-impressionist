@@ -22,6 +22,7 @@ public:
 	int		loadImage(char *iname);			// called by the UI to load image
 	int loadAnotherImage(char* iname);
 	int loadMuralImage(char* iname);
+	int loadAlphaMap(char* iname);
 	int		saveImage(char *iname);			// called by the UI to save image
 
 
@@ -54,6 +55,7 @@ public:
 	unsigned char*	m_ucOriginal;
 	unsigned char*	m_ucPainting;
 	unsigned char*	m_ucEdge;
+	unsigned char* m_ucAlphaMap;
 
 
 	// The current active brush.
@@ -65,11 +67,14 @@ public:
 
 	unsigned char* m_ucHistory; //for undo
 	unsigned char* m_ucAnother; //for another image
+	int m_alphaMapWidth;
+	int m_alphaMapHeight;
 
 	// Operations
 public:
 	// Get the color of the original picture at the specified coord
 	GLubyte* GetOriginalPixel( int x, int y );
+	double GetAlpha( int x, int y );
 	GLubyte* GetAnotherPixel(int x, int y);
 	bool IsEdge(int x, int y);
 	// Get the color of the original picture at the specified point	
