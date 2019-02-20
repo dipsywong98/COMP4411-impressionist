@@ -345,15 +345,15 @@ void PaintView::applyKernel()
 	{
 		for (int j = 0; j< h; j++)
 		{
-			int c[]={0,0,0};
+			float c[]={0,0,0};
 			for (int a=0; a<size; a++)
 			{
 				for(int b=0; b<size; b++)
 				{
 					for(int d=0;d<3;d++)
 					{
-						const int x = max(0,min(i - (size) / 2, w-1));
-						const int y = max(0, min(j - (size) / 2, h-1));
+						const int x = max(0,min(i - (size) / 2 + a, w-1));
+						const int y = max(0, min(j - (size) / 2 + b, h-1));
 						float delta = m_pDoc->m_pUI->kernel[a][b] * before[(y*w + x) * 3 + d];
 						if(isNormalized)
 						{
