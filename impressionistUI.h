@@ -116,7 +116,8 @@ private:
 	// All callbacks here.  Callbacks are declared 
 	// static
 	static void	cb_load_image(Fl_Menu_* o, void* v);
-	static void cb_load_anther_image(Fl_Menu_* o, void* v);
+	static void cb_load_another_image(Fl_Menu_* o, void* v);
+	static void cb_load_mural_image(Fl_Menu_* o, void* v);
 	static void	cb_save_image(Fl_Menu_* o, void* v);
 	static void	cb_brushes(Fl_Menu_* o, void* v);
 	static void	cb_clear_canvas(Fl_Menu_* o, void* v);

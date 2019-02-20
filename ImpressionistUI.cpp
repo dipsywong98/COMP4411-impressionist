@@ -250,13 +250,23 @@ void ImpressionistUI::cb_load_image(Fl_Menu_* o, void* v)
 	}
 }
 
-void ImpressionistUI::cb_load_anther_image(Fl_Menu_* o, void* v)
+void ImpressionistUI::cb_load_another_image(Fl_Menu_* o, void* v)
 {
 	ImpressionistDoc *pDoc = whoami(o)->getDocument();
 
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
 	if (newfile != NULL) {
 		pDoc->loadAnotherImage(newfile);
+	}
+}
+
+void ImpressionistUI::cb_load_mural_image(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL) {
+		pDoc->loadMuralImage(newfile);
 	}
 }
 
@@ -638,7 +648,8 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{"&Swap Content", FL_ALT +'s', (Fl_Callback*)ImpressionistUI::cb_swap_content },
 		{"&Undo", FL_ALT +'z', (Fl_Callback*)ImpressionistUI::cb_undo},
 		{"&Auto Fill", FL_ALT +'f', (Fl_Callback*)ImpressionistUI::cb_auto_fill_menu},
-		{"&Load Another Img", FL_ALT +'l', (Fl_Callback*)ImpressionistUI::cb_load_anther_image },
+		{"&Load Another Img", FL_ALT +'l', (Fl_Callback*)ImpressionistUI::cb_load_another_image },
+		{"&Load Mural Img", FL_ALT +'m', (Fl_Callback*)ImpressionistUI::cb_load_mural_image },
 		{ 0 },
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
 		{ "&About",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about },
