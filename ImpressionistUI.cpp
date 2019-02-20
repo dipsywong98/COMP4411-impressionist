@@ -305,6 +305,11 @@ void ImpressionistUI::cb_brushes(Fl_Menu_* o, void* v)
 	whoami(o)->m_brushDialog->show();
 }
 
+void ImpressionistUI::cb_painterly(Fl_Menu_* o, void* v)
+{
+	whoami(o)->m_painterlyDialog->show();
+}
+
 //------------------------------------------------------------
 // Clears the paintview canvas.
 // Called by the UI when the clear canvas menu item is chosen
@@ -540,6 +545,12 @@ void ImpressionistUI::cb_normalize_kernel(Fl_Widget* o, void* v)
 	// pUI->m_KernelInput->value(pUI->m_KernelStr);
 }
 
+void ImpressionistUI::cb_painterly_paint(Fl_Widget* o, void* v)
+{
+	ImpressionistUI *pUI = (ImpressionistUI*)(o->user_data());
+	pUI->m_paintView->preparePainterly();
+}
+
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -654,6 +665,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Load Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
 		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 		{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes }, 
+		{ "&Painterly...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_painterly }, 
 		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
 		
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
@@ -880,4 +892,8 @@ ImpressionistUI::ImpressionistUI() {
 
     m_brushDialog->end();	
 
+	m_painterlyDialog = new Fl_Window(400, 325, "Painterly Dialog");
+		m_painterlyButton = new Fl_Button(240, 210, 150, 25, "Paint!");
+		m_painterlyButton->user_data((void*)(this));
+		m_painterlyButton->callback(cb_painterly_paint);
 }

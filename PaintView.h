@@ -21,6 +21,7 @@ public:
 	PaintView(int x, int y, int w, int h, const char* l);
 	void draw();
 	void prepareAutoFill();
+	void preparePainterly();
 	int handle(int event);
 
 	void refresh();
@@ -35,9 +36,12 @@ public:
 
 	void applyKernel();
 
+	void painterly();
+
 	ImpressionistDoc *m_pDoc;
 
 	bool willAutoFill = false;
+	bool willPainterly = false;
 private:
 	GLvoid* m_pPaintBitstart;
 	int		m_nDrawWidth,

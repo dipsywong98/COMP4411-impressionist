@@ -148,6 +148,11 @@ void PaintView::draw()
 		autoFill();
 		willAutoFill = false;
 		willSave = true;
+	} else if (willPainterly)
+	{
+		painterly();
+		willPainterly = false;
+		willSave = true;
 	}
 
 
@@ -169,6 +174,12 @@ void PaintView::draw()
 void PaintView::prepareAutoFill()
 {
 	willAutoFill = true;
+	redraw();
+}
+
+void PaintView::preparePainterly()
+{
+	willPainterly = true;
 	redraw();
 }
 
@@ -370,4 +381,9 @@ void PaintView::applyKernel()
 	}
 	refresh();
 	delete[] before;
+}
+
+void PaintView::painterly()
+{
+	fl_alert("yo painterly!");
 }

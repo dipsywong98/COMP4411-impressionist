@@ -58,6 +58,10 @@ public:
 	Fl_Check_Button*			m_KernelNormalizeButton;
 	char* m_KernelStr;
 
+	//for painterly
+	Fl_Window*			m_painterlyDialog;
+	Fl_Button*          m_painterlyButton;
+
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
 	ImpressionistDoc*	getDocument();
@@ -121,6 +125,7 @@ private:
 	static void cb_load_alpha_map_image(Fl_Menu_* o, void* v);
 	static void	cb_save_image(Fl_Menu_* o, void* v);
 	static void	cb_brushes(Fl_Menu_* o, void* v);
+	static void	cb_painterly(Fl_Menu_* o, void* v);
 	static void	cb_clear_canvas(Fl_Menu_* o, void* v);
 	static void	cb_exit(Fl_Menu_* o, void* v);
 	static void	cb_about(Fl_Menu_* o, void* v);
@@ -147,6 +152,7 @@ private:
 	static void	cb_edit_kernel(Fl_Widget* o, void* v);
 	static void	cb_apply_kernel(Fl_Widget* o, void* v);
 	static void	cb_normalize_kernel(Fl_Widget* o, void* v);
+	static void	cb_painterly_paint(Fl_Widget* o, void* v);
 };
 
 #endif
