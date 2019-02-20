@@ -198,6 +198,11 @@ void ImpressionistUI::setEdgeClip(bool flag)
 	m_EdgeClip = flag;
 }
 
+bool ImpressionistUI::getIsNormalizedKernel()
+{
+	return m_IsNormalizedKernel;
+}
+
 //------------------------------------------------------------
 // This returns the UI, given the menu item.  It provides a
 // link from the menu items to the UI
@@ -207,25 +212,25 @@ ImpressionistUI* ImpressionistUI::whoami(Fl_Menu_* o)
 	return ( (ImpressionistUI*)(o->parent()->user_data()) );
 }
 
-float ImpressionistUI::parseKernel()
+bool ImpressionistUI::parseKernel()
 {
 	kernel.clear();
 	std::string input(m_KernelStr);
+	if (input.empty())return false;
 	std::stringstream ss(input);
 	int size;
 	ss >> size;
-	float total = 0;
 	for (int i = 0; i<size; i++) {
 		std::vector<float> row;
 		for (int j = 0; j<size; j++) {
 			float tmp;
+			if (!ss.rdbuf()->in_avail())return false;
 			ss >> tmp;
 			row.push_back(tmp);
-			total += tmp;
 		}
 		kernel.push_back(row);
 	}
-	return total;
+	return true;
 }
 
 
@@ -478,29 +483,32 @@ void ImpressionistUI::cb_edit_kernel(Fl_Widget* o, void* v)
 void ImpressionistUI::cb_apply_kernel(Fl_Widget* o, void* v)
 {
 	ImpressionistUI* pUI = (ImpressionistUI*)(o->user_data());
-	pUI->parseKernel();
-	pUI->m_paintView->applyKernel();
+	if(pUI->parseKernel())
+	{
+		pUI->m_paintView->applyKernel();
+	}
 }
 
 void ImpressionistUI::cb_normalize_kernel(Fl_Widget* o, void* v)
 {
-	ImpressionistUI* pUI = (ImpressionistUI*)(o->user_data());
-	float total = pUI->parseKernel();
-	std::string newKernelStr;
-	std::stringstream ss(newKernelStr);
-	int size = pUI->kernel.size();
-	ss << size;
-	for(int i = 0; i<size; i++)
-	{
-		for(int j=0; j<size; j++)
-		{
-			pUI->kernel[i][j] /= total;
-			ss<< " " << pUI->kernel[i][j];
-		}
-	}
-	newKernelStr = ss.str();
-	strcpy(pUI->m_KernelStr, newKernelStr.c_str());
-	pUI->m_KernelInput->value(pUI->m_KernelStr);
+	((ImpressionistUI*)(o->user_data()))->m_IsNormalizedKernel = bool(((Fl_Check_Button *)o)->value());
+	// ImpressionistUI* pUI = (ImpressionistUI*)(o->user_data());
+	// float total = pUI->parseKernel();
+	// std::string newKernelStr;
+	// std::stringstream ss(newKernelStr);
+	// int size = pUI->kernel.size();
+	// ss << size;
+	// for(int i = 0; i<size; i++)
+	// {
+	// 	for(int j=0; j<size; j++)
+	// 	{
+	// 		pUI->kernel[i][j] /= total;
+	// 		ss<< " " << pUI->kernel[i][j];
+	// 	}
+	// }
+	// newKernelStr = ss.str();
+	// strcpy(pUI->m_KernelStr, newKernelStr.c_str());
+	// pUI->m_KernelInput->value(pUI->m_KernelStr);
 }
 
 //---------------------------------- per instance functions --------------------------------------
@@ -832,8 +840,9 @@ ImpressionistUI::ImpressionistUI() {
 		m_KernelApplyButton->user_data((void*)(this));
 		m_KernelApplyButton->callback(cb_apply_kernel);
 	
-		m_KernelNormalizeButton = new Fl_Button(240, 285, 150, 25, "Normalize");
+		m_KernelNormalizeButton = new Fl_Check_Button(240, 285, 150, 25, "Normalize");
 		m_KernelNormalizeButton->user_data((void*)(this));
+		m_KernelNormalizeButton->value(m_IsNormalizedKernel);
 		m_KernelNormalizeButton->callback(cb_normalize_kernel);
 
     m_brushDialog->end();	

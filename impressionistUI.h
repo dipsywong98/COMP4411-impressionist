@@ -55,7 +55,7 @@ public:
 	Fl_Check_Button* m_EdgeClipButton;
 	Fl_Input* m_KernelInput;
 	Fl_Button*			m_KernelApplyButton;
-	Fl_Button*			m_KernelNormalizeButton;
+	Fl_Check_Button*			m_KernelNormalizeButton;
 	char* m_KernelStr;
 
 	// Member functions
@@ -85,6 +85,7 @@ public:
 	void setEdgeThreshold(int threshold);
 	bool getEdgeClip();
 	void setEdgeClip(bool flag);
+	bool getIsNormalizedKernel();
 	std::vector<std::vector<float>> kernel;
 
 private:
@@ -100,7 +101,8 @@ private:
 	bool m_AutoFillEnableRandom = true;
 	int m_EdgeThreshold = 0;
 	bool m_EdgeClip = true;
-	float parseKernel();	//return total
+	bool parseKernel();	//return total
+	bool m_IsNormalizedKernel = false;
 
 private:
 	// Static class members

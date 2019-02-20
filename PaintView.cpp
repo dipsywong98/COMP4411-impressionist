@@ -242,7 +242,7 @@ void PaintView::SaveCurrentContent()
 {
 	// Tell openGL to read from the front buffer when capturing
 	// out paint strokes
-	glReadBuffer(GL_FRONT);
+	glReadBuffer(GL_BACK);
 
 	glPixelStorei( GL_PACK_ALIGNMENT, 1 );
 	glPixelStorei( GL_PACK_ROW_LENGTH, m_pDoc->m_nPaintWidth );
@@ -330,25 +330,44 @@ void PaintView::applyKernel()
 	int size = m_pDoc->m_pUI->kernel.size();
 	const int w = m_pDoc->m_nWidth;
 	const int h = m_pDoc->m_nHeight;
+	const bool isNormalized = m_pDoc->m_pUI->getIsNormalizedKernel();
+	float total = 0;
+	unsigned char * before = new unsigned char[w*h * 3];
+	memcpy(before, m_pDoc->m_ucPainting, w*h * 3);
+	for(int i=0; i<size; i++)
+	{
+		for(int j=0; j<size; j++)
+		{
+			total += m_pDoc->m_pUI->kernel[i][j];
+		}
+	}
 	for (int i = 0; i < w; i++)
 	{
 		for (int j = 0; j< h; j++)
 		{
-			int c[]={0,0,0};
+			float c[]={0,0,0};
 			for (int a=0; a<size; a++)
 			{
 				for(int b=0; b<size; b++)
 				{
 					for(int d=0;d<3;d++)
 					{
-						c[d] += m_pDoc->m_pUI->kernel[a][b] * m_pDoc->GetOriginalPixel(i + a - size / 2, j + b - size / 2)[d];
+						const int x = max(0,min(i - (size) / 2 + a, w-1));
+						const int y = max(0, min(j - (size) / 2 + b, h-1));
+						float delta = m_pDoc->m_pUI->kernel[a][b] * before[(y*w + x) * 3 + d];
+						if(isNormalized)
+						{
+							delta /= total;
+						}
+						c[d] += delta;
 					}
 				}
 			}
-			m_pDoc->m_ucPainting[(j*m_nWindowWidth + i) * 3] = c[0];
-			m_pDoc->m_ucPainting[(j*m_nWindowWidth + i) * 3 + 1] = c[1];
-			m_pDoc->m_ucPainting[(j*m_nWindowWidth + i) * 3 + 2] = c[2];
+			m_pDoc->m_ucPainting[(j*w + i) * 3] = max(0,min(c[0],255));
+			m_pDoc->m_ucPainting[(j*w + i) * 3 + 1] = max(0, min(c[1],255));
+			m_pDoc->m_ucPainting[(j*w + i) * 3 + 2] = max(0, min(c[2],255));
 		}
 	}
 	refresh();
+	delete[] before;
 }
