@@ -687,6 +687,7 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE+1] = {
   {"Scattered Lines",	FL_ALT+'m', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_LINES},
   {"Scattered Circles",	FL_ALT+'d', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_CIRCLES},
   {"Alpha Map",	FL_ALT+'a', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)ALPHA_MAP },
+  {"Curved Brush",	FL_ALT+'a', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)CURVED_BRUSH },
   {0}
 };
 

@@ -8,6 +8,7 @@
 //
 
 #include <stdlib.h>
+#include <cmath>
 
 // Each brush type has an associated constant.
 enum
@@ -19,6 +20,7 @@ enum
 	BRUSH_SCATTERED_LINES,
 	BRUSH_SCATTERED_CIRCLES,
 	ALPHA_MAP,
+	CURVED_BRUSH,
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
 };
 
@@ -40,6 +42,9 @@ public:
 	Point() {};
 	Point(int xx, int yy) { x = xx; y = yy; };
 	Point operator =(Point pt) { x = pt.x; y = pt.y; return *this; }
+	float norm2() const { return sqrt(x*x + y*y); }
+	const ::Point& operator+=(const Point& point);
+	Point T() const { return Point(y, x); };
 
 	int x, y;
 };

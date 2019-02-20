@@ -12,6 +12,13 @@
 int			ImpBrush::c_nBrushCount	= 0;
 ImpBrush**	ImpBrush::c_pBrushes	= NULL;
 
+const ::Point& Point::operator+=(const Point& point)
+{
+	this->x += point.x;
+	this->y += point.y;
+	return *this;
+}
+
 ImpBrush::ImpBrush(ImpressionistDoc*	pDoc, 
 				   char*				name) :
 					m_pDoc(pDoc), 
