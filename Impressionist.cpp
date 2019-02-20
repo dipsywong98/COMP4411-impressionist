@@ -80,7 +80,8 @@ Point CalGradient(const Point source, const Point target, const std::function<GL
 		{
 			const int x = source.x - 1 + i;
 			const int y = source.y - 1 + j;
-			const int pix = *getPixel(x, y);
+			GLubyte* p = getPixel(x, y);
+			const int pix = p[0]+p[1]+p[2];
 			gx += sobel[j][i] * pix;
 			gy += sobel[i][j] * pix;
 		}
