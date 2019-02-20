@@ -338,35 +338,44 @@ void PaintView::autoFill()
 
 void PaintView::applyKernel()
 {
-	int size = m_pDoc->m_pUI->kernel.size();
 	const int w = m_pDoc->m_nWidth;
 	const int h = m_pDoc->m_nHeight;
 	const bool isNormalized = m_pDoc->m_pUI->getIsNormalizedKernel();
-	float total = 0;
 	unsigned char * before = new unsigned char[w*h * 3];
 	memcpy(before, m_pDoc->m_ucPainting, w*h * 3);
-	for(int i=0; i<size; i++)
+
+	kernelHelper(before, m_pDoc->m_ucPainting, m_pDoc->m_pUI->kernel, w, h, isNormalized);
+
+	refresh();
+	delete[] before;
+}
+
+void PaintView::kernelHelper(unsigned char* before, unsigned char* target, const std::vector<std::vector<float>>& kernel, int w, int h, bool isNormalized)
+{
+	int size = kernel.size();
+	float total = 0;
+	for (int i = 0; i<size; i++)
 	{
-		for(int j=0; j<size; j++)
+		for (int j = 0; j<size; j++)
 		{
-			total += m_pDoc->m_pUI->kernel[i][j];
+			total += kernel[i][j];
 		}
 	}
 	for (int i = 0; i < w; i++)
 	{
 		for (int j = 0; j< h; j++)
 		{
-			float c[]={0,0,0};
-			for (int a=0; a<size; a++)
+			float c[] = { 0,0,0 };
+			for (int a = 0; a<size; a++)
 			{
-				for(int b=0; b<size; b++)
+				for (int b = 0; b<size; b++)
 				{
-					for(int d=0;d<3;d++)
+					for (int d = 0; d<3; d++)
 					{
-						const int x = max(0,min(i - (size) / 2 + a, w-1));
-						const int y = max(0, min(j - (size) / 2 + b, h-1));
-						float delta = m_pDoc->m_pUI->kernel[a][b] * before[(y*w + x) * 3 + d];
-						if(isNormalized)
+						const int x = max(0, min(i - (size) / 2 + a, w - 1));
+						const int y = max(0, min(j - (size) / 2 + b, h - 1));
+						float delta = kernel[a][b] * before[(y*w + x) * 3 + d];
+						if (isNormalized)
 						{
 							delta /= total;
 						}
@@ -374,16 +383,19 @@ void PaintView::applyKernel()
 					}
 				}
 			}
-			m_pDoc->m_ucPainting[(j*w + i) * 3] = max(0,min(c[0],255));
-			m_pDoc->m_ucPainting[(j*w + i) * 3 + 1] = max(0, min(c[1],255));
-			m_pDoc->m_ucPainting[(j*w + i) * 3 + 2] = max(0, min(c[2],255));
+			target[(j*w + i) * 3] = max(0, min(c[0], 255));
+			target[(j*w + i) * 3 + 1] = max(0, min(c[1], 255));
+			target[(j*w + i) * 3 + 2] = max(0, min(c[2], 255));
 		}
 	}
-	refresh();
-	delete[] before;
 }
 
 void PaintView::painterly()
 {
-	fl_alert("yo painterly!");
+	// fl_alert("yo painterly!");
+	std::vector<int> radii = { 8,5,2 };
+	for(int i: radii)
+	{
+		
+	}
 }

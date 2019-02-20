@@ -12,6 +12,7 @@
 #include <FL/gl.h>
 #include <GL/glu.h>
 #include <stdlib.h>
+#include <vector>
 
 class ImpressionistDoc;
 
@@ -35,6 +36,8 @@ public:
 	void autoFill();
 
 	void applyKernel();
+	void kernelHelper(unsigned char* before, unsigned char* target, const std::vector<std::vector<float>>& kernel, int w, int h, bool
+	                  isNormalized);
 
 	void painterly();
 
