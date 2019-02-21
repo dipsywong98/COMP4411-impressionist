@@ -395,7 +395,7 @@ void PaintView::painterly()
 	const int w = m_pDoc->m_nWidth;
 	const int h = m_pDoc->m_nHeight;
 	// fl_alert("yo painterly!");
-	std::vector<int> radii = { 8,5,2 };
+	std::vector<int> radii = { 18,15,10 };
 	// const std::vector<std::vector<float>>& GaussianBlur = {
 	// 	{
 	// 		
