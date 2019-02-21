@@ -161,52 +161,62 @@ double ImpressionistDoc::getAlpha()
 //---------------------------------------------------------
 int ImpressionistDoc::loadImage(char *iname) 
 {
-	// try to open the image to read
-	unsigned char*	data;
-	int				width, 
-					height;
+	int width, height;
 
-	if ( (data=readBMP(iname, width, height))==NULL ) 
+	const auto data = readBMP(iname, width, height);
+
+	return loadImageFromData(data, width, height);
+}
+
+int ImpressionistDoc::loadImageFromData(unsigned char* dataPtr, const int width, const int height)
+{
+	if (dataPtr == nullptr)
 	{
 		fl_alert("Can't load bitmap file");
 		return 0;
 	}
 
 	// reflect the fact of loading the new image
-	m_nWidth		= width;
-	m_nPaintWidth	= width;
-	m_nHeight		= height;
-	m_nPaintHeight	= height;
+	m_nWidth = width;
+	m_nPaintWidth = width;
+	m_nHeight = height;
+	m_nPaintHeight = height;
 
 	// release old storage
-	if (m_ucHistory) delete[] m_ucHistory;
-	if ( m_ucBitmap ) delete [] m_ucBitmap;
-	if ( m_ucOriginal ) delete [] m_ucOriginal;
-	if ( m_ucPainting ) delete [] m_ucPainting;
-	if (m_ucEdge) delete[] m_ucEdge;
+	delete[] m_ucHistory;
+	if (m_ucBitmap == m_ucOriginal)
+	{
+		delete[] m_ucOriginal;
+	} else
+	{
+		delete[] m_ucBitmap;
+		delete[] m_ucOriginal;
+	}
+	delete[] m_ucPainting;
+	delete[] m_ucEdge;
 
-	m_ucBitmap		= data;
-	m_ucOriginal = data;
+	m_ucBitmap = dataPtr;
+	m_ucOriginal = dataPtr;
 
 	// allocate space for draw view
-	m_ucPainting	= new unsigned char [width*height*3];
-	m_ucHistory = new unsigned char [width*height*3];
-	m_ucEdge = new unsigned char [width*height*3];
-	memset(m_ucPainting, 0, width*height*3);
-	memset(m_ucHistory, 0, width*height*3);
-	memset(m_ucEdge, 0, width*height*3);
+	m_ucPainting = new unsigned char[width*height * 3];
+	m_ucHistory = new unsigned char[width*height * 3];
+	m_ucEdge = new unsigned char[width*height * 3];
+	memset(m_ucPainting, 0, width*height * 3);
+	memset(m_ucHistory, 0, width*height * 3);
+	memset(m_ucEdge, 0, width*height * 3);
 
-	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(), 
-								m_pUI->m_mainWindow->y(), 
-								width*2, 
-								height+25);
+	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(),
+		m_pUI->m_mainWindow->y(),
+		width * 2,
+		height + 25);
 
 	// display it on origView
-	m_pUI->m_origView->resizeWindow(width, height);	
+	m_pUI->m_origView->resizeWindow(width, height);
 	m_pUI->m_origView->refresh();
 
 	// refresh paint view as well
-	m_pUI->m_paintView->resizeWindow(width, height);	
+	m_pUI->m_paintView->resizeWindow(width, height);
 	m_pUI->m_paintView->refresh();
 
 
