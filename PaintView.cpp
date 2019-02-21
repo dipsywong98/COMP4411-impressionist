@@ -392,10 +392,105 @@ void PaintView::kernelHelper(unsigned char* before, unsigned char* target, const
 
 void PaintView::painterly()
 {
+	const int w = m_pDoc->m_nWidth;
+	const int h = m_pDoc->m_nHeight;
 	// fl_alert("yo painterly!");
 	std::vector<int> radii = { 8,5,2 };
-	for(int i: radii)
+	// const std::vector<std::vector<float>>& GaussianBlur = {
+	// 	{
+	// 		
+	// 	}}
+	unsigned char* canvas = new unsigned char[w*h * 3];
+	memset(canvas, 255, w*h * 3);
+	for(int r: radii)
 	{
-		
+		unsigned char* ref = new unsigned char[w*h * 3];
+		memcpy(ref, m_pDoc->m_ucOriginal, w*h * 3);
+		paintLayer(canvas, ref, r);
+		delete[] ref;
 	}
+
+	delete[] canvas;
+}
+
+
+void PaintView::paintLayer(unsigned char* canvas, unsigned char* ref, int r)
+{
+	const int w = m_pDoc->m_nWidth;
+	const int h = m_pDoc->m_nHeight;
+	int grid= m_pDoc->getSize();
+	int threshold = 200;
+
+	std::vector<Point> strokes;
+	std::vector<Point> nob;
+	std::vector<float> diff(w*h);
+	// float* diff = new float[w*h ];
+	// memset(diff, 0, w*h);
+	for(int i = 0; i<w; i++)
+	{
+		for(int j = 0; j<h; j++)
+		{
+			for(int c=0; c<3; c++)
+			{
+				diff[j*w + i] += pow(canvas[(j*w + i) * 3 + c] - ref[(j*w + i) * 3 + c], 2);
+			}
+			diff[j*w + i] = sqrt(diff[j*w + i]);
+		}
+	}
+
+	for(int x=0; x<w; x+=grid)
+	{
+		for(int y=0; y<h; y+=grid)
+		{
+			//cal area sum
+			float sumError = 0;
+			Point argMax(x,y);
+			float error = diff[y*w + x];
+			int gridSum = 0;
+			for(int a = max(x-grid/2,0); a<x+grid/2 && a<w; a++)
+			{
+				for (int b = max(y - grid / 2,0); b < y + grid / 2 && b<h; b++)
+				{
+					float e = diff[b*w + a];
+					sumError += e;
+					gridSum++;
+					if(e>error)
+					{
+						argMax = Point(a, b);
+						error = e;
+
+					}
+				}
+			}
+			sumError /= gridSum;
+
+			if(sumError > threshold)
+			{
+				// std::vector<Point>s = makeStrokes(r, x, y, ref, w);
+				strokes.push_back(argMax);
+			}else
+			{
+				nob.push_back(argMax);
+			}
+		}
+	}
+
+	std::random_shuffle(strokes.begin(), strokes.end());
+	std::random_shuffle(nob.begin(), nob.end());
+	int sizeOriginal = m_pDoc->getSize();
+	for(auto&& p:strokes)
+	{
+		// for(auto&& p:s)
+		// {
+		m_pDoc->m_pUI->setSize(r);
+		m_pDoc->m_pCurrentBrush->BrushBegin(p, p);
+		m_pDoc->m_pCurrentBrush->BrushEnd(p, p);
+		// }
+	}
+	m_pDoc->m_pUI->setSize(sizeOriginal);
+	glFlush();
+	SaveCurrentContent();
+	memcpy(canvas, m_pDoc->m_ucPainting, w*h * 3);
+
+	// delete[] diff;
 }

@@ -39,6 +39,7 @@ public:
 	void kernelHelper(unsigned char* before, unsigned char* target, const std::vector<std::vector<float>>& kernel, int w, int h, bool
 	                  isNormalized);
 
+	void paintLayer(unsigned char* canvas, unsigned char* ref, int r);
 	void painterly();
 
 	ImpressionistDoc *m_pDoc;

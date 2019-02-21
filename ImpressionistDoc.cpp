@@ -103,6 +103,7 @@ void ImpressionistDoc::swapContent()
 	unsigned char* temp = m_ucPainting;
 	m_ucPainting = m_ucBitmap;
 	m_ucBitmap = temp;
+	m_ucOriginal = temp;
 	m_pUI->m_origView->refresh();
 	m_pUI->m_paintView->refresh();
 }
