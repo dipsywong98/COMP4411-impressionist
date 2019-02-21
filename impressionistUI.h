@@ -60,6 +60,15 @@ public:
 
 	//for painterly
 	Fl_Window*			m_painterlyDialog;
+	Fl_Slider*			m_painterlyThresholdSlider;
+	Fl_Slider*			m_painterlyCurvatureSlider;
+	Fl_Slider*			m_painterlyBlurSlider;
+	Fl_Slider*			m_painterlyGridSizeSlider;
+	Fl_Slider*			m_painterlyMinStrokeSlider;
+	Fl_Slider*			m_painterlyMaxStrokeSlider;
+	Fl_Slider*			m_painterlyAlphaSlider;
+	Fl_Slider*			m_painterlyLayersSlider;
+	Fl_Slider*			m_painterlyR0Slider;
 	Fl_Button*          m_painterlyButton;
 
 	// Member functions
@@ -108,6 +117,17 @@ private:
 	bool parseKernel();	//return total
 	bool m_IsNormalizedKernel = false;
 
+	// painterly attributes
+	int m_painterlyThreshold = 100;
+	double m_painterlyCurvature = 1;
+	double m_painterlyBlur = 0.5;
+	double m_painterlyGridSize = 1;
+	int m_painterlyMinStroke = 4;
+	int m_painterlyMaxStroke = 16;
+	double m_painterlyAlpha = 1;
+	int m_painterlyLayers = 3;
+	int m_painterlyR0 = 3;
+
 private:
 	// Static class members
 	static Fl_Menu_Item		menuitems[];
@@ -152,7 +172,18 @@ private:
 	static void	cb_edit_kernel(Fl_Widget* o, void* v);
 	static void	cb_apply_kernel(Fl_Widget* o, void* v);
 	static void	cb_normalize_kernel(Fl_Widget* o, void* v);
+
+	//painterly callback functions
 	static void	cb_painterly_paint(Fl_Widget* o, void* v);
+	static void	cb_painterly_threshold(Fl_Widget* o, void* v);
+	static void	cb_painterly_curvature(Fl_Widget* o, void* v);
+	static void	cb_painterly_blur(Fl_Widget* o, void* v);
+	static void	cb_painterly_grid_size(Fl_Widget* o, void* v);
+	static void	cb_painterly_min_stroke(Fl_Widget* o, void* v);
+	static void	cb_painterly_max_stroke(Fl_Widget* o, void* v);
+	static void	cb_painterly_alpha(Fl_Widget* o, void* v);
+	static void	cb_painterly_layers(Fl_Widget* o, void* v);
+	static void	cb_painterly_r0(Fl_Widget* o, void* v);
 };
 
 #endif
