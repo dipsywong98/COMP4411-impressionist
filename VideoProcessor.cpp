@@ -2,6 +2,7 @@
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
 #include "bitmap.h"
+#include <regex>
 
 VideoProcessor* VideoProcessor::singletonPtr = nullptr;
 ImpressionistUI* VideoProcessor::uiPtr = nullptr;
@@ -22,8 +23,54 @@ VideoProcessor::VideoProcessor()
 	AVIFileInit();  // Must be called to use AVI library
 }
 
+void VideoProcessor::saveImage()
+{
+	//Save image to stream
+	reverseMapColor(docPtr->m_ucPainting, bmpInfo.biWidth, bmpInfo.biHeight, cinepak_color_mapping);
+	repackBmp(docPtr->m_ucPainting, bmpInfo.biWidth, bmpInfo.biHeight, padding.pad);
+
+	AVICOMPRESSOPTIONS compressionOptions = {
+		streamtypeVIDEO,
+		mmioFOURCC('c', 'v', 'i', 'd'),
+		0,
+		100,
+		0,
+		AVICOMPRESSF_VALID,
+		&bmpInfo,
+		sizeof(BITMAPINFOHEADER),
+		nullptr,
+		0,
+		0
+	};
+
+	errorCode = AVIStreamWrite(aviCStreamPtr, streamStartingIndex + frameIndex, 1, docPtr->m_ucPainting, byteLength, 0, nullptr, nullptr);
+
+	if (errorCode == AVIERR_UNSUPPORTED)
+	{
+		fl_alert("Compression method unsupported. But this should never happen.");
+		close();
+	}
+	else if (errorCode == AVIERR_NOCOMPRESSOR)
+	{
+		fl_alert("A suitable compressor cannot be found.");
+		close();
+	}
+	else if (errorCode != AVIERR_OK)
+	{
+		fl_alert("Cannot write data to stream.");
+		close();
+	}
+
+	frameIndex++;
+	next();
+}
+
 void VideoProcessor::openVideoFromUser()
 {
+	// ICINFO info{};
+	//
+	// ICInfo(streamtypeVIDEO, mmioFOURCC('C', 'V', 'I', 'D'), &info);
+
 	auto* path = fl_file_chooser("Open AVI", "*.avi", "");
 
 	if (path == nullptr)
@@ -66,6 +113,14 @@ void VideoProcessor::cbPreparation(Fl_Widget* o)
 	selfPtr->openVideoFromUser();
 }
 
+void VideoProcessor::continueWriteStream()
+{
+	if (uiPtr && docPtr)
+	{
+		getInstancePtr()->saveImage();
+	}
+}
+
 VideoProcessor::~VideoProcessor()
 {
 	close();
@@ -75,15 +130,26 @@ VideoProcessor::~VideoProcessor()
 
 bool VideoProcessor::openFile(const std::string& filename)
 {
-	errorCode = AVIFileOpen(&aviPtr, filename.c_str(), OF_READ, nullptr);
+	const auto& newFilename = std::regex_replace(filename, std::regex("\\.avi"), "_new.avi");;
+
+	// const bool copySucceeded = CopyFile(filename.c_str(), newFilename.c_str(), false);
+	//
+	// if (!copySucceeded)
+	// {
+	// 	fl_alert("Save file cannot be copied.");
+	// }
+
+	errorCode = AVIFileOpen(&aviReadPtr, filename.c_str(), OF_READ, nullptr);
+	errorCode = AVIFileOpen(&aviPtr, newFilename.c_str(), OF_CREATE|OF_WRITE, nullptr);
 
 	if (errorCode != AVIERR_OK)
 	{
+		AVIFileRelease(aviReadPtr);
 		AVIFileRelease(aviPtr);
 	}
 	else
 	{
-		AVIFileInfo(aviPtr, &aviInfo, sizeof(AVIFILEINFO));
+		AVIFileInfo(aviReadPtr, &aviInfo, sizeof(AVIFILEINFO));
 	}
 
 	return errorCode;
@@ -91,15 +157,16 @@ bool VideoProcessor::openFile(const std::string& filename)
 
 bool VideoProcessor::startStream()
 {
-	errorCode = AVIFileGetStream(aviPtr, &aviStreamPtr, streamtypeVIDEO, 0);
+	errorCode = AVIFileGetStream(aviReadPtr, &aviReadStreamPtr, streamtypeVIDEO, 0);
 
 	if (errorCode != AVIERR_OK)
 	{
+		fl_alert("Unable to get stream from video.");
 		close();
 	}
 
-	streamStartingIndex = AVIStreamStart(aviStreamPtr);
-	totalFrames = AVIStreamLength(aviStreamPtr);
+	streamStartingIndex = AVIStreamStart(aviReadStreamPtr);
+	totalFrames = AVIStreamLength(aviReadStreamPtr);
 
 	if (streamStartingIndex == -1 || totalFrames == -1)
 	{
@@ -108,7 +175,36 @@ bool VideoProcessor::startStream()
 		errorCode = -1;
 	}
 
-	getFramePtr = AVIStreamGetFrameOpen(aviStreamPtr, nullptr); //Prepares to get frame
+	// auto fourcc = mmioFOURCC('c', 'v', 'i', 'd');  //Cinepak video codec
+
+	AVISTREAMINFO info;
+
+	AVIStreamInfo(aviReadStreamPtr, &info, sizeof(AVISTREAMINFO));
+
+	// info.fccType = ICTYPE_VIDEO;
+	info.dwQuality = 10000;
+	info.fccHandler = mmioFOURCC('c','v','i','d');
+	info.dwLength = 0;
+
+	errorCode = AVIFileCreateStream(aviPtr, &aviStreamPtr, &info);
+
+	AVICOMPRESSOPTIONS compressOptions{};
+
+	ZeroMemory(&compressOptions, sizeof(AVICOMPRESSOPTIONS));
+	compressOptions.fccType = streamtypeVIDEO;
+	compressOptions.fccHandler = info.fccHandler;
+	compressOptions.dwFlags = AVICOMPRESSF_KEYFRAMES | AVICOMPRESSF_VALID;
+	compressOptions.dwKeyFrameEvery = 1;
+
+	errorCode = AVIMakeCompressedStream(&aviCStreamPtr, aviStreamPtr, &compressOptions, nullptr);
+
+	if (errorCode)
+	{
+		fl_alert("Codec unsupported.");
+		return E_FAIL;
+	}
+
+	getFramePtr = AVIStreamGetFrameOpen(aviReadStreamPtr, nullptr); //Prepares to get frame
 
 	if (getFramePtr == nullptr)
 	{
@@ -140,25 +236,26 @@ void VideoProcessor::next()
 
 	bitmapDibPtr = static_cast<BYTE*>(AVIStreamGetFrame(getFramePtr, streamStartingIndex + frameIndex));
 
-	frameIndex++;
-
 	//Process bitmap DIB
-	BITMAPINFOHEADER bitmapInfoHeader{};
-	memcpy(&bitmapInfoHeader.biSize, bitmapDibPtr, sizeof(BITMAPINFOHEADER));
+	memcpy(&bmpInfo.biSize, bitmapDibPtr, sizeof(BITMAPINFOHEADER));
+
+	if (!hasSetFormat)
+	{
+		AVIStreamSetFormat(aviCStreamPtr, 0, &bmpInfo, bmpInfo.biSize);
+	}
 
 	const auto offset = sizeof(BITMAPINFOHEADER) + sizeof(BITMAPFILEHEADER);
-	const auto padding = calculatePadding(bitmapInfoHeader.biWidth);
-	const auto byteLength = bitmapInfoHeader.biHeight * padding.padWidth;
+	padding = calculatePadding(bmpInfo.biWidth);
+	byteLength = bmpInfo.biHeight * padding.padWidth;
 
-	delete[] imageDataPtr;
-	imageDataPtr = new unsigned char[padding.padWidth * bitmapInfoHeader.biHeight];
+	imageDataPtr = new unsigned char[padding.padWidth * bmpInfo.biHeight];  //Entrusts this array is deleted by ImpressionistDoc
 	memcpy(imageDataPtr, bitmapDibPtr + offset, byteLength);
 
-	mapColor(imageDataPtr, bitmapInfoHeader.biWidth, bitmapInfoHeader.biHeight, padding.pad, cinepak_color_mapping);
+	mapColor(imageDataPtr, bmpInfo.biWidth, bmpInfo.biHeight, padding.pad, cinepak_color_mapping);
 
 	if (docPtr != nullptr)
 	{
-		docPtr->loadImageFromData(imageDataPtr, bitmapInfoHeader.biWidth, bitmapInfoHeader.biHeight);
+		docPtr->loadImageFromData(imageDataPtr, bmpInfo.biWidth, bmpInfo.biHeight);
 	}
 	else
 	{
@@ -167,18 +264,12 @@ void VideoProcessor::next()
 
 	perImageFunction(nullptr);
 
-	//Save image to stream
-	reverseMapColor(imageDataPtr, bitmapInfoHeader.biWidth, bitmapInfoHeader.biHeight, cinepak_color_mapping);
-	repackBmp(imageDataPtr, bitmapInfoHeader.biWidth, bitmapInfoHeader.biHeight, padding.pad);
-
-	memcpy(bitmapDibPtr + offset, imageDataPtr, byteLength);
-
-
+	
 }
 
 bool VideoProcessor::isEnded() const
 {
-	if (aviStreamPtr != nullptr)
+	if (aviReadStreamPtr != nullptr)
 	{
 		return frameIndex + streamStartingIndex >= totalFrames;
 	}
@@ -192,6 +283,10 @@ void VideoProcessor::close()
 	{
 		AVIStreamGetFrameClose(getFramePtr);
 	}
+	if (aviCStreamPtr != nullptr)
+	{
+		AVIStreamRelease(aviCStreamPtr);
+	}
 	if (aviStreamPtr != nullptr)
 	{
 		AVIStreamRelease(aviStreamPtr);
@@ -200,9 +295,19 @@ void VideoProcessor::close()
 	{
 		AVIFileRelease(aviPtr);
 	}
+	if (aviReadStreamPtr != nullptr)
+	{
+		AVIStreamRelease(aviReadStreamPtr);
+	}
+	if (aviReadPtr != nullptr)
+	{
+		AVIFileRelease(aviReadPtr);
+	}
 
 	aviPtr = nullptr;
 	aviStreamPtr = nullptr;
+	aviReadPtr = nullptr;
+	aviReadStreamPtr = nullptr;
 	getFramePtr = nullptr;
 }
 

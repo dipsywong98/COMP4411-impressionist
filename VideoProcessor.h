@@ -5,6 +5,7 @@
 #include <string>
 #include <functional>
 #include "impressionistUI.h"
+#include "bitmap.h"
 
 class Fl_Widget;
 
@@ -82,12 +83,28 @@ public:
 	/**
 	 * AVI buffer pointer from the opened file.
 	 */
+	PAVIFILE aviReadPtr = nullptr;
+
+	/**
+	 * AVI stream pointer within the opened file.
+	 */
+	PAVISTREAM aviReadStreamPtr = nullptr;
+
+	/**
+	 * AVI buffer pointer from the opened file.
+	 */
 	PAVIFILE aviPtr = nullptr;
 
 	/**
 	 * AVI stream pointer within the opened file.
 	 */
 	PAVISTREAM aviStreamPtr = nullptr;
+	/**
+	 * AVI stream pointer within the opened file.
+	 */
+	PAVISTREAM aviCStreamPtr = nullptr;
+
+	bool hasSetFormat = false;
 
 	/**
 	 * Reading position of the stream
@@ -105,6 +122,8 @@ public:
 	static ImpressionistUI* uiPtr;
 	static ImpressionistDoc* docPtr;
 
+	static void continueWriteStream();
+
 	~VideoProcessor();
 
 private:
@@ -112,6 +131,9 @@ private:
 
 	static VideoProcessor* singletonPtr;
 
+	BITMAPINFOHEADER bmpInfo{};
+	PADDING padding;
+	unsigned long byteLength;
 	std::function<void(void*)> perImageFunction = [&](void*){};
 	HRESULT errorCode = 0;
 	long int streamStartingIndex = 0;
@@ -119,5 +141,7 @@ private:
 	PGETFRAME getFramePtr = nullptr;
 	BYTE* bitmapDibPtr = nullptr;
 	unsigned char* imageDataPtr = nullptr;
+
+	void saveImage();
 };
 
