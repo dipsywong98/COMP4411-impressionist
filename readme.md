@@ -39,5 +39,5 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
 - [ ] _(2B)_ stretch and pull image http://mostfungames.com/warp-george-bush.htm
 - [ ] _(2B)_ curved brush that follows image gradient http://mrl.nyu.edu/projects/npr/painterly/
 - [ ] <u>(4B)</u> thumbnailhttp://www.cs.princeton.edu/~af/cool/webgothic.html
-- [ ] <u>(4B)</u> video
+- [x] <u>(4B)</u> video
 - [ ] <u>(8B)</u> Bayesian matting
