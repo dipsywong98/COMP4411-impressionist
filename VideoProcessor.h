@@ -27,6 +27,11 @@ public:
 	static void destroy();
 
 	/**
+	 * Returns whether the file is read completely
+	 */
+	static bool isEnded();
+
+	/**
 	 * Initialize the user interaction of opening the dialog and prepare to read the video.
 	 */
 	void openVideoFromUser();
@@ -56,19 +61,9 @@ public:
 	void setManipulationMethod(const std::function<void(void*)>& callbackFunction);
 
 	/**
-	 * Initialize the process of reading the video: processing frame by frame and saves the results to a local buffer.
-	 */
-	void process() const;
-
-	/**
 	 * Continues with the processing when one image is done.
 	 */
 	void next();
-
-	/**
-	 * Returns whether the file is read completely
-	 */
-	bool isEnded() const;
 
 	/**
 	 * Close all opened file and stream.

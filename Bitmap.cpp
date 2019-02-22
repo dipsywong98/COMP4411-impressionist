@@ -102,14 +102,15 @@ unsigned char* reverseMapColor(unsigned char* data, const long width, const long
 {
 	auto in = data;
 	auto out = data;
+
 	for (int j = 0; j < height; ++j)
 	{
 		for (int i = 0; i < width; ++i)
 		{
 			unsigned char colors[3] = { in[0], in[1], in[2] };
-			out[0] = colors[map.c0];
-			out[1] = colors[map.c1];
-			out[2] = colors[map.c2];
+			out[0] = colors[2];
+			out[1] = colors[1];
+			out[2] = colors[0];
 
 			in += 3;
 			out += 3;

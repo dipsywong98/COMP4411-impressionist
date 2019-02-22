@@ -12,8 +12,7 @@ std::function<void(void*)> VideoProcessor::methodAutoFill = [](void*)->void
 {
 	uiPtr->m_paintView->willAutoFill = true;
 	uiPtr->m_paintView->draw();
-	if (!getInstancePtr()->isEnded())
-		continueWriteStream();
+	continueWriteStream();
 };
 
 std::function<void(void*)> VideoProcessor::methodPaintly = [](void*)->void
@@ -118,7 +117,7 @@ void VideoProcessor::cbPreparation(Fl_Widget* o)
 
 void VideoProcessor::continueWriteStream()
 {
-	if (uiPtr && docPtr)
+	if (singletonPtr != nullptr && uiPtr && docPtr && !getInstancePtr()->isEnded())
 	{
 		getInstancePtr()->saveImage();
 	}
@@ -234,6 +233,7 @@ void VideoProcessor::next()
 	if (isEnded())
 	{
 		close();
+		destroy();
 		return;
 	}
 
@@ -270,11 +270,15 @@ void VideoProcessor::next()
 	
 }
 
-bool VideoProcessor::isEnded() const
+bool VideoProcessor::isEnded()
 {
-	if (aviReadStreamPtr != nullptr)
+	if (singletonPtr != nullptr)
 	{
-		return frameIndex + streamStartingIndex >= totalFrames;
+		const auto* selfPtr = getInstancePtr();
+		if (selfPtr->aviReadStreamPtr != nullptr)
+		{
+			return selfPtr->frameIndex + selfPtr->streamStartingIndex >= selfPtr->totalFrames;
+		}
 	}
 
 	return true;
@@ -308,6 +312,7 @@ void VideoProcessor::close()
 	}
 
 	aviPtr = nullptr;
+	aviCStreamPtr = nullptr;
 	aviStreamPtr = nullptr;
 	aviReadPtr = nullptr;
 	aviReadStreamPtr = nullptr;
@@ -327,4 +332,5 @@ VideoProcessor* VideoProcessor::getInstancePtr()
 void VideoProcessor::destroy()
 {
 	delete singletonPtr;
+	singletonPtr = nullptr;
 }
