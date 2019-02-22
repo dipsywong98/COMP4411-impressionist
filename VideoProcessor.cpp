@@ -10,7 +10,10 @@ ImpressionistDoc* VideoProcessor::docPtr = nullptr;
 
 std::function<void(void*)> VideoProcessor::methodAutoFill = [](void*)->void
 {
-	docPtr->autoFill();
+	uiPtr->m_paintView->willAutoFill = true;
+	uiPtr->m_paintView->draw();
+	if (!getInstancePtr()->isEnded())
+		continueWriteStream();
 };
 
 std::function<void(void*)> VideoProcessor::methodPaintly = [](void*)->void
@@ -201,7 +204,7 @@ bool VideoProcessor::startStream()
 	if (errorCode)
 	{
 		fl_alert("Codec unsupported.");
-		return E_FAIL;
+		return errorCode;
 	}
 
 	getFramePtr = AVIStreamGetFrameOpen(aviReadStreamPtr, nullptr); //Prepares to get frame
