@@ -541,6 +541,11 @@ void ImpressionistUI::cb_normalize_kernel(Fl_Widget* o, void* v)
 	// pUI->m_KernelInput->value(pUI->m_KernelStr);
 }
 
+void ImpressionistUI::cb_open_colors_dialog(Fl_Widget* o, void* v)
+{
+	whoami(dynamic_cast<Fl_Menu_*>(o))->m_colorPickerDialog->show();
+}
+
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -656,7 +661,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 		{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes }, 
 		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
-		
+		{"Colors...", FL_ALT + 'k', cb_open_colors_dialog, nullptr, FL_MENU_DIVIDER},
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
 	{"&Display",0,0,0,FL_SUBMENU},
@@ -882,4 +887,10 @@ ImpressionistUI::ImpressionistUI() {
 
     m_brushDialog->end();	
 
+	m_colorPickerDialog = new Fl_Window(380, 300, "Colors...");
+	{
+		m_colorChooser = new Fl_Color_Chooser(0, 0, 380, 300, "Color Blending");
+		m_colorChooser->rgb(1.0, 1.0, 1.0);
+	}
+	m_colorPickerDialog->end();
 }

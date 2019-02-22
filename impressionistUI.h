@@ -7,16 +7,14 @@
 #ifndef ImpressionistUI_h
 #define ImpressionistUI_h
 
-#include <FL/Fl.H>
 #include <FL/Fl_Window.H>
-#include <FL/fl_file_chooser.H>		// FLTK file chooser
+#include <FL/Fl_File_Chooser.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Value_Slider.H>
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Button.H>
-#include <FL/Fl_Light_Button.H>
+#include <FL/Fl_Color_Chooser.H>
 
-#include "Impressionist.h"
 #include "OriginalView.h"
 #include "PaintView.h"
 
@@ -57,6 +55,9 @@ public:
 	Fl_Button*			m_KernelApplyButton;
 	Fl_Check_Button*			m_KernelNormalizeButton;
 	char* m_KernelStr;
+
+	Fl_Window*			m_colorPickerDialog;
+	Fl_Color_Chooser*	m_colorChooser;
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -147,6 +148,7 @@ private:
 	static void	cb_edit_kernel(Fl_Widget* o, void* v);
 	static void	cb_apply_kernel(Fl_Widget* o, void* v);
 	static void	cb_normalize_kernel(Fl_Widget* o, void* v);
+	static Fl_Callback cb_open_colors_dialog;
 };
 
 #endif
