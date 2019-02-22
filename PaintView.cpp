@@ -395,11 +395,19 @@ void PaintView::painterly()
 	const int w = m_pDoc->m_nWidth;
 	const int h = m_pDoc->m_nHeight;
 	// fl_alert("yo painterly!");
-	std::vector<int> radii = { 18,15,10 };
+	// std::vector<int> radii = { 18,15,10 };
 	// const std::vector<std::vector<float>>& GaussianBlur = {
 	// 	{
 	// 		
 	// 	}}
+	int r0 = m_pDoc->m_pUI->m_painterlyR0;
+	int layers = m_pDoc->m_pUI->m_painterlyLayers;
+	std::vector<int> radii;
+	for(int i=0; i<layers; i++)
+	{
+		radii.push_back(pow(2, r0));
+		r0 = max(0, r0 - 1);
+	}
 	unsigned char* canvas = new unsigned char[w*h * 3];
 	memset(canvas, 255, w*h * 3);
 	for(int r: radii)

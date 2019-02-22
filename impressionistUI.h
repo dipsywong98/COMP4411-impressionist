@@ -118,6 +118,7 @@ private:
 	bool m_IsNormalizedKernel = false;
 
 	// painterly attributes
+public:
 	int m_painterlyThreshold = 100;
 	double m_painterlyCurvature = 1;
 	double m_painterlyBlur = 0.5;
