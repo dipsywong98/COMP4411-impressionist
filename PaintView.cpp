@@ -409,6 +409,10 @@ void PaintView::painterly()
 		r0 = max(0, r0 - 1);
 	}
 	unsigned char* canvas = new unsigned char[w*h * 3];
+	// for (int i = 0; i<w*h; i++)
+	// {
+	// 	canvas[i] = m_pDoc->m_ucOriginal[i] + 128 % 256;
+	// }
 	memset(canvas, 255, w*h * 3);
 	for(int r: radii)
 	{
@@ -426,8 +430,8 @@ void PaintView::paintLayer(unsigned char* canvas, unsigned char* ref, int r)
 {
 	const int w = m_pDoc->m_nWidth;
 	const int h = m_pDoc->m_nHeight;
-	int grid= m_pDoc->getSize();
-	int threshold = 200;
+	int grid= r * m_pDoc->m_pUI->m_painterlyGridSize;
+	int threshold = m_pDoc->m_pUI->m_painterlyThreshold;
 
 	std::vector<Point> strokes;
 	std::vector<Point> nob;
@@ -452,8 +456,8 @@ void PaintView::paintLayer(unsigned char* canvas, unsigned char* ref, int r)
 		{
 			//cal area sum
 			float sumError = 0;
-			Point argMax(x,y);
-			float error = diff[y*w + x];
+			Point argMax(0,0);
+			float error = -1;
 			int gridSum = 0;
 			for(int a = max(x-grid/2,0); a<x+grid/2 && a<w; a++)
 			{
