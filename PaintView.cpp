@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include "VideoProcessor.h"
 
 
 extern double randAlter(double, double);
@@ -164,6 +165,8 @@ void PaintView::draw()
 		SaveCurrentContent();
 		// RestoreContent();
 	}
+
+	VideoProcessor::continueWriteStream();
 }
 
 void PaintView::prepareAutoFill()

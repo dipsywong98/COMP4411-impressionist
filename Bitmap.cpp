@@ -13,7 +13,10 @@
 #include "bitmap.h"
  
 BMP_BITMAPFILEHEADER bmfh; 
-BMP_BITMAPINFOHEADER bmih; 
+BMP_BITMAPINFOHEADER bmih;
+
+DIB_COLOR_MAPPING bmp_color_mapping{ 2, 1, 0 };
+DIB_COLOR_MAPPING cinepak_color_mapping{ 0, 2, 1 };
 
 // Bitmap data returned is (R,G,B) tuples in row-major order.
 unsigned char* readBMP(char*	fname, 
@@ -51,16 +54,10 @@ unsigned char* readBMP(char*	fname,
 	fseek( file, pos, SEEK_SET ); 
  
 	width = bmih.biWidth; 
-	height = bmih.biHeight; 
- 
-	int padWidth = width * 3; 
-	int pad = 0; 
-	if ( padWidth % 4 != 0 ) 
-	{ 
-		pad = 4 - (padWidth % 4); 
-		padWidth += pad; 
-	} 
-	int bytes = height*padWidth; 
+	height = bmih.biHeight;
+
+	const auto padding = calculatePadding(width);
+	const auto bytes = height * padding.padWidth;
  
 	unsigned char *data = new unsigned char [bytes]; 
 
@@ -73,34 +70,102 @@ unsigned char* readBMP(char*	fname,
 
 	fclose( file );
 	
-	// shuffle bitmap data such that it is (R,G,B) tuples in row-major order
-	int i, j;
-	j = 0;
-	unsigned char temp;
-	unsigned char* in;
-	unsigned char* out;
+	mapColor(data, width, height, padding.pad, bmp_color_mapping);
+			  
+	return data; 
+}
 
-	in = data;
-	out = data;
+unsigned char* mapColor(unsigned char* data, const long int width, const long int height, const long int pad, const DIB_COLOR_MAPPING map)
+{
+	auto in = data;
+	auto out = data;
 
-	for ( j = 0; j < height; ++j )
+	for (auto j = 0; j < height; ++j)
 	{
-		for ( i = 0; i < width; ++i )
+		for (auto i = 0; i < width; ++i)
 		{
-			out[1] = in[1];
-			temp = in[2];
-			out[2] = in[0];
-			out[0] = temp;
+			unsigned char colors[3] = { in[0], in[1], in[2] };
+			out[0] = colors[map.c0];
+			out[1] = colors[map.c1];
+			out[2] = colors[map.c2];
 
 			in += 3;
 			out += 3;
 		}
 		in += pad;
 	}
-			  
-	return data; 
-} 
- 
+
+	return data;
+}
+
+unsigned char* reverseMapColor(unsigned char* data, const long width, const long height, const DIB_COLOR_MAPPING map)
+{
+	auto in = data;
+	auto out = data;
+
+	for (int j = 0; j < height; ++j)
+	{
+		for (int i = 0; i < width; ++i)
+		{
+			unsigned char colors[3] = { in[0], in[1], in[2] };
+			out[0] = colors[2];
+			out[1] = colors[1];
+			out[2] = colors[0];
+
+			in += 3;
+			out += 3;
+		}
+	}
+
+	return data;
+}
+
+unsigned char* repackBmp(unsigned char* data, const long width, const long height, const long pad)
+{
+	const auto padding = calculatePadding(width);
+	const auto tLength = height * padding.padWidth;
+
+	auto *t = new unsigned char[tLength];
+	memcpy(t, data, tLength);
+
+	auto in = t;
+	auto out = data;
+	for (auto j = 0; j < height; ++j)
+	{
+		for (auto i = 0; i < width; ++i)
+		{
+			out[0] = in[0];
+			out[1] = in[1];
+			out[2] = in[2];
+
+			in += 3;
+			out += 3;
+		}
+		for(auto i = 0; i < pad; i++)
+		{
+			out[i] = 0;
+		}
+		out += pad;
+	}
+
+	delete[] t;
+
+	return data;
+}
+
+PADDING calculatePadding(long width)
+{
+	int padWidth = width * 3;
+	int pad = 0;
+	if (padWidth % 4 != 0)
+	{
+		pad = 4 - (padWidth % 4);
+		padWidth += pad;
+	}
+
+	return {pad, padWidth};
+}
+
 void writeBMP(char*				iname,
 			  int				width, 
 			  int				height, 
@@ -143,20 +208,13 @@ void writeBMP(char*				iname,
 	fwrite(&bmih, sizeof(BMP_BITMAPINFOHEADER), 1, outFile); 
 
 	bytes /= height;
-	unsigned char* scanline = new unsigned char [bytes];
-	for ( int j = 0; j < height; ++j )
+
+	reverseMapColor(data, width, height, bmp_color_mapping);
+	for (int j = 0; j < height; ++j)
 	{
-		memcpy( scanline, data + j*3*width, bytes );
-		for ( int i = 0; i < width; ++i )
-		{
-			unsigned char temp = scanline[i*3];
-			scanline[i*3] = scanline[i*3+2];
-			scanline[i*3+2] = temp;
-		}
-		fwrite( scanline, bytes, 1, outFile);
+		fwrite(data + j * 3 * width, bytes, 1, outFile);
 	}
 
-	delete [] scanline;
 
 	fclose(outFile);
 } 

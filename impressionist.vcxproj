@@ -93,7 +93,7 @@
       <IgnoreSpecificDefaultLibraries>libcmtd;libcd;libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <OutputFile>.\Debug\impressionist.exe</OutputFile>
       <AdditionalLibraryDirectories>local/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>fltkd.lib;fltkgld.lib;wsock32.lib;opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fltkd.lib;fltkgld.lib;wsock32.lib;opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;Vfw32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -153,6 +153,7 @@
     <ClCompile Include="ScatteredCircleBrush.cpp" />
     <ClCompile Include="ScatteredLineBrush.cpp" />
     <ClCompile Include="ScatteredPointBrush.cpp" />
+    <ClCompile Include="VideoProcessor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlphaMapBrush.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="ScatteredCircleBrush.h" />
     <ClInclude Include="ScatteredLineBrush.h" />
     <ClInclude Include="ScatteredPointBrush.h" />
+    <ClInclude Include="VideoProcessor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

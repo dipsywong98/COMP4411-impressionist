@@ -12,6 +12,7 @@
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
 #include <sstream>
+#include "VideoProcessor.h"
 
 /*
 //------------------------------ Widget Examples -------------------------------------------------
@@ -670,6 +671,8 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{"&Load Another Img", FL_ALT +'l', (Fl_Callback*)ImpressionistUI::cb_load_another_image },
 		{"&Load Mural Img", FL_ALT +'m', (Fl_Callback*)ImpressionistUI::cb_load_mural_image },
 		{"&Load Alpha Map Img", FL_ALT +'a', (Fl_Callback*)ImpressionistUI::cb_load_alpha_map_image },
+		{"Video Auto-Fill", 0, VideoProcessor::cbVideoAutoFill},
+		{"Video Paintly", 0, VideoProcessor::cbVideoPaintly},
 		{ 0 },
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
 		{ "&About",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about },
