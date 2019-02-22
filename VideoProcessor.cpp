@@ -28,8 +28,11 @@ VideoProcessor::VideoProcessor()
 void VideoProcessor::saveImage()
 {
 	//Save image to stream
-	reverseMapColor(docPtr->m_ucPainting, bmpInfo.biWidth, bmpInfo.biHeight, cinepak_color_mapping);
-	repackBmp(docPtr->m_ucPainting, bmpInfo.biWidth, bmpInfo.biHeight, padding.pad);
+	auto *t = new unsigned char[byteLength];
+	memcpy(t, docPtr->m_ucPainting, byteLength);
+
+	reverseMapColor(t, bmpInfo.biWidth, bmpInfo.biHeight, cinepak_color_mapping);
+	repackBmp(t, bmpInfo.biWidth, bmpInfo.biHeight, padding.pad);
 
 	AVICOMPRESSOPTIONS compressionOptions = {
 		streamtypeVIDEO,
@@ -45,7 +48,9 @@ void VideoProcessor::saveImage()
 		0
 	};
 
-	errorCode = AVIStreamWrite(aviCStreamPtr, streamStartingIndex + frameIndex, 1, docPtr->m_ucPainting, byteLength, 0, nullptr, nullptr);
+	errorCode = AVIStreamWrite(aviCStreamPtr, streamStartingIndex + frameIndex, 1, t, byteLength, 0, nullptr, nullptr);
+
+	delete[] t;
 
 	if (errorCode == AVIERR_UNSUPPORTED)
 	{
@@ -177,13 +182,10 @@ bool VideoProcessor::startStream()
 		errorCode = -1;
 	}
 
-	// auto fourcc = mmioFOURCC('c', 'v', 'i', 'd');  //Cinepak video codec
-
 	AVISTREAMINFO info;
 
 	AVIStreamInfo(aviReadStreamPtr, &info, sizeof(AVISTREAMINFO));
 
-	// info.fccType = ICTYPE_VIDEO;
 	info.dwQuality = 10000;
 	info.fccHandler = mmioFOURCC('c','v','i','d');
 	info.dwLength = 0;
