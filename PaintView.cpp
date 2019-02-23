@@ -144,7 +144,6 @@ void PaintView::draw()
 			break;
 		}
 	}
-
 	if(willAutoFill)
 	{
 		autoFill();
@@ -155,6 +154,15 @@ void PaintView::draw()
 		painterly();
 		willPainterly = false;
 		willSave = true;
+	} else
+	{
+		// for debugging purpose
+		// Point source(coord.x + m_nStartCol, m_nEndRow - coord.y);
+		// Point target(coord.x, m_nWindowHeight - coord.y);
+		// if(source.x>=0 && source.y>=0 && source.x <= m_nWindowWidth-1 && source.y <= m_nWindowHeight)
+		// {
+		// 	m_pDoc->m_pCurrentBrush->BrushMove(source, target);
+		// }
 	}
 
 

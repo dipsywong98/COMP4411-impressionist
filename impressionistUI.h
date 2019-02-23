@@ -55,6 +55,7 @@ public:
 	Fl_Button*			m_KernelApplyButton;
 	Fl_Check_Button*			m_KernelNormalizeButton;
 	char* m_KernelStr;
+	Fl_Slider*			m_WarpStrengthSlider;
 
 
 	//for painterly
@@ -133,6 +134,8 @@ public:
 	int m_painterlyLayers = 3;
 	int m_painterlyR0 = 3;
 
+	double m_warpStrength = 1;
+
 private:
 	// Static class members
 	static Fl_Menu_Item		menuitems[];
@@ -177,6 +180,7 @@ private:
 	static void	cb_edit_kernel(Fl_Widget* o, void* v);
 	static void	cb_apply_kernel(Fl_Widget* o, void* v);
 	static void	cb_normalize_kernel(Fl_Widget* o, void* v);
+	static void	cb_warpStrengthSlides(Fl_Widget* o, void* v);
 
 	//painterly callback functions
 	static void	cb_painterly_paint(Fl_Widget* o, void* v);

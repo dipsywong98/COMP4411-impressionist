@@ -549,6 +549,11 @@ void ImpressionistUI::cb_normalize_kernel(Fl_Widget* o, void* v)
 	// pUI->m_KernelInput->value(pUI->m_KernelStr);
 }
 
+void ImpressionistUI::cb_warpStrengthSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_warpStrength = double(((Fl_Slider *)o)->value());
+}
+
 
 void ImpressionistUI::cb_painterly_paint(Fl_Widget* o, void* v)
 {
@@ -812,7 +817,7 @@ ImpressionistUI::ImpressionistUI() {
 	m_Alpha = 1;
 
 	// brush dialog definition
-	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
+	m_brushDialog = new Fl_Window(400, 350, "Brush Dialog");
 		// Add a brush type choice to the dialog
 		m_BrushTypeChoice = new Fl_Choice(50,10,150,25,"&Brush");
 		m_BrushTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
@@ -836,7 +841,7 @@ ImpressionistUI::ImpressionistUI() {
         m_BrushSizeSlider->labelfont(FL_COURIER);
         m_BrushSizeSlider->labelsize(12);
 		m_BrushSizeSlider->minimum(1);
-		m_BrushSizeSlider->maximum(40);
+		m_BrushSizeSlider->maximum(100);
 		m_BrushSizeSlider->step(1);
 		m_BrushSizeSlider->value(m_nSize);
 		m_BrushSizeSlider->align(FL_ALIGN_RIGHT);
@@ -947,6 +952,18 @@ ImpressionistUI::ImpressionistUI() {
 		m_KernelNormalizeButton->user_data((void*)(this));
 		m_KernelNormalizeButton->value(m_IsNormalizedKernel);
 		m_KernelNormalizeButton->callback(cb_normalize_kernel);
+
+		m_WarpStrengthSlider = new Fl_Value_Slider(10, 300, 200, 20, "WarpStrength");
+		m_WarpStrengthSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_WarpStrengthSlider->type(FL_HOR_NICE_SLIDER);
+		m_WarpStrengthSlider->labelfont(FL_COURIER);
+		m_WarpStrengthSlider->labelsize(12);
+		m_WarpStrengthSlider->minimum(0);
+		m_WarpStrengthSlider->maximum(20);
+		m_WarpStrengthSlider->step(0.01);
+		m_WarpStrengthSlider->value(m_warpStrength);
+		m_WarpStrengthSlider->align(FL_ALIGN_RIGHT);
+		m_WarpStrengthSlider->callback(cb_warpStrengthSlides);
 
     m_brushDialog->end();	
 
