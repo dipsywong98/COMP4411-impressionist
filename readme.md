@@ -36,7 +36,7 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
   - [x] normalize
 - [x] _(2B)_ find edges
 - [x] _(2B)_ multiresolution automatic painting technique http://mrl.nyu.edu/projects/npr/painterly/
-- [ ] _(2B)_ stretch and pull image http://mostfungames.com/warp-george-bush.htm
+- [x] _(2B)_ stretch and pull image http://mostfungames.com/warp-george-bush.htm
 - [x] _(2B)_ curved brush that follows image gradient http://mrl.nyu.edu/projects/npr/painterly/
 - [ ] <u>(4B)</u> thumbnailhttp://www.cs.princeton.edu/~af/cool/webgothic.html
 - [x] <u>(4B)</u> video

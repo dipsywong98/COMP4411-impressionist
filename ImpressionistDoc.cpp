@@ -22,6 +22,7 @@
 #include <future>
 #include "AlphaMapBrush.h"
 #include "CurvedBrush.h"
+#include "WarpBrush.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -61,6 +62,8 @@ ImpressionistDoc::ImpressionistDoc()
 		= new AlphaMapBrush( this, "Alpha Map" );
 	ImpBrush::c_pBrushes[CURVED_BRUSH]
 		= new CurvedBrush( this, "Curved Brush" );
+	ImpBrush::c_pBrushes[WARP_BRUSH]
+		= new WarpBrush( this, "Warp Brush" );
 
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];

@@ -17,6 +17,7 @@
     <ClCompile Include="ScatteredLineBrush.cpp" />
     <ClCompile Include="ScatteredPointBrush.cpp" />
     <ClCompile Include="VideoProcessor.cpp" />
+    <ClCompile Include="WarpBrush.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlphaMapBrush.h" />
@@ -35,5 +36,6 @@
     <ClInclude Include="ScatteredLineBrush.h" />
     <ClInclude Include="ScatteredPointBrush.h" />
     <ClInclude Include="VideoProcessor.h" />
+    <ClInclude Include="WarpBrush.h" />
   </ItemGroup>
 </Project>
