@@ -2,6 +2,8 @@
 
 extern Point CalGradient(const Point source, const Point target, const std::function<GLubyte*(int, int)> getPixel);
 extern double degToRad(double);
+extern GLubyte* getColor(unsigned char* p, int xx, int yy, int w);
+extern float colorDist(unsigned char* p0, unsigned char* p1);
 
 CurvedBrush::CurvedBrush(ImpressionistDoc* pDoc, char* name) :
 	CircleBrush(pDoc, name)
@@ -43,34 +45,18 @@ void CurvedBrush::BrushBegin(int x0, int y0, int R, unsigned char* refImg, unsig
 	for(int i = 0; i< K.size(); i++)
 	{
 		Point pt = K[i];
-		glBegin(GL_POLYGON);
-
-		for (int i = 0; i < 360; i++)
-		{
-			double rad = degToRad(i);
-			glVertex2f(
-				static_cast<GLfloat>(pt.x) + cos(rad)*R / 2.f,
-				static_cast<GLfloat>(pt.y) + sin(rad)*R / 2.f
-			);
-		}
-
-		glEnd();
+		CircleBrush::DrawCircle(pt, R);
 
 		if(i+1<K.size())
 		{
 			Point pt1 = K[i + 1];
-			float t = atan2(pt1.y - pt.y, pt1.x - pt.x);
-			float dx = R*cos(t);
-			float dy = R*sin(t);
 			int x0 = pt.x, y0 = pt.y, x1 = pt1.x, y1 = pt1.y;
 			float d = sqrt(pow(x1 - x0, 2) + pow(y1 - y0, 2));
-			float Rx = dx*R / d, Ry = dy*R / d;
-			glBegin(GL_POLYGON);
-				glVertex2d(x0 + Ry, y0 - Rx);
-				glVertex2d(x1 + Ry, y1 - Rx);
-				glVertex2d(x1 - Ry, y1 + Rx);
-				glVertex2d(x0 - Ry, y0 + Rx);
-			glEnd();
+			float t = atan2(pt1.y - pt.y, pt1.x - pt.x);
+			for(int i=1; i<R; i++)
+			{
+				CircleBrush::DrawCircle(Point(x0+i*cos(t),y0+i*sin(t)), R);
+			}
 		}
 	}
 }
@@ -92,26 +78,25 @@ std::vector<Point> CurvedBrush::makeCurvedBrush(int x0, int y0, int R, unsigned 
 	const int w = pDoc->m_nWidth;
 	const int h = pDoc->m_nHeight;
 
-	std::function<GLubyte*(unsigned char*, int, int)> getColor = [&w](unsigned char* p,int xx, int yy)->GLubyte* {
-		return p + (yy*w + xx) * 3;
-	};
-
-	std::function<float(unsigned char*, unsigned char*)> colorDist = [](unsigned char* p0, unsigned char* p1)->float {
-		return sqrt(pow(p0[0] - p1[0], 2) + pow(p0[1] - p1[1], 2) + pow(p0[2] - p1[2], 2));
-	};
-
-	GLubyte* strokeColor = getColor(refImg, x0, y0);
+	GLubyte* strokeColor = getColor(refImg, x0, y0,w);
 	SetColor(strokeColor);
 
 	for (int i = 0; i < maxStrokeLength; i++) {
-		GLubyte* refColor = getColor(refImg, x, y);
-		GLubyte* canvasColor = getColor(canvas, x, y);
+		//detect out of boundary
+		if(x<0||y<0||x>=w||y>=h)
+		{
+			return K;
+		}
+
+
+		GLubyte* refColor = getColor(refImg, x, y,w);
+		GLubyte* canvasColor = getColor(canvas, x, y,w);
 		if (i > minStrokeLength && colorDist(refColor, canvasColor) < colorDist(refColor, strokeColor)) {
 			return K;
 		}
 
-				// detect vanishing gradient
-		Point grad = CalGradient(Point(x, y), Point(x, y), [&](int x, int y) {return getColor(refImg, x, y); });
+		// detect vanishing gradient
+		Point grad = CalGradient(Point(x, y), Point(x, y), [&](int x, int y) {return getColor(refImg, x, y,w); });
 		float gradStrength = grad.norm2();
 		if (gradStrength == 0) {
 			return K;

@@ -107,3 +107,11 @@ std::vector<std::vector<float>> getGaussianKernel(float sigma, int size)
 	}
 	return k;
 }
+
+GLubyte* getColor(unsigned char* p, int xx, int yy, int w){
+	return p + (yy*w + xx) * 3;
+};
+
+float colorDist(unsigned char* p0, unsigned char* p1) {
+	return sqrt(pow(p0[0] - p1[0], 2) + pow(p0[1] - p1[1], 2) + pow(p0[2] - p1[2], 2));
+};
