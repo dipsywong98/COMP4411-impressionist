@@ -60,6 +60,7 @@ public:
 
 	//for painterly
 	Fl_Window*			m_painterlyDialog;
+	Fl_Choice*			m_painterlyBrushTypeChoice;
 	Fl_Slider*			m_painterlyThresholdSlider;
 	Fl_Slider*			m_painterlyCurvatureSlider;
 	Fl_Slider*			m_painterlyBlurSlider;

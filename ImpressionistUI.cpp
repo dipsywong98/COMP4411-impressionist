@@ -362,9 +362,12 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
 		{
 			fl_alert("Please load alpha map first");
 			pUI->m_BrushTypeChoice->value(0);
+			pUI->m_painterlyBrushTypeChoice->value(0);
 			return;
 		}
 	}
+	pUI->m_BrushTypeChoice->value(type);
+	pUI->m_painterlyBrushTypeChoice->value(type);
 
 	pDoc->setBrushType(type);
 }
@@ -938,6 +941,10 @@ ImpressionistUI::ImpressionistUI() {
     m_brushDialog->end();	
 
 	m_painterlyDialog = new Fl_Window(400, 325, "Painterly Dialog");
+		m_painterlyBrushTypeChoice = new Fl_Choice(50, 10, 150, 25, "&Brush");
+		m_painterlyBrushTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
+		m_painterlyBrushTypeChoice->menu(brushTypeMenu);
+		m_painterlyBrushTypeChoice->callback(cb_brushChoice);
 		// Add brush size slider to the dialog 
 		m_painterlyThresholdSlider= new Fl_Value_Slider(10, 80, 300, 20, "Threshold");
 		m_painterlyThresholdSlider->user_data((void*)(this));	// record self to be used by static callback functions

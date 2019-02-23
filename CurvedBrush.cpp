@@ -53,7 +53,7 @@ void CurvedBrush::BrushBegin(int x0, int y0, int R, unsigned char* refImg, unsig
 			int x0 = pt.x, y0 = pt.y, x1 = pt1.x, y1 = pt1.y;
 			float d = sqrt(pow(x1 - x0, 2) + pow(y1 - y0, 2));
 			float t = atan2(pt1.y - pt.y, pt1.x - pt.x);
-			for(int i=1; i<R; i++)
+			for(int i=1; i<R; i+=R/2)
 			{
 				CircleBrush::DrawCircle(Point(x0+i*cos(t),y0+i*sin(t)), R);
 			}
@@ -136,7 +136,7 @@ void CurvedBrush::SetColor(GLubyte* color3)
 	GLubyte color4[4];
 
 	memcpy(color4, color3, 3);
-	color4[3] = GLubyte(255 * pDoc->getAlpha());
+	color4[3] = GLubyte(255 * pDoc->m_pUI->m_painterlyAlpha);
 
 	glColor4ubv(color4);
 }
