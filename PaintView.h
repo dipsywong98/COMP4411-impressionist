@@ -12,6 +12,7 @@
 #include <FL/gl.h>
 #include <GL/glu.h>
 #include <stdlib.h>
+#include <vector>
 
 class ImpressionistDoc;
 
@@ -21,6 +22,7 @@ public:
 	PaintView(int x, int y, int w, int h, const char* l);
 	void draw();
 	void prepareAutoFill();
+	void preparePainterly();
 	int handle(int event);
 
 	void refresh();
@@ -34,10 +36,16 @@ public:
 	void autoFill();
 
 	void applyKernel();
+	void kernelHelper(unsigned char* before, unsigned char* target, const std::vector<std::vector<float>>& kernel, int w, int h, bool
+	                  isNormalized);
+
+	void paintLayer(unsigned char* canvas, unsigned char* ref, int r);
+	void painterly();
 
 	ImpressionistDoc *m_pDoc;
 
 	bool willAutoFill = false;
+	bool willPainterly = false;
 private:
 	GLvoid* m_pPaintBitstart;
 	int		m_nDrawWidth,

@@ -21,6 +21,7 @@
 #include "ScatteredCircleBrush.h"
 #include <future>
 #include "AlphaMapBrush.h"
+#include "CurvedBrush.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -58,6 +59,8 @@ ImpressionistDoc::ImpressionistDoc()
 		= new ScatteredCircleBrush( this, "Scattered Circles" );
 	ImpBrush::c_pBrushes[ALPHA_MAP]
 		= new AlphaMapBrush( this, "Alpha Map" );
+	ImpBrush::c_pBrushes[CURVED_BRUSH]
+		= new CurvedBrush( this, "Curved Brush" );
 
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
@@ -100,6 +103,7 @@ void ImpressionistDoc::swapContent()
 	unsigned char* temp = m_ucPainting;
 	m_ucPainting = m_ucBitmap;
 	m_ucBitmap = temp;
+	m_ucOriginal = temp;
 	m_pUI->m_origView->refresh();
 	m_pUI->m_paintView->refresh();
 }

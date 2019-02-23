@@ -12,6 +12,13 @@
 int			ImpBrush::c_nBrushCount	= 0;
 ImpBrush**	ImpBrush::c_pBrushes	= NULL;
 
+const ::Point& Point::operator+=(const Point& point)
+{
+	this->x += point.x;
+	this->y += point.y;
+	return *this;
+}
+
 ImpBrush::ImpBrush(ImpressionistDoc*	pDoc, 
 				   char*				name) :
 					m_pDoc(pDoc), 
@@ -87,4 +94,9 @@ void ImpBrush::SetColor (const Point source)
 	
 	glColor4ubv( color );
 
+}
+
+void ImpBrush::BrushBegin(int x0, int y0, int R, unsigned char* refImg, unsigned char* canvas)
+{
+	BrushBegin(Point(x0, y0), Point(x0, y0));
 }

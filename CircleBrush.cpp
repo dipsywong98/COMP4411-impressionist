@@ -18,7 +18,6 @@ CircleBrush::CircleBrush(ImpressionistDoc* pDoc, char* name) :
 	ImpBrush(pDoc, name)
 {
 }
-
 void CircleBrush::BrushBegin(const Point source, const Point target)
 {
 	ImpressionistDoc* pDoc = GetDocument();
@@ -45,22 +44,25 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 	int size = pDoc->getSize();
 
 	SetColor(source);
-
-	glBegin(GL_POLYGON);
-
-	for (int i = 0; i < 360; i++)
-	{
-		double rad = degToRad(i);
-		glVertex2f(
-			static_cast<GLfloat>(target.x)+cos(rad)*size/2.f, 
-			static_cast<GLfloat>(target.y)+sin(rad)*size/2.f
-		);
-	}
-
-	glEnd();
+	DrawCircle(target, size);
 }
 
 void CircleBrush::BrushEnd(const Point source, const Point target)
 {
 }
 
+void CircleBrush::DrawCircle(const Point target, int size)
+{
+	glBegin(GL_POLYGON);
+
+	for (int i = 0; i < 360; i++)
+	{
+		double rad = degToRad(i);
+		glVertex2f(
+			static_cast<GLfloat>(target.x) + cos(rad)*size / 2.f,
+			static_cast<GLfloat>(target.y) + sin(rad)*size / 2.f
+		);
+	}
+
+	glEnd();
+}

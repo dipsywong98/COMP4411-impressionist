@@ -88,3 +88,32 @@ Point CalGradient(const Point source, const Point target, const std::function<GL
 	}
 	return Point(gx, gy);
 }
+
+
+std::vector<std::vector<float>> getGaussianKernel(float sigma, int size)
+{
+
+	std::vector<std::vector<float>> k;
+
+	for (int i = 0; i < size; i++) {
+		std::vector<float> row;
+		for (int j = 0; j < size; j++) {
+			int x = i - size / 2;
+			int y = j - size / 2;
+			float v = (1 / (2 * M_PI*sigma)) * exp( -(x * x + y * y) / (2 * sigma));
+			row.push_back(v);
+		}
+		k.push_back(row);
+	}
+	return k;
+}
+
+GLubyte* getColor(unsigned char* p, int xx, int yy, int w, int h){
+	xx = max(0, min(xx, w - 1));
+	yy = max(0, min(yy, h - 1));
+	return p + (yy*w + xx) * 3;
+};
+
+float colorDist(unsigned char* p0, unsigned char* p1) {
+	return sqrt(pow(p0[0] - p1[0], 2) + pow(p0[1] - p1[1], 2) + pow(p0[2] - p1[2], 2));
+};

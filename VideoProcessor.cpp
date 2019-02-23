@@ -17,7 +17,9 @@ std::function<void(void*)> VideoProcessor::methodAutoFill = [](void*)->void
 
 std::function<void(void*)> VideoProcessor::methodPaintly = [](void*)->void
 {
-	
+	uiPtr->m_paintView->willPainterly = true;
+	uiPtr->m_paintView->draw();
+	continueWriteStream();
 };
 
 VideoProcessor::VideoProcessor()

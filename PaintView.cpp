@@ -17,6 +17,7 @@
 
 
 extern double randAlter(double, double);
+extern std::vector<std::vector<float>> getGaussianKernel(float sigma, int size);
 
 #define LEFT_MOUSE_DOWN		1
 #define LEFT_MOUSE_DRAG		2
@@ -149,6 +150,11 @@ void PaintView::draw()
 		autoFill();
 		willAutoFill = false;
 		willSave = true;
+	} else if (willPainterly)
+	{
+		painterly();
+		willPainterly = false;
+		willSave = true;
 	}
 
 
@@ -172,6 +178,12 @@ void PaintView::draw()
 void PaintView::prepareAutoFill()
 {
 	willAutoFill = true;
+	redraw();
+}
+
+void PaintView::preparePainterly()
+{
+	willPainterly = true;
 	redraw();
 }
 
@@ -330,35 +342,44 @@ void PaintView::autoFill()
 
 void PaintView::applyKernel()
 {
-	int size = m_pDoc->m_pUI->kernel.size();
 	const int w = m_pDoc->m_nWidth;
 	const int h = m_pDoc->m_nHeight;
 	const bool isNormalized = m_pDoc->m_pUI->getIsNormalizedKernel();
-	float total = 0;
 	unsigned char * before = new unsigned char[w*h * 3];
 	memcpy(before, m_pDoc->m_ucPainting, w*h * 3);
-	for(int i=0; i<size; i++)
+
+	kernelHelper(before, m_pDoc->m_ucPainting, m_pDoc->m_pUI->kernel, w, h, isNormalized);
+
+	refresh();
+	delete[] before;
+}
+
+void PaintView::kernelHelper(unsigned char* before, unsigned char* target, const std::vector<std::vector<float>>& kernel, int w, int h, bool isNormalized)
+{
+	int size = kernel.size();
+	float total = 0;
+	for (int i = 0; i<size; i++)
 	{
-		for(int j=0; j<size; j++)
+		for (int j = 0; j<size; j++)
 		{
-			total += m_pDoc->m_pUI->kernel[i][j];
+			total += kernel[i][j];
 		}
 	}
 	for (int i = 0; i < w; i++)
 	{
 		for (int j = 0; j< h; j++)
 		{
-			float c[]={0,0,0};
-			for (int a=0; a<size; a++)
+			float c[] = { 0,0,0 };
+			for (int a = 0; a<size; a++)
 			{
-				for(int b=0; b<size; b++)
+				for (int b = 0; b<size; b++)
 				{
-					for(int d=0;d<3;d++)
+					for (int d = 0; d<3; d++)
 					{
-						const int x = max(0,min(i - (size) / 2 + a, w-1));
-						const int y = max(0, min(j - (size) / 2 + b, h-1));
-						float delta = m_pDoc->m_pUI->kernel[a][b] * before[(y*w + x) * 3 + d];
-						if(isNormalized)
+						const int x = max(0, min(i - (size) / 2 + a, w - 1));
+						const int y = max(0, min(j - (size) / 2 + b, h - 1));
+						float delta = kernel[a][b] * before[(y*w + x) * 3 + d];
+						if (isNormalized)
 						{
 							delta /= total;
 						}
@@ -366,11 +387,142 @@ void PaintView::applyKernel()
 					}
 				}
 			}
-			m_pDoc->m_ucPainting[(j*w + i) * 3] = max(0,min(c[0],255));
-			m_pDoc->m_ucPainting[(j*w + i) * 3 + 1] = max(0, min(c[1],255));
-			m_pDoc->m_ucPainting[(j*w + i) * 3 + 2] = max(0, min(c[2],255));
+			target[(j*w + i) * 3] = max(0, min(c[0], 255));
+			target[(j*w + i) * 3 + 1] = max(0, min(c[1], 255));
+			target[(j*w + i) * 3 + 2] = max(0, min(c[2], 255));
 		}
 	}
-	refresh();
-	delete[] before;
+}
+
+void PaintView::painterly()
+{
+	// 1. Obtain width and height
+	const int w = m_pDoc->m_nWidth;
+	const int h = m_pDoc->m_nHeight;
+
+	// 2. fill a white background
+	glColor3d(1, 1, 1);
+	glBegin(GL_POLYGON);
+	glVertex2d(0, 0);
+	glVertex2d(0, h);
+	glVertex2d(w, h);
+	glVertex2d(w, 0);
+	glEnd();
+	unsigned char* canvas = new unsigned char[w*h * 3];
+	memset(canvas, 255, w*h * 3);
+
+	// 3. get hyper params
+	int r0 = m_pDoc->m_pUI->m_painterlyR0;
+	int layers = m_pDoc->m_pUI->m_painterlyLayers;
+	int alphaOriginal = m_pDoc->m_pUI->getAlpha();
+	m_pDoc->m_pUI->setAlpha(m_pDoc->m_pUI->m_painterlyAlpha);
+
+	// 4. calculate a list of brush size
+	std::vector<int> radii;
+	for(int i=0; i<layers; i++)
+	{
+		radii.push_back(pow(2, r0));
+		r0 = max(0, r0 - 1);
+	}
+
+	// 5. for each brush size, from big to small, paint a layer
+	for(int r: radii)
+	{
+		float blur = m_pDoc->m_pUI->m_painterlyBlur;
+		std::vector<std::vector<float>> kernel = getGaussianKernel(blur, r);
+		unsigned char* ref = new unsigned char[w*h * 3];
+		if(blur == 0)
+		{
+			memcpy(ref, m_pDoc->m_ucOriginal, w*h * 3);
+		}else
+		{
+			kernelHelper(m_pDoc->m_ucOriginal, ref, kernel, w, h, false);
+		}
+		paintLayer(canvas, ref, r);
+		delete[] ref;
+	}
+
+	// 6. done, roll back changes
+	m_pDoc->m_pUI->setAlpha(alphaOriginal);
+	delete[] canvas;
+}
+
+
+void PaintView::paintLayer(unsigned char* canvas, unsigned char* ref, int r)
+{
+	const int w = m_pDoc->m_nWidth;
+	const int h = m_pDoc->m_nHeight;
+	int grid= r * m_pDoc->m_pUI->m_painterlyGridSize;
+	int threshold = m_pDoc->m_pUI->m_painterlyThreshold;
+
+	std::vector<Point> strokes;
+	std::vector<Point> nob;
+	std::vector<float> diff(w*h);
+
+	// 1. calculate difference matrix
+	for(int i = 0; i<w; i++)
+	{
+		for(int j = 0; j<h; j++)
+		{
+			for(int c=0; c<3; c++)
+			{
+				diff[j*w + i] += pow(canvas[(j*w + i) * 3 + c] - ref[(j*w + i) * 3 + c], 2);
+			}
+			diff[j*w + i] = sqrt(diff[j*w + i]);
+		}
+	}
+
+	// 2. for each grid, push argmax error point to vector
+	for(int x=0; x<w; x+=grid)
+	{
+		for(int y=0; y<h; y+=grid)
+		{
+			//cal area sum
+			float sumError = 0;
+			Point argMax(0,0);
+			float error = -1;
+			int gridSum = 0;
+			for(int a = max(x-grid/2,0); a<x+grid/2 && a<w; a++)
+			{
+				for (int b = max(y - grid / 2,0); b < y + grid / 2 && b<h; b++)
+				{
+					float e = diff[b*w + a];
+					sumError += e;
+					gridSum++;
+					if(e>error)
+					{
+						argMax = Point(a, b);
+						error = e;
+
+					}
+				}
+			}
+			sumError /= gridSum;
+
+			if(sumError > threshold)
+			{
+				// std::vector<Point>s = makeStrokes(r, x, y, ref, w);
+				strokes.push_back(argMax);
+			}else
+			{
+				nob.push_back(argMax);
+			}
+		}
+	}
+
+
+	// 3. randomly choose point order
+	std::random_shuffle(strokes.begin(), strokes.end());
+	// std::random_shuffle(nob.begin(), nob.end());
+	int sizeOriginal = m_pDoc->getSize();
+	for(auto&& p:strokes)
+	{
+		m_pDoc->m_pUI->setSize(r);
+		m_pDoc->m_pCurrentBrush->BrushBegin(p.x,p.y,r,ref,canvas);
+		m_pDoc->m_pCurrentBrush->BrushEnd(p, p);
+	}
+	m_pDoc->m_pUI->setSize(sizeOriginal);
+	glFlush();
+	SaveCurrentContent();
+	memcpy(canvas, m_pDoc->m_ucPainting, w*h * 3);
 }
