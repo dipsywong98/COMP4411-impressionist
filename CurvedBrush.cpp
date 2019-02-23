@@ -2,7 +2,7 @@
 
 extern Point CalGradient(const Point source, const Point target, const std::function<GLubyte*(int, int)> getPixel);
 extern double degToRad(double);
-extern GLubyte* getColor(unsigned char* p, int xx, int yy, int w);
+extern GLubyte* getColor(unsigned char* p, int xx, int yy, int w, int h);
 extern float colorDist(unsigned char* p0, unsigned char* p1);
 
 CurvedBrush::CurvedBrush(ImpressionistDoc* pDoc, char* name) :
@@ -78,7 +78,7 @@ std::vector<Point> CurvedBrush::makeCurvedBrush(int x0, int y0, int R, unsigned 
 	const int w = pDoc->m_nWidth;
 	const int h = pDoc->m_nHeight;
 
-	GLubyte* strokeColor = getColor(refImg, x0, y0,w);
+	GLubyte* strokeColor = getColor(refImg, x0, y0,w,h);
 	SetColor(strokeColor);
 
 	for (int i = 0; i < maxStrokeLength; i++) {
@@ -89,14 +89,14 @@ std::vector<Point> CurvedBrush::makeCurvedBrush(int x0, int y0, int R, unsigned 
 		}
 
 
-		GLubyte* refColor = getColor(refImg, x, y,w);
-		GLubyte* canvasColor = getColor(canvas, x, y,w);
+		GLubyte* refColor = getColor(refImg, x, y,w,h);
+		GLubyte* canvasColor = getColor(canvas, x, y,w,h);
 		if (i > minStrokeLength && colorDist(refColor, canvasColor) < colorDist(refColor, strokeColor)) {
 			return K;
 		}
 
 		// detect vanishing gradient
-		Point grad = CalGradient(Point(x, y), Point(x, y), [&](int x, int y) {return getColor(refImg, x, y,w); });
+		Point grad = CalGradient(Point(x, y), Point(x, y), [&](int x, int y) {return getColor(refImg, x, y,w,h); });
 		float gradStrength = grad.norm2();
 		if (gradStrength == 0) {
 			return K;

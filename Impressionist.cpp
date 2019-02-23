@@ -108,7 +108,9 @@ std::vector<std::vector<float>> getGaussianKernel(float sigma, int size)
 	return k;
 }
 
-GLubyte* getColor(unsigned char* p, int xx, int yy, int w){
+GLubyte* getColor(unsigned char* p, int xx, int yy, int w, int h){
+	xx = max(0, min(xx, w - 1));
+	yy = max(0, min(yy, h - 1));
 	return p + (yy*w + xx) * 3;
 };
 
