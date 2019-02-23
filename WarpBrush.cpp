@@ -12,6 +12,7 @@
 extern float frand();
 extern std::vector<std::vector<float>> getGaussianKernel(float sigma, int size);
 extern GLubyte* getColor(unsigned char* p, int xx, int yy, int w, int h);
+extern void getMeanColor(GLubyte* buf, unsigned char* p, int xx, int yy, int w, int h, float sigma, int size);
 
 WarpBrush::WarpBrush(ImpressionistDoc* pDoc, char* name) :
 	ImpBrush(pDoc, name)
@@ -61,53 +62,8 @@ void WarpBrush::BrushMove(const Point source, const Point target)
 	const int h = pDoc->m_nHeight;
 
 	unsigned char* canvas = pDoc->m_ucPainting;
-
-	std::vector<GLubyte> colors_r(size*size);
-	std::vector<GLubyte> colors_g(size*size);
-	std::vector<GLubyte> colors_b(size*size);
-
-	for (int a = 0; a<size; a++)
-	{
-		for (int b = 0; b<size; b++)
-		{
-			float wt = kernel[a][b];
-			if (wt == 0) continue;
-			int cx = curr.x + a - size / 2;
-			int cy = curr.y + b - size / 2;
-			if (cx < 0 || cy < 0 || cx >= w - 1 || cy >= h - 1)continue;
-			int px = prev.x + a - size / 2;
-			int py = prev.x + b - size / 2;
-			if (px < 0 || py < 0 || px >= w - 1 || py >= h - 1)continue;
-			GLubyte c[3];
-			memcpy(c, getColor(canvas, cx, cy, w, h), 3);
-			GLubyte p[3];
-			memcpy(p, getColor(canvas, px, py, w, h), 3);
-			
-			colors_r[a*size + b] = wt*p[0] * (1 - wt)*c[0];
-			colors_g[a*size + b] = wt*p[1] * (1 - wt)*c[1];
-			colors_b[a*size + b] = wt*p[2] * (1 - wt)*c[2];
-			
-		}
-	}
-
-	for (int a = 0; a < size; a++)
-	{
-		for (int b = 0; b < size; b++)
-		{
-			float wt = kernel[a][b];
-			if (wt == 0) continue;
-			int cx = curr.x + a - size / 2;
-			int cy = curr.y + b - size / 2;
-			if (cx < 0 || cy < 0 || cx >= w - 1 || cy >= h - 1)continue;
-			int px = prev.x + a - size / 2;
-			int py = prev.x + b - size / 2;
-			if (px < 0 || py < 0 || px >= w - 1 || py >= h - 1)continue;
-
-			GLubyte color[] = { colors_r[a*size + b] , colors_g[a*size + b] , colors_b[a*size + b] };
-
-			memcpy(canvas + (cy*w + cx) * 3, color, 3);
-		}
-	}
+	// curr.x = prev.x + size / 2;
+	Wrappify(prev, curr, size);
 	prev = curr;
 }
 
@@ -115,3 +71,53 @@ void WarpBrush::BrushEnd(const Point source, const Point target)
 {
 }
 
+void WarpBrush::Wrappify(const Point origin, const Point end, int size)
+{
+	ImpressionistDoc* pDoc = GetDocument();
+	ImpressionistUI* pUI = pDoc->m_pUI;
+	const int w = pDoc->m_nWidth;
+	const int h = pDoc->m_nHeight;
+	int sx = origin.x, sy = origin.y;
+	int tx = end.x, ty = end.y;
+	double rad = atan2(ty - sy, tx - sx);
+	double c = cos(rad);
+	double s = sin(rad);
+	unsigned char* canvas = pDoc->m_ucPainting;
+	glPointSize((float)1);
+	glBegin(GL_POINTS);
+	for(int x0p = sx-size/2; x0p < sx+size/2; x0p++)
+	{
+		if (x0p<0 || x0p>w - 1)continue;
+		for(int y0p = sy-size/2; y0p < sy+size/2; y0p++)
+		{
+			if (y0p<0 || y0p>h - 1)continue;
+			if (sqrt(pow(x0p - sx, 2) + pow(y0p - sy, 2)) > size/2) continue;
+			double u0p = (x0p - sx)*c - s*(y0p - sy);
+			double v0p = (x0p - sx)*s + c*(y0p - sy);
+			double r = sqrt(pow(v0p, 2) + pow(u0p - (size - 1) / 2,2));
+			double u0 = u0p - (size - r) / 2;
+			double v0 = v0p;
+			double x0 = sx + c*u0 + s*v0;
+			double y0 = sy + -s*u0 + c*v0;
+
+			GLubyte buf[3];
+			getMeanColor(buf, canvas, x0, y0, w, h, 1, 3);
+			SetColor(buf);
+			glVertex2d(x0p,y0p);
+		}
+	}
+	glEnd();
+}
+
+void WarpBrush::SetColor(GLubyte* color3)
+{
+	ImpressionistDoc* pDoc = GetDocument();
+
+
+	GLubyte color4[4];
+
+	memcpy(color4, color3, 3);
+	color4[3] = GLubyte(255 * pDoc->m_pUI->m_painterlyAlpha);
+
+	glColor4ubv(color4);
+}
