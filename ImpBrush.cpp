@@ -66,3 +66,8 @@ void ImpBrush::SetColor (const Point source)
 	glColor4ubv( color );
 
 }
+
+void ImpBrush::BrushBegin(int x0, int y0, int R, unsigned char* refImg, unsigned char* canvas)
+{
+	BrushBegin(Point(x0, y0), Point(x0, y0));
+}

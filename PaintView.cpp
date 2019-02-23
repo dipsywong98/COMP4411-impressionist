@@ -515,7 +515,7 @@ void PaintView::paintLayer(unsigned char* canvas, unsigned char* ref, int r)
 	for(auto&& p:strokes)
 	{
 		m_pDoc->m_pUI->setSize(r);
-		m_pDoc->m_pCurrentBrush->BrushBegin(p, p);
+		m_pDoc->m_pCurrentBrush->BrushBegin(p.x,p.y,r,ref,canvas);
 		m_pDoc->m_pCurrentBrush->BrushEnd(p, p);
 	}
 	m_pDoc->m_pUI->setSize(sizeOriginal);
