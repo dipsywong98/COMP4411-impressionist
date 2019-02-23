@@ -7,16 +7,14 @@
 #ifndef ImpressionistUI_h
 #define ImpressionistUI_h
 
-#include <FL/Fl.H>
 #include <FL/Fl_Window.H>
-#include <FL/fl_file_chooser.H>		// FLTK file chooser
+#include <FL/Fl_File_Chooser.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Value_Slider.H>
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Button.H>
-#include <FL/Fl_Light_Button.H>
+#include <FL/Fl_Color_Chooser.H>
 
-#include "Impressionist.h"
 #include "OriginalView.h"
 #include "PaintView.h"
 
@@ -58,6 +56,7 @@ public:
 	Fl_Check_Button*			m_KernelNormalizeButton;
 	char* m_KernelStr;
 
+
 	//for painterly
 	Fl_Window*			m_painterlyDialog;
 	Fl_Choice*			m_painterlyBrushTypeChoice;
@@ -71,6 +70,10 @@ public:
 	Fl_Slider*			m_painterlyLayersSlider;
 	Fl_Slider*			m_painterlyR0Slider;
 	Fl_Button*          m_painterlyButton;
+
+	Fl_Window*			m_colorPickerDialog;
+	Fl_Color_Chooser*	m_colorChooser;
+
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -186,6 +189,9 @@ private:
 	static void	cb_painterly_alpha(Fl_Widget* o, void* v);
 	static void	cb_painterly_layers(Fl_Widget* o, void* v);
 	static void	cb_painterly_r0(Fl_Widget* o, void* v);
+
+	static Fl_Callback cb_open_colors_dialog;
+
 };
 
 #endif

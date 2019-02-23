@@ -57,10 +57,39 @@ void ImpBrush::SetColor (const Point source)
 {
 	ImpressionistDoc* pDoc = GetDocument();
 
-
 	GLubyte color[4];
 
 	memcpy ( color, pDoc->GetOriginalPixel( source ), 3 );
+
+	auto* color_chooser = pDoc->m_pUI->m_colorChooser;
+	auto mul_r = 0.0;
+	auto mul_g = 0.0;
+	auto mul_b = 0.0;
+	const auto mode = color_chooser->mode();
+	switch (mode)
+	{
+	case 0: //RGB
+	case 1: //Byte
+	case 2: //Hex
+		mul_r = color_chooser->r();
+		mul_g = color_chooser->g();
+		mul_b = color_chooser->b();
+	case 3: //HSV
+		Fl_Color_Chooser::hsv2rgb(
+			color_chooser->hue(),
+			color_chooser->saturation(),
+			color_chooser->value(),
+			mul_r,
+			mul_g,
+			mul_b
+		);
+	default: {}
+	}
+
+	color[0] = static_cast<unsigned char>(color[0] * mul_r);
+	color[1] = static_cast<unsigned char>(color[1] * mul_g);
+	color[2] = static_cast<unsigned char>(color[2] * mul_b);
+
 	color[3] = GLubyte(255 * pDoc->getAlpha());
 	
 	glColor4ubv( color );

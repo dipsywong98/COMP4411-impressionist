@@ -16,7 +16,7 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
 - [x] **(1W)** clipped bushes
 - [x] **(1W)** cursor on original image
 - [x] (1W) swap content and original
-- [ ] (1B) change color of image (change channel)
+- [x] (1B) change color of image (change channel)
 - [ ] **(1B)** blur brush and sharpen brush (wait for kernel brush)
 - [x] **(1B)** undo
 - [ ] (1B) Dissolve one image into another
@@ -39,6 +39,5 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
 - [ ] _(2B)_ stretch and pull image http://mostfungames.com/warp-george-bush.htm
 - [x] _(2B)_ curved brush that follows image gradient http://mrl.nyu.edu/projects/npr/painterly/
 - [ ] <u>(4B)</u> thumbnailhttp://www.cs.princeton.edu/~af/cool/webgothic.html
-- [ ] <u>(4B)</u> video
+- [x] <u>(4B)</u> video
 - [ ] <u>(8B)</u> Bayesian matting
-

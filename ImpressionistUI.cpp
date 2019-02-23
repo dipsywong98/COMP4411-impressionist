@@ -12,6 +12,7 @@
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
 #include <sstream>
+#include "VideoProcessor.h"
 
 /*
 //------------------------------ Widget Examples -------------------------------------------------
@@ -548,6 +549,7 @@ void ImpressionistUI::cb_normalize_kernel(Fl_Widget* o, void* v)
 	// pUI->m_KernelInput->value(pUI->m_KernelStr);
 }
 
+
 void ImpressionistUI::cb_painterly_paint(Fl_Widget* o, void* v)
 {
 	ImpressionistUI *pUI = (ImpressionistUI*)(o->user_data());
@@ -597,6 +599,11 @@ void ImpressionistUI::cb_painterly_layers(Fl_Widget* o, void* v)
 void ImpressionistUI::cb_painterly_r0(Fl_Widget* o, void* v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_painterlyR0 = int(((Fl_Slider *)o)->value());
+}
+
+void ImpressionistUI::cb_open_colors_dialog(Fl_Widget* o, void* v)
+{
+	whoami(dynamic_cast<Fl_Menu_*>(o))->m_colorPickerDialog->show();
 }
 
 //---------------------------------- per instance functions --------------------------------------
@@ -715,7 +722,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes }, 
 		{ "&Painterly...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_painterly }, 
 		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
-		
+		{"Colors...", FL_ALT + 'k', cb_open_colors_dialog, nullptr, FL_MENU_DIVIDER},
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
 	{"&Display",0,0,0,FL_SUBMENU},
@@ -730,6 +737,8 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{"&Load Another Img", FL_ALT +'l', (Fl_Callback*)ImpressionistUI::cb_load_another_image },
 		{"&Load Mural Img", FL_ALT +'m', (Fl_Callback*)ImpressionistUI::cb_load_mural_image },
 		{"&Load Alpha Map Img", FL_ALT +'a', (Fl_Callback*)ImpressionistUI::cb_load_alpha_map_image },
+		{"Video Auto-Fill", 0, VideoProcessor::cbVideoAutoFill},
+		{"Video Paintly", 0, VideoProcessor::cbVideoPaintly},
 		{ 0 },
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
 		{ "&About",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about },
@@ -1059,4 +1068,11 @@ ImpressionistUI::ImpressionistUI() {
 		m_painterlyButton->user_data((void*)(this));
 		m_painterlyButton->callback(cb_painterly_paint);
 	m_painterlyDialog->end();
+
+	m_colorPickerDialog = new Fl_Window(380, 300, "Colors...");
+	{
+		m_colorChooser = new Fl_Color_Chooser(0, 0, 380, 300, "Color Blending");
+		m_colorChooser->rgb(1.0, 1.0, 1.0);
+	}
+	m_colorPickerDialog->end();
 }
