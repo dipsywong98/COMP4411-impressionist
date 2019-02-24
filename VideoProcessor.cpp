@@ -8,14 +8,14 @@ VideoProcessor* VideoProcessor::singletonPtr = nullptr;
 ImpressionistUI* VideoProcessor::uiPtr = nullptr;
 ImpressionistDoc* VideoProcessor::docPtr = nullptr;
 
-std::function<void(void*)> VideoProcessor::methodAutoFill = [](void*)->void
+std::function<void()> VideoProcessor::methodAutoFill = []()->void
 {
 	uiPtr->m_paintView->willAutoFill = true;
 	uiPtr->m_paintView->draw();
 	continueWriteStream();
 };
 
-std::function<void(void*)> VideoProcessor::methodPaintly = [](void*)->void
+std::function<void()> VideoProcessor::methodPaintly = []()->void
 {
 	uiPtr->m_paintView->willPainterly = true;
 	uiPtr->m_paintView->draw();
@@ -30,29 +30,12 @@ VideoProcessor::VideoProcessor()
 void VideoProcessor::saveImage()
 {
 	//Save image to stream
-	auto *t = new unsigned char[byteLength];
-	memcpy(t, docPtr->m_ucPainting, byteLength);
+	auto *t = docPtr->m_ucPainting;
 
 	reverseMapColor(t, bmpInfo.biWidth, bmpInfo.biHeight, cinepak_color_mapping);
 	repackBmp(t, bmpInfo.biWidth, bmpInfo.biHeight, padding.pad);
 
-	AVICOMPRESSOPTIONS compressionOptions = {
-		streamtypeVIDEO,
-		mmioFOURCC('c', 'v', 'i', 'd'),
-		0,
-		100,
-		0,
-		AVICOMPRESSF_VALID,
-		&bmpInfo,
-		sizeof(BITMAPINFOHEADER),
-		nullptr,
-		0,
-		0
-	};
-
 	errorCode = AVIStreamWrite(aviCStreamPtr, streamStartingIndex + frameIndex, 1, t, byteLength, 0, nullptr, nullptr);
-
-	delete[] t;
 
 	if (errorCode == AVIERR_UNSUPPORTED)
 	{
@@ -227,7 +210,7 @@ bool VideoProcessor::hasError() const
 	return errorCode != 0;
 }
 
-void VideoProcessor::setManipulationMethod(const std::function<void(void*)>& callbackFunction)
+void VideoProcessor::setManipulationMethod(const std::function<void()>& callbackFunction)
 {
 	this->perImageFunction = callbackFunction;
 }
@@ -236,6 +219,8 @@ void VideoProcessor::next()
 {
 	if (isEnded())
 	{
+		docPtr->clearCanvas();
+		fl_alert("Conversion done!");
 		close();
 		destroy();
 		return;
@@ -269,7 +254,7 @@ void VideoProcessor::next()
 		fl_alert("docPtr is nullptr but this should not happen.");
 	}
 
-	perImageFunction(nullptr);
+	perImageFunction();
 
 	
 }

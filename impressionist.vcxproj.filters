@@ -1,41 +1,141 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="AlphaMapBrush.cpp" />
-    <ClCompile Include="Bitmap.cpp" />
-    <ClCompile Include="CircleBrush.cpp" />
-    <ClCompile Include="CurvedBrush.cpp" />
-    <ClCompile Include="ImpBrush.cpp" />
-    <ClCompile Include="Impressionist.cpp" />
-    <ClCompile Include="ImpressionistDoc.cpp" />
-    <ClCompile Include="ImpressionistUI.cpp" />
-    <ClCompile Include="LineBrush.cpp" />
-    <ClCompile Include="OriginalView.cpp" />
-    <ClCompile Include="PaintView.cpp" />
-    <ClCompile Include="PointBrush.cpp" />
-    <ClCompile Include="ScatteredCircleBrush.cpp" />
-    <ClCompile Include="ScatteredLineBrush.cpp" />
-    <ClCompile Include="ScatteredPointBrush.cpp" />
-    <ClCompile Include="VideoProcessor.cpp" />
-    <ClCompile Include="WarpBrush.cpp" />
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6d3c2c41-4ac5-4417-9748-ffbfdd1da388}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{dac8a8f2-04d2-42cd-8a28-98140c08054f}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{b89c4023-2e1a-46ad-8c0b-3512354115f9}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AlphaMapBrush.h" />
-    <ClInclude Include="bitmap.h" />
-    <ClInclude Include="CircleBrush.h" />
-    <ClInclude Include="CurvedBrush.h" />
-    <ClInclude Include="ImpBrush.h" />
-    <ClInclude Include="impressionist.h" />
-    <ClInclude Include="impressionistDoc.h" />
-    <ClInclude Include="impressionistUI.h" />
-    <ClInclude Include="LineBrush.h" />
-    <ClInclude Include="OriginalView.h" />
-    <ClInclude Include="PaintView.h" />
-    <ClInclude Include="PointBrush.h" />
-    <ClInclude Include="ScatteredCircleBrush.h" />
-    <ClInclude Include="ScatteredLineBrush.h" />
-    <ClInclude Include="ScatteredPointBrush.h" />
-    <ClInclude Include="VideoProcessor.h" />
-    <ClInclude Include="WarpBrush.h" />
+    <ClCompile Include="AlphaMapBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bitmap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CircleBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CurvedBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImpBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Impressionist.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImpressionistDoc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImpressionistUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LineBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MosaicBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OriginalView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PaintView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScatteredCircleBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScatteredLineBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScatteredPointBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WarpBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MosaicImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AlphaMapBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bitmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CircleBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CurvedBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImpBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="impressionist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="impressionistDoc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="impressionistUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MosaicBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OriginalView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PaintView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScatteredCircleBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScatteredLineBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScatteredPointBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WarpBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MosaicImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

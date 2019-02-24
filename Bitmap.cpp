@@ -19,7 +19,7 @@ DIB_COLOR_MAPPING bmp_color_mapping{ 2, 1, 0 };
 DIB_COLOR_MAPPING cinepak_color_mapping{ 0, 2, 1 };
 
 // Bitmap data returned is (R,G,B) tuples in row-major order.
-unsigned char* readBMP(char*	fname, 
+unsigned char* readBMP(const char*	fname, 
 					   int&		width,
 					   int&		height)
 { 
@@ -153,10 +153,10 @@ unsigned char* repackBmp(unsigned char* data, const long width, const long heigh
 	return data;
 }
 
-PADDING calculatePadding(long width)
+PADDING calculatePadding(const long width)
 {
-	int padWidth = width * 3;
-	int pad = 0;
+	auto padWidth = width * 3;
+	auto pad = 0;
 	if (padWidth % 4 != 0)
 	{
 		pad = 4 - (padWidth % 4);
@@ -166,7 +166,7 @@ PADDING calculatePadding(long width)
 	return {pad, padWidth};
 }
 
-void writeBMP(char*				iname,
+void writeBMP(const char*		iname,
 			  int				width, 
 			  int				height, 
 			  unsigned char*	data) 
