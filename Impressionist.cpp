@@ -41,6 +41,9 @@ int main(int	argc,
 
 	impUI->show();
 
+	impDoc->loadImage("bayesian/gandalf.bmp");
+	imp_bayesian->solve("bayesian/gandalfTrimap.bmp");
+
 	return Fl::run();
 }
 

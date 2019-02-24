@@ -19,6 +19,8 @@
     <ClCompile Include="VideoProcessor.cpp" />
     <ClCompile Include="WarpBrush.cpp" />
     <ClCompile Include="Bayesian.cpp" />
+    <ClCompile Include="Cluster.cpp" />
+    <ClCompile Include="node.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlphaMapBrush.h" />
@@ -40,5 +42,7 @@
     <ClInclude Include="WarpBrush.h" />
     <ClInclude Include="Bayesian.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Cluster.h" />
+    <ClInclude Include="node.h" />
   </ItemGroup>
 </Project>

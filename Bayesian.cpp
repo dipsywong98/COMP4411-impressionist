@@ -3,7 +3,7 @@
 #include <list>
 #include <iostream>
 #include <Eigen/Dense>
-using Eigen::MatrixXd;
+using namespace Eigen;
 
 extern std::vector<std::vector<float>> getGaussianKernel(float sigma, int size);
 
@@ -29,6 +29,42 @@ void Bayesian::init()
 bool Bayesian::trySolvePix(Point pt)
 {
 	int x = pt.x, y = pt.y;
+	int unknCnt = 0;
+	kernelFun(pt, [&](int i, int j, int x, int y)
+	{
+		unknCnt += unkn[y*w + x];
+	}, 3);
+	if (unknCnt == 9)return 0; // need more than half for evaluation
+
+	MatrixXd a(ksize,ksize);
+	MatrixXd F_r(ksize,ksize);
+	MatrixXd F_g(ksize,ksize);
+	MatrixXd F_b(ksize,ksize);
+	MatrixXd B_r(ksize,ksize);
+	MatrixXd B_g(ksize,ksize);
+	MatrixXd B_b(ksize,ksize);
+	MatrixXd Fw(ksize,ksize);
+	MatrixXd Bw(ksize,ksize);
+
+	kernelFun(pt, [&](int i, int j, int x, int y)
+	{
+		a(i, j) = alpha[y*w + x];
+		F_r(i, j) = fore[y*w + x] * img[(y*w+x)*3];
+		F_g(i, j) = fore[y*w + x] * img[(y*w+x)*3+1];
+		F_b(i, j) = fore[y*w + x] * img[(y*w+x)*3+2];
+		B_r(i, j) = back[y*w + x] * img[(y*w+x)*3];
+		B_g(i, j) = back[y*w + x] * img[(y*w+x)*3+1];
+		B_b(i, j) = back[y*w + x] * img[(y*w+x)*3+2];
+		Fw(i, j) = !unkn[y*w+x] && pow(a(i, j),2) * gaussianKernel[i][j];
+		Bw(i, j) = !unkn[y*w + x] && pow(1-a(i, j),2) * gaussianKernel[i][j];
+	});
+
+	// Vector3d F,B;
+	// F << F_r, F_g, F_b;
+	// B << B_r, B_g, B_b;
+
+	std::cout << a;
+
 	return 1;
 }
 
@@ -50,14 +86,19 @@ void Bayesian::solve(char* iname)
 		{
 			std::list<Point>::iterator pPt = unknPts.begin();
 			while (pPt != unknPts.end()) {
-				if(trySolvePix(*pPt))
+				Point pixel = *pPt;
+				if(trySolvePix(pixel))
 				{
-					unknPts.erase(pPt);
+					unknPts.erase(pPt++);
+					unkn[pixel.x + w*pixel.y] = 0;
 					findSum++;
-				}
+				}else
+				{
 				pPt++;
+				}
 			}
 		}
+		outputAlpha();
 	}
 }
 
@@ -117,4 +158,30 @@ bool Bayesian::openTriImg(char* iname)
 	delete[] data;
 
 	return 1;
+}
+
+void Bayesian::outputAlpha()
+{
+	memset(m_pDoc->m_ucPainting, 0, w*h * 3);
+	for(int i = 0; i<w*h; i++)
+	{
+		m_pDoc->m_ucPainting[i * 3] = alpha[i]*255;
+		m_pDoc->m_ucPainting[i * 3+1] = alpha[i]*255;
+		m_pDoc->m_ucPainting[i * 3+2] = alpha[i]*255;
+	}
+	m_pDoc->saveImage("bayesian_out.bmp");
+}
+
+void Bayesian::kernelFun(Point p, std::function<void(int, int, int, int)> cb, int size)
+{
+	for(int i = 0; i<size; i++)
+	{
+		for(int j=0;j<size;j++)
+		{
+			int x = p.x + i - size / 2;
+			int y = p.y + j - size / 2;
+			if(x<0||y<0||x>w-1||y>h-1)continue;
+			cb(i, j, x, y);
+		}
+	}
 }
