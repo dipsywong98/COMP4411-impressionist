@@ -152,6 +152,7 @@
     <ClCompile Include="ImpressionistUI.cpp" />
     <ClCompile Include="LineBrush.cpp" />
     <ClCompile Include="MosaicBuilder.cpp" />
+    <ClCompile Include="MosaicImage.cpp" />
     <ClCompile Include="OriginalView.cpp" />
     <ClCompile Include="PaintView.cpp" />
     <ClCompile Include="PointBrush.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="impressionistUI.h" />
     <ClInclude Include="LineBrush.h" />
     <ClInclude Include="MosaicBuilder.h" />
+    <ClInclude Include="MosaicImage.h" />
     <ClInclude Include="OriginalView.h" />
     <ClInclude Include="PaintView.h" />
     <ClInclude Include="PointBrush.h" />

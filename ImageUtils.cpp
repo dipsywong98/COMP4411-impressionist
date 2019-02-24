@@ -123,6 +123,63 @@ void ImageUtils::mapColor(T* imgDataPtr, const Dim& dim, T fromMin, T fromMax)
 	});
 }
 
+template <typename T>
+double ImageUtils::l2(T* imgData1Ptr, T* imgData2Ptr, const Dim& dim)
+{
+	double distance = 0;
+
+	eachPixel<T>(imgData1Ptr, dim, [&](T* p1, long x, long y)
+	{
+		T* p2 = getPixelPtr(imgData2Ptr, dim, x, y);
+		distance += sqrt(
+			pow(static_cast<double>(p1[0]) - p2[0], 2) + 
+			pow(static_cast<double>(p1[1]) - p2[1], 2) + 
+			pow(static_cast<double>(p1[2]) - p2[2], 2)
+		);
+	});
+
+	return distance;
+}
+
+template <typename T>
+T* ImageUtils::subImage(T* sourceImgDataPtr, const Dim& sourceDim, const long startX, const long startY, const Dim& targetDim)
+{
+	T* t = new T[targetDim.getLength()];
+
+	for (auto x = 0L; x < targetDim.width; x++)
+	{
+		for (auto y = 0L; y < targetDim.height; y++)
+		{
+			auto* tPixel = getPixelPtr(t, targetDim, x, y);
+			auto* sPixel = getPixelPtr(sourceImgDataPtr, sourceDim, startX + x, startY + y);
+
+			tPixel[0] = sPixel[0];
+			tPixel[1] = sPixel[1];
+			tPixel[2] = sPixel[2];
+		}
+	}
+
+	return t;
+}
+
+template <typename T>
+void ImageUtils::pasteImage(T* sourceImgDataPtr, const Dim& sourceDim, long startX, long startY, T* pasteImgDataPtr,
+	const Dim& pasteDim)
+{
+	for (auto x = 0L; x < pasteDim.width; x++)
+	{
+		for (auto y = 0L; y < pasteDim.height; y++)
+		{
+			auto* pPixel = getPixelPtr(pasteImgDataPtr, pasteDim, x, y);
+			auto* sPixel = getPixelPtr(sourceImgDataPtr, sourceDim, startX + x, startY + y);
+
+			sPixel[0] = pPixel[0];
+			sPixel[1] = pPixel[1];
+			sPixel[2] = pPixel[2];
+		}
+	}
+}
+
 template <typename T, typename U>
 U* ImageUtils::toNewType(T* fromImgDataPtr, const Dim& dim)
 {

@@ -79,14 +79,68 @@ public:
 	template <typename T>
 	static void toGray(T* imgDataPtr, const Dim& dim);
 
+	/**
+	 * Converts a type of image array to a new type. New memory is allocated and the old one is not deleted. 
+	 *
+	 * @tparam T old type.
+	 * @tparam U new type.
+	 * @param fromImgDataPtr pointer to the old image data array.
+	 * @param dim dimension of the image.
+	 * @return pointer to new image type array.
+	 */
 	template <typename T, typename U>
 	static U* toNewType(T* fromImgDataPtr, const Dim& dim);
 
+	/**
+	 * Clones the image array.
+	 * 
+	 * @tparam T type of image data array.
+	 * @param imgDataPtr pointer to the image data array.
+	 * @param dim dimension of the image.
+	 * @return pointer to new array.
+	 */
 	template <typename T>
 	static T* clone(T* imgDataPtr, const Dim& dim);
 
+	/**
+	 * Maps color of an image to [0,255]
+	 * 
+	 * @tparam T type of image data array.
+	 * @param imgDataPtr pointer to the image data array.
+	 * @param dim dimension of the image.
+	 * @param fromMin the minimum value of the image.
+	 * @param fromMax the maximum value of the image.
+	 */
 	template <typename T>
 	static void mapColor(T* imgDataPtr, const Dim& dim, T fromMin, T fromMax);
+
+	/**
+	 * Calculates the L2 distance of 2 images with the same dimension.
+	 * 
+	 * @tparam T type of image data array.
+	 * @param imgData1Ptr pointer to the first image data array.
+	 * @param imgData2Ptr pointer to the second image data array.
+	 * @param dim dimension of the image.
+	 * @return the L2 distance.
+	 */
+	template <typename T>
+	static double l2(T* imgData1Ptr, T* imgData2Ptr, const Dim& dim);
+
+	/**
+	 *  
+	 * @tparam T type of image data array.
+	 * @param sourceImgDataPtr pointer to the source image data array.
+	 * @param sourceDim dimension of the source image.
+	 * @param startX x-location of the top left coordinate of the source of the sub image in the source image.
+	 * @param startY y-location of the top left coordinate of the source of the sub image in the source image.
+	 * @param targetDim dimension of the target image.
+	 * @return pointer to new array.
+	 */
+	template <typename T>
+	static T* subImage(T* sourceImgDataPtr, const Dim& sourceDim, long startX, long startY, const Dim& targetDim);
+
+	template <typename T>
+	static void pasteImage(T* sourceImgDataPtr, const Dim& sourceDim, long startX, long startY, T* pasteImgDataPtr, const Dim& pasteDim);
 };
 
 //Template prototype functions
@@ -104,14 +158,21 @@ template unsigned char* ImageUtils::clone(unsigned char*, const Dim&);
 template double* ImageUtils::clone(double*, const Dim&);
 template void ImageUtils::toGray(unsigned char*, const Dim&);
 template void ImageUtils::toGray(double*, const Dim&);
-template void ImageUtils::mapColor(double* imgDataPtr, const Dim& dim, double fromMin, double fromMax);
-template void ImageUtils::mapColor(unsigned char* imgDataPtr, const Dim& dim, unsigned char fromMin, unsigned char fromMax);
+template void ImageUtils::mapColor(double*, const Dim&, double, double);
+template void ImageUtils::mapColor(unsigned char*, const Dim&, unsigned char, unsigned char);
+template double ImageUtils::l2(unsigned char*, unsigned char*, const Dim& dim);
+template double ImageUtils::l2(double*, double*, const Dim& dim);
+template unsigned char* ImageUtils::subImage(unsigned char*, const Dim&, long, long, const Dim&);
+template double* ImageUtils::subImage(double*, const Dim&, long, long, const Dim&);
+template void ImageUtils::pasteImage(unsigned char*, const Dim&, long, long, unsigned char*, const Dim&);
+template void ImageUtils::pasteImage(double*, const Dim&, long, long, double*, const Dim&);
 
 template <typename T>
 struct ImageWrapper
 {
 	T* dataPtr;
 	Dim dim;
+
 	void convolve(const double* filterArray, const int filterSize)
 	{
 		ImageUtils::convolve<T>(dataPtr, dim, filterArray, filterSize);
@@ -128,27 +189,45 @@ struct ImageWrapper
 	{
 		return ImageUtils::getPixelPtr<T>(dataPtr, dim, x, y);
 	}
-	void toGray()
+	void toGray() const
 	{
 		ImageUtils::toGray(dataPtr, dim);
 	}
 	template <typename U>
-	ImageWrapper<U> toNewType()
+	ImageWrapper<U> toNewType() const
 	{
 		return {
 			ImageUtils::toNewType<T, U>(dataPtr, dim),
 			dim
 		};
 	}
-	T* clone()
+	ImageWrapper clone() const
 	{
-		return ImageUtils::clone(dataPtr, dim);
+		return {
+			ImageUtils::clone<T>(dataPtr, dim),
+			dim
+		};
 	}
 	void mapColor(T fromMin, T fromMax)
 	{
 		return ImageUtils::mapColor(dataPtr, dim, fromMin, fromMax);
 	}
-	ImageWrapper(T* imgDataPtr, Dim dim): dataPtr(imgDataPtr), dim(dim) {}
+	double l2(const ImageWrapper& other) const
+	{
+		return ImageUtils::l2(dataPtr, other.dataPtr, dim);
+	}
+	ImageWrapper subImage(long x, long y, const Dim& targetDim) const
+	{
+		return {
+			ImageUtils::subImage(dataPtr, dim, x, y, targetDim),
+			targetDim
+		};
+	}
+	void pasteImage(long x, long y, const ImageWrapper& other)
+	{
+		ImageUtils::pasteImage(dataPtr, dim, x, y, other.dataPtr, other.dim);
+	}
+	ImageWrapper(T* imgDataPtr, const Dim& dim): dataPtr(imgDataPtr), dim(dim) {}
 	ImageWrapper(const ImageWrapper& other)
 	{
 		dataPtr = ImageUtils::clone(other.dataPtr, other.dim);
@@ -167,5 +246,12 @@ struct ImageWrapper
 	{
 		delete[] dataPtr;
 		dataPtr = nullptr;
+	}
+	static ImageWrapper<T> makeFromData(T* imgDataPtr, const Dim& dim)
+	{
+		return {
+			ImageUtils::clone(imgDataPtr, dim),
+			dim
+		};
 	}
 };

@@ -747,9 +747,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 			{"Video Auto-Fill", 0, VideoProcessor::cbVideoAutoFill},
 			{"Video Paintly", 0, VideoProcessor::cbVideoPaintly},
 		{nullptr},
-		{"Mosaic", 0, nullptr, nullptr, FL_SUBMENU},
-			{"Prepare Tile Assets", 0, MosaicBuilder::cbPrepareTiles},
-		{nullptr},
+		{"Mosaic...", 0, MosaicBuilder::openUi},
 		{ 0 },
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
 		{ "&About",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about },
@@ -1099,4 +1097,6 @@ ImpressionistUI::ImpressionistUI() {
 		m_colorChooser->rgb(1.0, 1.0, 1.0);
 	}
 	m_colorPickerDialog->end();
+
+
 }
