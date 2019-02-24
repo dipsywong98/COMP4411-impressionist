@@ -1,7 +1,7 @@
 #include "Bayesian.h"
 #include <FL/fl_ask.H>
 #include <list>
-#include "Matrix.h"
+#include <iostream>
 #include <Eigen/Dense>
 using Eigen::MatrixXd;
 
@@ -29,18 +29,6 @@ void Bayesian::init()
 bool Bayesian::trySolvePix(Point pt)
 {
 	int x = pt.x, y = pt.y;
-	Matrix<float> a(ksize, ksize);
-	Matrix<float> F(ksize, ksize);
-	Matrix<float> B(ksize, ksize);
-	for(int i=0;i<ksize;i++)
-	{
-		for(int j=0;j<ksize;j++)
-		{
-			a.mV[i][j] = alpha[j*w + i];
-			F.mV[i][j] = fore[j*w + i];
-			B.mV[i][j] = back[j*w + i];
-		}
-	}
 	return 1;
 }
 
