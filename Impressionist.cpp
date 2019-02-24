@@ -16,9 +16,11 @@
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
 #include <functional>
+#include "Bayesian.h"
 
 ImpressionistUI *impUI;
 ImpressionistDoc *impDoc;
+Bayesian* imp_bayesian;
 
 int main(int	argc, 
 		 char**	argv) 
@@ -27,6 +29,9 @@ int main(int	argc,
 
 	// Create the UI
 	impUI = new ImpressionistUI();
+
+	imp_bayesian = new Bayesian(impDoc, impUI);
+	impDoc->m_bayesian = imp_bayesian;
 
 	// Set the impDoc which is used as the bridge between UI and brushes
 	impUI->setDocument(impDoc);

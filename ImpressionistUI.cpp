@@ -13,6 +13,7 @@
 #include "impressionistDoc.h"
 #include <sstream>
 #include "VideoProcessor.h"
+#include "Bayesian.h"
 
 /*
 //------------------------------ Widget Examples -------------------------------------------------
@@ -606,6 +607,15 @@ void ImpressionistUI::cb_painterly_r0(Fl_Widget* o, void* v)
 	((ImpressionistUI*)(o->user_data()))->m_painterlyR0 = int(((Fl_Slider *)o)->value());
 }
 
+void ImpressionistUI::cb_bayesian_open_and_solve(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL) {
+		pDoc->m_bayesian->solve(newfile);
+	}
+}
+
 void ImpressionistUI::cb_open_colors_dialog(Fl_Widget* o, void* v)
 {
 	whoami(dynamic_cast<Fl_Menu_*>(o))->m_colorPickerDialog->show();
@@ -744,6 +754,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{"&Load Alpha Map Img", FL_ALT +'a', (Fl_Callback*)ImpressionistUI::cb_load_alpha_map_image },
 		{"Video Auto-Fill", 0, VideoProcessor::cbVideoAutoFill},
 		{"Video Paintly", 0, VideoProcessor::cbVideoPaintly},
+		{"Bayesian", 0, (Fl_Callback*)ImpressionistUI::cb_bayesian_open_and_solve },
 		{ 0 },
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
 		{ "&About",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about },
