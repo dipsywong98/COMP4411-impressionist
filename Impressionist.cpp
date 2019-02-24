@@ -117,3 +117,19 @@ GLubyte* getColor(unsigned char* p, int xx, int yy, int w, int h){
 float colorDist(unsigned char* p0, unsigned char* p1) {
 	return sqrt(pow(p0[0] - p1[0], 2) + pow(p0[1] - p1[1], 2) + pow(p0[2] - p1[2], 2));
 };
+
+void getMeanColor(GLubyte* buf, unsigned char* p, int xx, int yy, int w, int h, float sigma, int size)
+{
+	std::vector<std::vector<float>> kernel=  getGaussianKernel(sigma, size);
+	memset(buf, 0, 3);
+	for (int a = 0; a<size; a++)
+	{
+		for (int b = 0; b<size; b++)
+		{
+			for (int d = 0; d<3; d++)
+			{
+				buf[d] += kernel[a][b] * getColor(p,xx,yy,w,h)[d];
+			}
+		}
+	}
+}
