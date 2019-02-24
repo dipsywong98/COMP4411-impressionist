@@ -37,26 +37,22 @@ bool Bayesian::trySolvePix(Point pt)
 	if (unknCnt == 9)return 0; // need more than half for evaluation
 
 	MatrixXd a(ksize,ksize);
-	MatrixXd F_r(ksize,ksize);
-	MatrixXd F_g(ksize,ksize);
-	MatrixXd F_b(ksize,ksize);
-	MatrixXd B_r(ksize,ksize);
-	MatrixXd B_g(ksize,ksize);
-	MatrixXd B_b(ksize,ksize);
-	MatrixXd Fw(ksize,ksize);
-	MatrixXd Bw(ksize,ksize);
+
+	std::list<Point> flist;
+	std::list<Point> blist;
+	VectorXd Fw;
+	VectorXd Bw;
 
 	kernelFun(pt, [&](int i, int j, int x, int y)
 	{
 		a(i, j) = alpha[y*w + x];
-		F_r(i, j) = fore[y*w + x] * img[(y*w+x)*3];
-		F_g(i, j) = fore[y*w + x] * img[(y*w+x)*3+1];
-		F_b(i, j) = fore[y*w + x] * img[(y*w+x)*3+2];
-		B_r(i, j) = back[y*w + x] * img[(y*w+x)*3];
-		B_g(i, j) = back[y*w + x] * img[(y*w+x)*3+1];
-		B_b(i, j) = back[y*w + x] * img[(y*w+x)*3+2];
-		Fw(i, j) = !unkn[y*w+x] && pow(a(i, j),2) * gaussianKernel[i][j];
-		Bw(i, j) = !unkn[y*w + x] && pow(1-a(i, j),2) * gaussianKernel[i][j];
+		if (fore[y*w + x])flist.emplace_back(x, y);
+		if (back[y*w + x])blist.emplace_back(x, y);
+		if (!unkn[y*w + x])
+		{
+			Fw << pow(a(i, j), 2) * gaussianKernel[i][j];
+			Bw << pow(1 - a(i, j), 2) * gaussianKernel[i][j];
+		}
 	});
 
 	// Vector3d F,B;

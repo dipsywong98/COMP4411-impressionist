@@ -5,30 +5,20 @@ using namespace Eigen;
 class Node
 {
 public:
-	Node(MatrixXd r, MatrixXd g, MatrixXd b, MatrixXd w);
-	int ksize;
+	Node(MatrixXd m, VectorXd w);
 	float W;
 
 	//weighted mean
-	float mur;
-	float mug;
-	float mub;
+	Vector3d mu;
 
 	//difference of itself and mean
-	MatrixXd dr;
-	MatrixXd dg;
-	MatrixXd db;
+	MatrixXd d;
 
 	//c as covariance
-	MatrixXd cr;
-	MatrixXd cg;
-	MatrixXd cb;
+	MatrixXd c;
+	MatrixXd t;
 
-	float lr = 0;	//eigenvalue
-	float lg = 0;	//eigenvalue
-	float lb = 0;	//eigenvalue
-	VectorXd er;	//eigenvector
-	VectorXd eg;	//eigenvector
-	VectorXd eb;	//eigenvector
+	float l = 0;	//eigenvalue
+	VectorXd e;	//eigenvector
 };
 
