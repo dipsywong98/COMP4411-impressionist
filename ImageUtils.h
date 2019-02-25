@@ -139,8 +139,24 @@ public:
 	template <typename T>
 	static T* subImage(T* sourceImgDataPtr, const Dim& sourceDim, long startX, long startY, const Dim& targetDim);
 
+	/**
+	 * 
+	 * @tparam T type of image data array.
+	 * @param sourceImgDataPtr pointer to the source image data array.
+	 * @param sourceDim dimension of the source image.
+	 * @param startX x-location of the top left coordinate of the source of the sub image in the source image.
+	 * @param startY y-location of the top left coordinate of the source of the sub image in the source image.
+	 * @param pasteImgDataPtr pointer to the smaller image data array.
+	 * @param pasteDim dimension of the smaller image.
+	 */
 	template <typename T>
 	static void pasteImage(T* sourceImgDataPtr, const Dim& sourceDim, long startX, long startY, T* pasteImgDataPtr, const Dim& pasteDim);
+
+	template <typename T>
+	static std::pair<T*, Dim> maxPool(T* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
+
+	template <typename T>
+	static std::pair<T*, Dim> meanPool(T* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
 };
 
 //Template prototype functions
@@ -166,6 +182,10 @@ template unsigned char* ImageUtils::subImage(unsigned char*, const Dim&, long, l
 template double* ImageUtils::subImage(double*, const Dim&, long, long, const Dim&);
 template void ImageUtils::pasteImage(unsigned char*, const Dim&, long, long, unsigned char*, const Dim&);
 template void ImageUtils::pasteImage(double*, const Dim&, long, long, double*, const Dim&);
+template std::pair<double*, Dim> ImageUtils::maxPool(double* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
+template std::pair<unsigned char*, Dim> ImageUtils::maxPool(unsigned char* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
+template std::pair<double*, Dim> ImageUtils::meanPool(double* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
+template std::pair<unsigned char*, Dim> ImageUtils::meanPool(unsigned char* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
 
 template <typename T>
 struct ImageWrapper
@@ -226,6 +246,22 @@ struct ImageWrapper
 	void pasteImage(long x, long y, const ImageWrapper& other)
 	{
 		ImageUtils::pasteImage(dataPtr, dim, x, y, other.dataPtr, other.dim);
+	}
+	ImageWrapper maxPool(long poolSize)
+	{
+		auto[pooledImage, pooledDim] = ImageUtils::maxPool(dataPtr, dim, poolSize);
+		return {
+			pooledImage,
+			pooledDim
+		};
+	}
+	ImageWrapper meanPool(long poolSize)
+	{
+		auto[pooledImage, pooledDim] = ImageUtils::meanPool(dataPtr, dim, poolSize);
+		return {
+			pooledImage,
+			pooledDim
+		};
 	}
 	ImageWrapper(T* imgDataPtr, const Dim& dim): dataPtr(imgDataPtr), dim(dim) {}
 	ImageWrapper(const ImageWrapper& other)

@@ -180,6 +180,80 @@ void ImageUtils::pasteImage(T* sourceImgDataPtr, const Dim& sourceDim, long star
 	}
 }
 
+template <typename T>
+std::pair<T*, Dim> ImageUtils::maxPool(T* sourceImgDataPtr, const Dim& sourceDim, const long poolSize)
+{
+	Dim targetDim = { sourceDim.width/poolSize, sourceDim.height/poolSize };
+	Dim poolDim = { poolSize, poolSize };
+
+	T* t = new T[targetDim.getLength()];
+
+	for (auto y = 0; y < targetDim.height; y++)
+	{
+		for (auto x = 0; x < targetDim.width; x++)
+		{
+			T* clip = subImage(sourceImgDataPtr, sourceDim, x * poolSize, y * poolSize, poolDim);
+			T* tPixel = getPixelPtr(t, targetDim, x, y);
+
+			auto max = 0.0;
+
+			eachPixel<T>(clip, poolDim, [&](T* rgbArray, long, long)
+			{
+				auto sum = rgbArray[0] + rgbArray[1] + rgbArray[2];
+				if (sum > max)
+				{
+					max = sum;
+					tPixel[0] = rgbArray[0];
+					tPixel[1] = rgbArray[1];
+					tPixel[2] = rgbArray[2];
+				}
+			});
+
+			delete[] clip;
+		}
+	}
+
+	return { t, targetDim };
+}
+
+template <typename T>
+std::pair<T*, Dim> ImageUtils::meanPool(T* sourceImgDataPtr, const Dim& sourceDim, const long poolSize)
+{
+	Dim targetDim = { sourceDim.width / poolSize, sourceDim.height / poolSize };
+	Dim poolDim = { poolSize, poolSize };
+	const double numPoolPixels = poolDim.width * poolDim.height;
+
+	T* t = new T[targetDim.getLength()];
+
+	for (auto y = 0; y < targetDim.height; y++)
+	{
+		for (auto x = 0; x < targetDim.width; x++)
+		{
+			T* clip = subImage(sourceImgDataPtr, sourceDim, x * poolSize, y * poolSize, poolDim);
+			T* tPixel = getPixelPtr(t, targetDim, x, y);
+
+			double rSum = 0;
+			double gSum = 0;
+			double bSum = 0;
+
+			eachPixel<T>(clip, poolDim, [&](T* rgbArray, long, long)
+			{
+				rSum += rgbArray[0];
+				gSum += rgbArray[1];
+				bSum += rgbArray[2];
+			});
+
+			tPixel[0] = static_cast<T>(rSum / numPoolPixels);
+			tPixel[1] = static_cast<T>(gSum / numPoolPixels);
+			tPixel[2] = static_cast<T>(bSum / numPoolPixels);
+
+			delete[] clip;
+		}
+	}
+
+	return { t, targetDim };
+}
+
 template <typename T, typename U>
 U* ImageUtils::toNewType(T* fromImgDataPtr, const Dim& dim)
 {

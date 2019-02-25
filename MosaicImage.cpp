@@ -45,14 +45,14 @@ void MosaicImage::applySubstitutions()
 
 			auto limit = static_cast<int>(MosaicBuilder::tileLimitSliderPtr->value());
 
-			for (auto& pair : MosaicBuilder::imagePool)
+			for (auto& [key, set] : MosaicBuilder::imagePool)
 			{
 				if (limit == 0) break;
-				const auto score = MosaicBuilder::calculateScores(sourceTile, pair.second);
+				const auto score = MosaicBuilder::calculateScores(sourceTile, set);
 				if (score < bestScore)
 				{
 					bestScore = score;
-					bestImagePtr = pair.second.original;
+					bestImagePtr = set.original;
 				}
 				limit--;
 			}
