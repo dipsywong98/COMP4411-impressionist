@@ -201,13 +201,27 @@ void testEig()
 	ss << "err" << VectorXd(cov2*ess2.e - ess2.l*ess2.e).norm() << endl;
 }
 
+void testConcat()
+{
+	Matrix2d A11, A12, A21, A22;
+	A11 << 1, 2, 3, 4;
+	A12 << 5, 6, 7, 8;
+	A21 << 9, 10, 11, 12;
+	A22 << 13, 14, 15, 16;
+	ss << A11 << endl << A12 << endl << A21 << endl << A22 << endl;
+	Matrix4d A;
+	A << A11, A12, A21, A22;
+	ss << A;
+}
+
 
 int main(int	argc, 
 		 char**	argv) 
 {
 	// testNode();
 	// testEig();
-	testCluster();
+	// testCluster();
+	testConcat();
 	OutputDebugString(ss.str().c_str());
 	return 0;
 	impDoc = new ImpressionistDoc();

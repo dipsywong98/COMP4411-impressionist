@@ -3,6 +3,9 @@
 #include <list>
 #include <iostream>
 #include <Eigen/Dense>
+#include "Cluster.h"
+#include <Eigen/src/Core/util/ForwardDeclarations.h>
+#include <Eigen/src/Core/util/ForwardDeclarations.h>
 using namespace Eigen;
 
 extern std::vector<std::vector<float>> getGaussianKernel(float sigma, int size);
@@ -26,6 +29,71 @@ void Bayesian::init()
 {
 }
 
+void Bayesian::getFromClusters(const Cluster& CF, const Cluster& CB,double mualpha, Vector3d C, double sigC, Vector3d& fcolor, Vector3d& bcolor,
+	double& palpha)
+{
+	const Matrix3d I = Matrix3d::Identity();
+	double invSigC2 = 1 / pow(sigC, 2);
+	double maxScore = -INFINITY;
+	int maxIter = 50;
+	double esp = 1e-6;
+	for(int fi = 0; fi < CF.clusters.size(); fi++)
+	{
+		const VectorXd &muF = CF.clusters[fi].first;
+		const MatrixXd &sigF = CF.clusters[fi].second;
+		MatrixXd invSigF = sigF.inverse();
+		for(int bi=0; bi< CB.clusters.size(); bi++)
+		{
+			
+			const VectorXd &muB = CB.clusters[bi].first;
+			const MatrixXd &sigB = CB.clusters[bi].second;
+			MatrixXd invSigB = sigB.inverse();
+			double alphak = mualpha;
+			double prevScore = NAN;
+
+			for(int k = 0; k<maxIter; k++)
+			{
+				MatrixXd A11 = invSigF + I*pow(alphak, 2)*invSigC2;
+				MatrixXd Axx = I*alphak*(1 - alphak)*invSigC2;
+				MatrixXd A22 = invSigB + I*pow(1 - alphak, 2)*invSigC2;
+				MatrixXd A(6, 6);
+				A << A11, Axx, Axx, A22;
+
+				VectorXd b1 = invSigF * muF + C*alphak * invSigC2;
+				VectorXd b2 = invSigB * muB + C*(1-alphak) * invSigC2;
+				VectorXd b(6);
+				b << b1, b2;
+
+				VectorXd X = A.colPivHouseholderQr().solve(b);
+				Vector3d F, B;
+				F << X(0), X(1), X(2);
+				B << X(3), X(4), X(5);
+
+				alphak = Vector3d(F - B).normalized().dot(Vector3d(C - B));
+
+				double LC = -Vector3d(C - alphak*F - (1 - alphak)*B).squaredNorm() * invSigC2;
+				Vector3d dF(F - muF), dB(B - muB);
+				double LF = MatrixXd(-dF.transpose()*invSigF*dF)(0,0) / 2;
+				double LB = MatrixXd(-dB.transpose()*invSigB*dB)(0,0) / 2;
+
+				double score = LC + LF + LB;
+
+				if(score > maxScore)
+				{
+					maxScore = score;
+					fcolor = F;
+					bcolor = B;
+					palpha = alphak;
+				}
+				if(prevScore == prevScore && abs(prevScore - score) < esp)
+				{
+					break;
+				}
+			}
+		}
+	}
+}
+
 bool Bayesian::trySolvePix(Point pt)
 {
 	int x = pt.x, y = pt.y;
@@ -38,8 +106,8 @@ bool Bayesian::trySolvePix(Point pt)
 
 	MatrixXd a(ksize,ksize);
 
-	std::list<Point> flist;
-	std::list<Point> blist;
+	std::vector<Point> flist;
+	std::vector<Point> blist;
 	VectorXd Fw;
 	VectorXd Bw;
 
@@ -55,12 +123,26 @@ bool Bayesian::trySolvePix(Point pt)
 		}
 	});
 
-	// Vector3d F,B;
-	// F << F_r, F_g, F_b;
-	// B << B_r, B_g, B_b;
-
-	std::cout << a;
-
+	MatrixXd F(flist.size(), 3), B(blist.size(), 3);
+	for(int i = 0; i<flist.size();i++)
+	{
+		int x = flist[i].x;
+		int y = flist[i].y;
+		F.row(i) << img[y*w + x], img[y*w + x + 1], img[y*w + x + 2];
+	}
+	for(int i = 0; i<blist.size();i++)
+	{
+		int x = blist[i].x;
+		int y = blist[i].y;
+		B.row(i) << img[y*w + x], img[y*w + x + 1], img[y*w + x + 2];
+	}
+	Cluster cF(F, Fw);
+	Cluster cB(B, Bw);
+	Vector3d Fcolor, Bcolor, Ccolor;
+	Ccolor << img[y*w + x], img[y*w + x + 1], img[y*w + x + 2];
+	double mualpha = a.mean();
+	double palpha;
+	getFromClusters(cF,cB, mualpha,Ccolor,0.01,Fcolor, Bcolor,palpha);
 	return 1;
 }
 
