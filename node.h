@@ -1,10 +1,12 @@
 #pragma once
 #include <Eigen/Dense>
+#include <vector>
 using namespace Eigen;
 
 class Node
 {
 public:
+	Node();
 	Node(MatrixXd m, VectorXd w);
 	MatrixXd m;
 	VectorXd w;

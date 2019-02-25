@@ -11,9 +11,9 @@ Cluster::Cluster(MatrixXd m, VectorXd w, double minVar)
 	while(true)
 	{
 		//get node with biggest eigenvalue
-		std::sort(nodes.begin(), nodes.end(), [](Node left, Node right)
+		std::sort(nodes.begin(),nodes.end(),[](Node& a, Node& b)
 		{
-			return left.l > right.l;
+			return abs(a.l > b.l);
 		});
 
 		//if biggest eigenvalue is less than threshold, clustering done
@@ -25,34 +25,35 @@ Cluster::Cluster(MatrixXd m, VectorXd w, double minVar)
 		//cluster pixel by comparing their inner product with eigenvecter
 		//and inner product of mean and eigenvector
 		Node& node = nodes[0];
-		VectorXd we = node.w * node.e;
-		int size = we.size(), acnt = 0, bcnt = 0;
-		float me = node.mu.dot(node.e);
+		VectorXd me = node.m*node.e;
+		int size = node.m.rows(), acnt = 0, bcnt = 0;
+		float mue = node.mu.dot(node.e);
 		VectorXd idx(size);	//indicate whether go to cluster a or b
 		for (int i = 0; i < size; i++) {
-			if (idx(i) = we(i) <= me) {
+			if (idx(i) = me(i) <= mue) {
 				acnt++;
 			}
 			else {
 				bcnt++;
 			}
 		}
-		ss << "idx:"<<idx<< std::endl<<"e:"<<node.e<< std::endl;
 		if(acnt && bcnt)	//if able to cluster
 		{
 			MatrixXd Fa(acnt, 3), Fb(bcnt, 3);
 			VectorXd wa(acnt), wb(bcnt);
-			for(int i=0; i<size; i++)
+			for(int i=0, a=0, b=0; i<size; i++)
 			{
 				if(idx(i))
 				{
-					Fa << node.m(i);
-					wa << node.w(i);
+					Fa.row(a) = node.m.row(i);
+					wa(a) = node.w(i);
+					a++;
 				}
 				else
 				{
-					Fb << node.m(i);
-					wb << node.w(i);
+					Fb.row(b) = node.m.row(i);
+					wb(b) = node.w(i);
+					b++;
 				}
 			}
 			nodes.erase(nodes.begin());
@@ -63,9 +64,11 @@ Cluster::Cluster(MatrixXd m, VectorXd w, double minVar)
 			break;	//cannot further cluster then goto report clusters' mean and cov
 		}
 	}
+	// int index = 0;
 	for(Node& n: nodes)
 	{
-		clusters.emplace_back(n.m, n.c);
+		// ss << "cluster " << index++ << ":\n m\n" << n.m << "\nc\n" << n.c << std::endl;
+		clusters.emplace_back(n.mu, n.c);
 	}
 }
 

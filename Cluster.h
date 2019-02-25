@@ -9,6 +9,6 @@ class Cluster
 public:
 	Cluster(MatrixXd m, VectorXd w, double minVar = 0.05);
 	~Cluster();
-	std::vector<std::pair<MatrixXd, VectorXd>> clusters;
+	std::vector<std::pair< VectorXd,MatrixXd>> clusters;
 };
 

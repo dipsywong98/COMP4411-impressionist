@@ -30,50 +30,60 @@ ImpressionistDoc *impDoc;
 Bayesian* imp_bayesian;
 stringstream ss;
 
-void it(stringstream& ss, string des, const MatrixXd& expect, const MatrixXd& given)
+bool it(stringstream& ss, string des, const MatrixXd& expect, const MatrixXd& given)
 {
 	ss << des << ": ";
 	MatrixXd diff = expect - given;
 	if(diff.squaredNorm() < 0.1)
 	{
 		ss << "OK" << endl;
-		return;
+		return true;
 	}
 	ss << "Error\nExpected:" << endl;
 	ss << expect << endl;
 	ss << "Found:" << endl;
 	ss << given << endl;
+	return false;
 }
 
-void it(stringstream& ss, string des, const VectorXd& expect, const VectorXd& given)
+bool it(stringstream& ss, string des, const VectorXd& expect, const VectorXd& given)
 {
 	ss << des << ": ";
 	VectorXd diff = expect - given;
 	if (diff.squaredNorm() < 0.1)
 	{
 		ss << "OK" << endl;
-		return;
+		return true;
 	}
 	ss << "Error\nExpected:" << endl;
 	ss << expect << endl;
 	ss << "Found:" << endl;
 	ss << given << endl;
+	return false;
 }
 
 
-void it(stringstream& ss, string des, double expect, double given)
+bool it(stringstream& ss, string des, double expect, double given)
 {
 	ss << des << ": ";
 	double diff = expect - given;
 	if (diff < 0.1)
 	{
 		ss << "OK" << endl;
-		return;
+		return true;
 	}
 	ss << "Error\nExpect:" << endl;
 	ss << expect << endl;
 	ss << "Found:" << endl;
 	ss << given << endl;
+	return false;
+}
+
+bool it(stringstream& ss, string des, bool flag)
+{
+	ss << des << ": ";
+	ss << (flag ? "OK" : "Error") << endl;
+	return flag;
 }
 
 void testNode()
@@ -142,10 +152,30 @@ void testCluster()
 	w << 1,1,1,1,1,1;
 
 	Cluster c(m, w,5);
+
+	Vector3d mu0, mu1, mu2;
+	mu0 << 99.5, 20.5, 329.5;
+	mu1 << 99.5, 20.5, 29.5;
+	mu2 << 23.5, 90.5, 23.;
+
+	MatrixXd cov0(3,3), cov1(3,3), cov2(3,3);
+	cov0 << 2.5001e-01, -2.5000e-01, 2.5000e-01,
+		-2.5000e-01, 2.5001e-01, -2.5000e-01,
+		2.5000e-01, -2.5000e-01, 2.5001e-01;
+	cov1 << 2.5001e-01, -2.5000e-01, 2.5000e-01,
+		-2.5000e-01, 2.5001e-01, -2.5000e-01,
+		2.5000e-01, -2.5000e-01, 2.5001e-01;
+	cov2 << 2.5001e-01, 2.5000e-01, 0.0000e+00,
+		2.5000e-01, 2.5001e-01, 0.0000e+00,
+		0.0000e+00, 0.0000e+00, 1.0000e-05;
 	
-	it(ss, "clusters Count", 3, c.clusters.size());
-	// if()
-	// it(ss,"cluster 0 mu", exp_c0_mu, )
+	it(ss, "clusters Count", 3, c.clusters.size()) &&
+		it(ss, "mu0", mu0, c.clusters[0].first) &&
+		it(ss, "mu1", mu1, c.clusters[1].first) &&
+		it(ss, "mu2", mu2, c.clusters[2].first) &&
+		it(ss, "cov0", cov0, c.clusters[0].second) &&
+		it(ss, "cov1", cov1, c.clusters[1].second) &&
+		it(ss, "cov2", cov2, c.clusters[2].second);
 }
 
 void testEig()
@@ -176,7 +206,8 @@ int main(int	argc,
 		 char**	argv) 
 {
 	// testNode();
-	testEig();
+	// testEig();
+	testCluster();
 	OutputDebugString(ss.str().c_str());
 	return 0;
 	impDoc = new ImpressionistDoc();

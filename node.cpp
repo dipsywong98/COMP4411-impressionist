@@ -1,6 +1,11 @@
 #include "node.h"
+#include "PowerIter.h"
 
 extern std::stringstream ss;
+
+Node::Node()
+{
+}
 
 // intensity in r,g,b channels, w as weight
 Node::Node(MatrixXd m, VectorXd w):m(m),w(w)
@@ -38,16 +43,8 @@ Node::Node(MatrixXd m, VectorXd w):m(m),w(w)
 	}
 	c = t.transpose() * t * (1.0 / W) + 1e-5 * Matrix3d::Identity();
 	
-	EigenSolver<MatrixXd> es(c);
-	VectorXd ls = es.eigenvalues().real();	//c is a spsd matrix, all eigenvalue and eigenvector real
-	for (int i = 0; i < ls.size(); i++)
-	{
-		if (abs(ls(i))>l)
-		{
-			l = ls.real()(i);
-			e = es.eigenvectors().real().col(i);
-		}
-	}
-
+	PowerIter pi(c);
+	l = pi.l;
+	e = pi.e;
 	// ss << "cov"<<std::endl<<c<< std::endl<<"eigenvectors" << std::endl<< es.eigenvectors()<<std::endl<< "lambdas"<<es.eigenvalues()<<std::endl;
 }
