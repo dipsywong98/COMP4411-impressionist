@@ -1,9 +1,9 @@
 #include "node.h"
 
-// extern std::stringstream ss;
+extern std::stringstream ss;
 
 // intensity in r,g,b channels, w as weight
-Node::Node(MatrixXd m, VectorXd w)
+Node::Node(MatrixXd m, VectorXd w):m(m),w(w)
 {
 	// Vector3d mean;
 	// mean << r.mean(), g.mean(), b.mean();
@@ -12,6 +12,7 @@ Node::Node(MatrixXd m, VectorXd w)
 
 	//weighted mean
 	// mu = m.transpose()*w / W;
+	mu = VectorXd(3);
 	mu(0) = (m.col(0).dot(w)) / W;
 	mu(1) = (m.col(1).dot(w)) / W;
 	mu(2) = (m.col(2).dot(w)) / W;
@@ -35,7 +36,7 @@ Node::Node(MatrixXd m, VectorXd w)
 			t(i, j) = d(i, j)*sqi;
 		}
 	}
-	c = t.transpose() * t * (1.0 / W);
+	c = t.transpose() * t * (1.0 / W) + 1e-5 * Matrix3d::Identity();
 	
 	EigenSolver<MatrixXd> es(c);
 	VectorXd ls = es.eigenvalues().real();	//c is a spsd matrix, all eigenvalue and eigenvector real
@@ -44,9 +45,9 @@ Node::Node(MatrixXd m, VectorXd w)
 		if (abs(ls(i))>l)
 		{
 			l = ls.real()(i);
-			e = es.eigenvectors().real().row(i);
+			e = es.eigenvectors().real().col(i);
 		}
 	}
 
-	// ss << "eigenvectors" << std::endl<< es.eigenvectors().real()<<std::endl<< "lambdas"<<es.eigenvalues().real()<<std::endl;
+	// ss << "cov"<<std::endl<<c<< std::endl<<"eigenvectors" << std::endl<< es.eigenvectors()<<std::endl<< "lambdas"<<es.eigenvalues()<<std::endl;
 }

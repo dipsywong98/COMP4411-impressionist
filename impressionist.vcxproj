@@ -145,6 +145,7 @@
     <ClCompile Include="CircleBrush.cpp" />
     <ClCompile Include="Cluster.cpp" />
     <ClCompile Include="CurvedBrush.cpp" />
+    <ClCompile Include="PowerIter.cpp" />
     <ClCompile Include="ImpBrush.cpp" />
     <ClCompile Include="Impressionist.cpp" />
     <ClCompile Include="ImpressionistDoc.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="CircleBrush.h" />
     <ClInclude Include="Cluster.h" />
     <ClInclude Include="CurvedBrush.h" />
+    <ClInclude Include="PowerIter.h" />
     <ClInclude Include="ImpBrush.h" />
     <ClInclude Include="impressionist.h" />
     <ClInclude Include="impressionistDoc.h" />

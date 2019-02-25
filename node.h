@@ -6,10 +6,12 @@ class Node
 {
 public:
 	Node(MatrixXd m, VectorXd w);
+	MatrixXd m;
+	VectorXd w;
 	float W;
 
 	//weighted mean
-	Vector3d mu;
+	VectorXd mu;
 
 	//difference of itself and mean
 	MatrixXd d;

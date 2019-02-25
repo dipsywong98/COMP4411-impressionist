@@ -20,6 +20,8 @@
 #include "node.h"
 #include <Eigen/Dense>
 #include <iostream>
+#include "Cluster.h"
+#include "PowerIter.h"
 using namespace Eigen;
 using namespace std;
 
@@ -74,7 +76,7 @@ void it(stringstream& ss, string des, double expect, double given)
 	ss << given << endl;
 }
 
-void test()
+void testNode()
 {
 	MatrixXd m(8,3);
 	m << 0, 0, 0,
@@ -125,14 +127,57 @@ void test()
 	VectorXd ce = n.c * n.e;
 	VectorXd le = n.l * n.e;
 	it(ss, "evector", ce, le);
-	
-	OutputDebugString(ss.str().c_str());
 }
+
+void testCluster()
+{
+	MatrixXd m(6, 3);
+	m << 23, 90, 23,
+		24, 91, 23,
+		100, 20, 30,
+		99, 21, 29,
+		100, 20, 330,
+		99, 21, 329;
+	VectorXd w(6);
+	w << 1,1,1,1,1,1;
+
+	Cluster c(m, w,5);
+	
+	it(ss, "clusters Count", 3, c.clusters.size());
+	// if()
+	// it(ss,"cluster 0 mu", exp_c0_mu, )
+}
+
+void testEig()
+{
+	Matrix3d cov1;
+	cov1<< 18.7500, -6.9444444, -27.0833333,
+		-6.944444, 119.44445444, 20.83333333,
+		-27.083333, 20.8333333, 63.19445444;
+	// EigenSolver<MatrixXd> es(cov1);
+	// ss <<"~1~"<<endl<< es.eigenvalues().real()<<endl << es.eigenvectors().real()<<endl;
+	PowerIter ess(cov1);
+	ss << "~1~22222\n" << ess.l << endl << ess.e << endl;
+	ss << "err" << VectorXd(cov1*ess.e - ess.l*ess.e).norm() << endl;
+
+	Matrix3d cov2;
+	cov2 << 1283.81, - 1182.31,  2643.28,
+		-1182.31,  1089.14, - 2434.61,
+		2643.28, - 2434.61,  20442.9; 
+	// EigenSolver<MatrixXd> es2(cov2);
+	// ss << "~2~" << es2.eigenvalues().real() << es2.eigenvectors().real() << endl;
+	PowerIter ess2(cov2);
+	ss << "~2~2222\n" << ess2.l << endl << ess2.e << endl;
+	ss << "err" << VectorXd(cov2*ess2.e - ess2.l*ess2.e).norm() << endl;
+}
+
 
 int main(int	argc, 
 		 char**	argv) 
 {
-	test();
+	// testNode();
+	testEig();
+	OutputDebugString(ss.str().c_str());
 	return 0;
 	impDoc = new ImpressionistDoc();
 

@@ -21,6 +21,7 @@
     <ClCompile Include="Bayesian.cpp" />
     <ClCompile Include="Cluster.cpp" />
     <ClCompile Include="node.cpp" />
+    <ClCompile Include="PowerIter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlphaMapBrush.h" />
@@ -44,5 +45,6 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Cluster.h" />
     <ClInclude Include="node.h" />
+    <ClInclude Include="PowerIter.h" />
   </ItemGroup>
 </Project>
