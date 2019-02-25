@@ -147,7 +147,9 @@ ImageWrapper<unsigned char> MosaicBuilder::makeGradientImage(const ImageWrapper<
 		rgbArray[2] = 255;
 	});
 
-	return sobelY;
+	auto gradient = sobelY.maxPool(5);
+
+	return gradient;
 }
 
 ImageWrapper<unsigned char> MosaicBuilder::makeColorImage(const ImageWrapper<unsigned char>& imgWrapper)
@@ -175,8 +177,9 @@ ImageWrapper<unsigned char> MosaicBuilder::makeColorImage(const ImageWrapper<uns
 	auto colorImg = imgWrapper;
 
 	colorImg.convolve(gaussianKernel, kernelSize);
+	auto meanColor = colorImg.meanPool(6);
 
-	return colorImg;
+	return meanColor;
 }
 
 bool MosaicBuilder::loadAllTiles()
@@ -203,21 +206,21 @@ bool MosaicBuilder::loadAllTiles()
 			if (imagePool.count(name) == 0)
 			{
 				//Load and add images to pool.
-				int width;
-				int height;
+				auto width = 0;
+				auto height = 0;
 
 				imagePool[name] = ImageSet{
 					new ImageWrapper<unsigned char>{
 						readBMP(entry.path().string().c_str(), width, height),
-						TILE_DIM
+						{ width, height }
 					},
 					new ImageWrapper<unsigned char>{
-						readBMP(entry.path().string().c_str(), width, height),
-						TILE_DIM
+						readBMP(resultGradientPath.string().c_str(), width, height),
+						{ width, height }
 					},
 					new ImageWrapper<unsigned char>{
-						readBMP(entry.path().string().c_str(), width, height),
-						TILE_DIM
+						readBMP(resultColorPath.string().c_str(), width, height),
+						{ width, height }
 					}
 				};
 			}
@@ -264,7 +267,9 @@ void MosaicBuilder::saveGradientImage(ImageWrapper<unsigned char>& imgWrapper, c
 			imgWrapper.dataPtr = readBMP(imgPath.string().c_str(), width, height);
 		}
 
-		writeBMP(resultGradientPath.string().c_str(), TILE_DIM.width, TILE_DIM.height, makeGradientImage(imgWrapper).dataPtr);
+		const auto gradient = makeGradientImage(imgWrapper);
+
+		writeBMP(resultGradientPath.string().c_str(), gradient.dim.width, gradient.dim.height, gradient.dataPtr);
 	}
 }
 
@@ -282,6 +287,8 @@ void MosaicBuilder::saveColorImage(ImageWrapper<unsigned char>& imgWrapper, cons
 			imgWrapper.dataPtr = readBMP(imgPath.string().c_str(), width, height);
 		}
 
-		writeBMP(resultColorPath.string().c_str(), TILE_DIM.width, TILE_DIM.height, makeColorImage(imgWrapper).dataPtr);
+		const auto color = makeColorImage(imgWrapper);
+
+		writeBMP(resultColorPath.string().c_str(), color.dim.width, color.dim.height, color.dataPtr);
 	}
 }
