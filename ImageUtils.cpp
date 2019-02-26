@@ -60,9 +60,9 @@ void ImageUtils::grayConvolve(T* imgDataPtr, const Dim& dim, const double* filte
 			}
 		}
 
-		rgbArray[0] = static_cast<unsigned char>(sum);
-		rgbArray[1] = static_cast<unsigned char>(sum);
-		rgbArray[2] = static_cast<unsigned char>(sum);
+		rgbArray[0] = static_cast<T>(sum);
+		rgbArray[1] = static_cast<T>(sum);
+		rgbArray[2] = static_cast<T>(sum);
 	});
 
 	delete[] t;
@@ -81,6 +81,24 @@ void ImageUtils::eachPixel(T* imgDataPtr, const Dim& dim,
 			eachCallback(pixelPtr, i, j);
 
 			pixelPtr += 3;
+		}
+	}
+}
+
+template <typename T>
+void ImageUtils::eachValue(T* imgDataPtr, const Dim& dim, const std::function<void(T& value)>& eachCallback)
+{
+	auto *pixelPtr = imgDataPtr;
+
+	for (auto j = 0; j < dim.height; ++j)
+	{
+		for (auto i = 0; i < dim.width; ++i)
+		{
+			for (auto k = 0; k < 3; k++)
+			{
+				eachCallback(*pixelPtr);
+				++pixelPtr;
+			}
 		}
 	}
 }
@@ -113,13 +131,20 @@ void ImageUtils::toGray(T* imgDataPtr, const Dim& dim)
 template<typename T>
 void ImageUtils::mapColor(T* imgDataPtr, const Dim& dim, T fromMin, T fromMax)
 {
-	auto range = fromMax - fromMin;
+	auto range = double(fromMax) - fromMin;
 
-	eachPixel<T>(imgDataPtr, dim, [&](T* rgbArray, const long x, const long y)
+	eachPixel<T>(imgDataPtr, dim, [&](T* rgbArray, long, long)
 	{
-		rgbArray[0] = (rgbArray[0] - fromMin) * 255 / range;
-		rgbArray[1] = (rgbArray[1] - fromMin) * 255 / range;
-		rgbArray[2] = (rgbArray[2] - fromMin) * 255 / range;
+		auto r = (double(rgbArray[0]) - fromMin) * 255 / range;
+		auto g = (double(rgbArray[1]) - fromMin) * 255 / range;
+		auto b = (double(rgbArray[2]) - fromMin) * 255 / range;
+
+		if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+			__debugbreak();
+
+		rgbArray[0] = static_cast<T>(r);
+		rgbArray[1] = static_cast<T>(g);
+		rgbArray[2] = static_cast<T>(b);
 	});
 }
 
@@ -199,10 +224,46 @@ std::pair<T*, Dim> ImageUtils::maxPool(T* sourceImgDataPtr, const Dim& sourceDim
 
 			eachPixel<T>(clip, poolDim, [&](T* rgbArray, long, long)
 			{
-				auto sum = rgbArray[0] + rgbArray[1] + rgbArray[2];
+				const double sum = rgbArray[0] + rgbArray[1] + rgbArray[2];
 				if (sum > max)
 				{
 					max = sum;
+					tPixel[0] = rgbArray[0];
+					tPixel[1] = rgbArray[1];
+					tPixel[2] = rgbArray[2];
+				}
+			});
+
+			delete[] clip;
+		}
+	}
+
+	return { t, targetDim };
+}
+
+template <typename T>
+std::pair<T*, Dim> ImageUtils::maxMagnitudePool(T* sourceImgDataPtr, const Dim& sourceDim, long poolSize)
+{
+	Dim targetDim = { sourceDim.width / poolSize, sourceDim.height / poolSize };
+	Dim poolDim = { poolSize, poolSize };
+
+	T* t = new T[targetDim.getLength()];
+
+	for (auto y = 0; y < targetDim.height; y++)
+	{
+		for (auto x = 0; x < targetDim.width; x++)
+		{
+			T* clip = subImage(sourceImgDataPtr, sourceDim, x * poolSize, y * poolSize, poolDim);
+			T* tPixel = getPixelPtr(t, targetDim, x, y);
+
+			auto maxMag = 0.0;
+
+			eachPixel<T>(clip, poolDim, [&](T* rgbArray, long, long)
+			{
+				const double sum = rgbArray[0] + rgbArray[1] + rgbArray[2];
+				if (abs(sum) > maxMag)
+				{
+					maxMag = abs(sum);
 					tPixel[0] = rgbArray[0];
 					tPixel[1] = rgbArray[1];
 					tPixel[2] = rgbArray[2];

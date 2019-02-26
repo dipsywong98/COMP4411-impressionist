@@ -54,6 +54,17 @@ public:
 	 */
 	template <typename T>
 	static void eachPixel(T* imgDataPtr, const Dim& dim, const std::function<void(T* rgbArray, long x, long y)> &eachCallback);
+	
+	/**
+	 * Performs a for-loop on each value, (every channel,) in the image data array.
+	 * 
+	 * @tparam T type of image data array.
+	 * @param imgDataPtr pointer to the image data array.
+	 * @param dim dimension of the image.
+	 * @param eachCallback A callback function that is run for each channel in each pixel.
+	 */
+	template <typename T>
+	static void eachValue(T* imgDataPtr, const Dim& dim, const std::function<void(T& value)> &eachCallback);
 
 	/**
 	 * Retrieves the pointer to a pixel, (3 elements,) in the image data array.
@@ -156,6 +167,9 @@ public:
 	static std::pair<T*, Dim> maxPool(T* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
 
 	template <typename T>
+	static std::pair<T*, Dim> maxMagnitudePool(T* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
+
+	template <typename T>
 	static std::pair<T*, Dim> meanPool(T* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
 };
 
@@ -166,6 +180,8 @@ template void ImageUtils::grayConvolve(unsigned char*, const Dim&, const double*
 template void ImageUtils::grayConvolve(double*, const Dim&, const double*, int);
 template void ImageUtils::eachPixel(unsigned char*, const Dim&, const std::function<void(unsigned char*, long, long)> &eachCallback);
 template void ImageUtils::eachPixel(double*, const Dim&, const std::function<void(double*, long, long)> &eachCallback);
+template void ImageUtils::eachValue(unsigned char*, const Dim&, const std::function<void(unsigned char&)> &eachCallback);
+template void ImageUtils::eachValue(double*, const Dim&, const std::function<void(double&)> &eachCallback);
 template unsigned char* ImageUtils::getPixelPtr(unsigned char*, const Dim&, long, long);
 template double* ImageUtils::getPixelPtr(double*, const Dim&, long, long);
 template unsigned char* ImageUtils::toNewType(double*, const Dim&);
@@ -184,6 +200,8 @@ template void ImageUtils::pasteImage(unsigned char*, const Dim&, long, long, uns
 template void ImageUtils::pasteImage(double*, const Dim&, long, long, double*, const Dim&);
 template std::pair<double*, Dim> ImageUtils::maxPool(double* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
 template std::pair<unsigned char*, Dim> ImageUtils::maxPool(unsigned char* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
+template std::pair<double*, Dim> ImageUtils::maxMagnitudePool(double* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
+template std::pair<unsigned char*, Dim> ImageUtils::maxMagnitudePool(unsigned char* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
 template std::pair<double*, Dim> ImageUtils::meanPool(double* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
 template std::pair<unsigned char*, Dim> ImageUtils::meanPool(unsigned char* sourceImgDataPtr, const Dim& sourceDim, long poolSize);
 
@@ -204,6 +222,10 @@ struct ImageWrapper
 	void eachPixel(const std::function<void(T* rgbArray, long x, long y)> &eachCallback)
 	{
 		ImageUtils::eachPixel<T>(dataPtr, dim, eachCallback);
+	}
+	void eachValue(const std::function<void(T& value)> &eachCallback)
+	{
+		ImageUtils::eachValue<T>(dataPtr, dim, eachCallback);
 	}
 	T* getPixelPtr(const long x, const long y)
 	{
@@ -250,6 +272,14 @@ struct ImageWrapper
 	ImageWrapper maxPool(long poolSize)
 	{
 		auto[pooledImage, pooledDim] = ImageUtils::maxPool(dataPtr, dim, poolSize);
+		return {
+			pooledImage,
+			pooledDim
+		};
+	}
+	ImageWrapper maxMagnitudePool(long poolSize)
+	{
+		auto[pooledImage, pooledDim] = ImageUtils::maxMagnitudePool(dataPtr, dim, poolSize);
 		return {
 			pooledImage,
 			pooledDim
