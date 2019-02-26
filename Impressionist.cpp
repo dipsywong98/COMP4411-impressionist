@@ -30,11 +30,11 @@ ImpressionistDoc *impDoc;
 Bayesian* imp_bayesian;
 stringstream ss;
 
-bool it(stringstream& ss, string des, const MatrixXd& expect, const MatrixXd& given)
+bool it(stringstream& ss, string des, const MatrixXd& expect, const MatrixXd& given, double esp = 0.1)
 {
 	ss << des << ": ";
 	MatrixXd diff = expect - given;
-	if(diff.squaredNorm() < 0.1)
+	if(diff.squaredNorm() < esp)
 	{
 		ss << "OK" << endl;
 		return true;
@@ -46,11 +46,11 @@ bool it(stringstream& ss, string des, const MatrixXd& expect, const MatrixXd& gi
 	return false;
 }
 
-bool it(stringstream& ss, string des, const VectorXd& expect, const VectorXd& given)
+bool it(stringstream& ss, string des, const VectorXd& expect, const VectorXd& given, double esp = 0.1)
 {
 	ss << des << ": ";
 	VectorXd diff = expect - given;
-	if (diff.squaredNorm() < 0.1)
+	if (diff.squaredNorm() < esp)
 	{
 		ss << "OK" << endl;
 		return true;
@@ -63,11 +63,11 @@ bool it(stringstream& ss, string des, const VectorXd& expect, const VectorXd& gi
 }
 
 
-bool it(stringstream& ss, string des, double expect, double given)
+bool it(stringstream& ss, string des, double expect, double given, double esp = 0.1)
 {
 	ss << des << ": ";
 	double diff = expect - given;
-	if (diff < 0.1)
+	if (diff < esp)
 	{
 		ss << "OK" << endl;
 		return true;
@@ -215,13 +215,48 @@ void testConcat()
 }
 
 
+void testSolveClusters()
+{
+	//prepare input
+	Vector3d muF, muB,C;
+	muF << 0.99807551, 0.99810218, 0.99781268;
+	muB << 0.05767444, 0.10651794, 0.10343995;
+	C << 0.09019607843137255,
+		0.14901960784313725,
+		0.12941176470588237;
+	double muAlpha = 0.22276029055690072;
+	Matrix3d sigF, sigB;
+	sigF << 2.57055642e-05, 1.45723084e-05, 1.51951667e-05,
+		1.45723084e-05, 2.56979531e-05, 1.52722067e-05,
+		1.51951667e-05, 1.52722067e-05, 2.72805095e-05;
+	sigB << 0.00044299, 0.00065237, 0.00064783,
+		0.00065237, 0.00119343, 0.00119539,
+		0.00064783, 0.00119539, 0.0013698;
+	Cluster CF, CB;
+	CF.clusters.emplace_back(muF, sigF);
+	CB.clusters.emplace_back(muB, sigB);
+
+	//prepare output
+	VectorXd outF(3), outB(3), exp_outF(3), exp_outB(3);
+	exp_outF << 0.99806594, 0.99812179, 0.99779378;
+	exp_outB << 0.05975562, 0.11276062, 0.10279639;
+	double exp_outAlpha = 0.03426974751738858, outAlpha;
+
+	Bayesian::getFromClusters(CF, CB, muAlpha, C, 0.01, outF, outB, outAlpha);
+
+	it(ss, "F", exp_outF, outF, 0.001);
+	it(ss, "B", exp_outB, outB, 0.001);
+	it(ss, "alpha", exp_outAlpha, outAlpha, 0.001);
+}
+
 int main(int	argc, 
 		 char**	argv) 
 {
 	// testNode();
 	// testEig();
 	// testCluster();
-	testConcat();
+	// testConcat();
+	testSolveClusters();
 	OutputDebugString(ss.str().c_str());
 	return 0;
 	impDoc = new ImpressionistDoc();

@@ -20,8 +20,6 @@ Bayesian::Bayesian(ImpressionistDoc* pDoc, ImpressionistUI* pUI)
 
 Bayesian::~Bayesian()
 {
-	delete[] fore;
-	delete[] back;
 	delete[] unkn;
 }
 
@@ -29,14 +27,14 @@ void Bayesian::init()
 {
 }
 
-void Bayesian::getFromClusters(const Cluster& CF, const Cluster& CB,double mualpha, Vector3d C, double sigC, Vector3d& fcolor, Vector3d& bcolor,
+void Bayesian::getFromClusters(const Cluster& CF, const Cluster& CB,double mualpha, Vector3d C, double sigC, VectorXd& fcolor, VectorXd& bcolor,
 	double& palpha)
 {
 	const Matrix3d I = Matrix3d::Identity();
 	double invSigC2 = 1 / pow(sigC, 2);
 	double maxScore = -INFINITY;
 	int maxIter = 50;
-	double esp = 1e-6;
+	const double esp = 1e-6;
 	for(int fi = 0; fi < CF.clusters.size(); fi++)
 	{
 		const VectorXd &muF = CF.clusters[fi].first;
@@ -51,6 +49,7 @@ void Bayesian::getFromClusters(const Cluster& CF, const Cluster& CB,double mualp
 			double alphak = mualpha;
 			double prevScore = NAN;
 
+			//iteratively find for good choice of alpha, F, B
 			for(int k = 0; k<maxIter; k++)
 			{
 				MatrixXd A11 = invSigF + I*pow(alphak, 2)*invSigC2;
@@ -65,6 +64,7 @@ void Bayesian::getFromClusters(const Cluster& CF, const Cluster& CB,double mualp
 				b << b1, b2;
 
 				VectorXd X = A.colPivHouseholderQr().solve(b);
+				for (int i = 0; i < 6; i++) X(i) = max(0, min(X(i), 1));
 				Vector3d F, B;
 				F << X(0), X(1), X(2);
 				B << X(3), X(4), X(5);
@@ -89,6 +89,7 @@ void Bayesian::getFromClusters(const Cluster& CF, const Cluster& CB,double mualp
 				{
 					break;
 				}
+				prevScore = score;
 			}
 		}
 	}
@@ -104,45 +105,62 @@ bool Bayesian::trySolvePix(Point pt)
 	}, 3);
 	if (unknCnt == 9)return 0; // need more than half for evaluation
 
-	MatrixXd a(ksize,ksize);
-
 	std::vector<Point> flist;
 	std::vector<Point> blist;
-	VectorXd Fw;
-	VectorXd Bw;
+
+	double mualpha = 0;
+	int cnt = 0;
 
 	kernelFun(pt, [&](int i, int j, int x, int y)
 	{
-		a(i, j) = alpha[y*w + x];
-		if (fore[y*w + x])flist.emplace_back(x, y);
-		if (back[y*w + x])blist.emplace_back(x, y);
-		if (!unkn[y*w + x])
+		double a = alphaImg(y*w + x);
+		if (a == a) {
+			mualpha += a;
+			cnt++;
+		}
+		double wf = pow(a, 2) * gaussianKernel[i][j];
+		if(wf > 0)
 		{
-			Fw << pow(a(i, j), 2) * gaussianKernel[i][j];
-			Bw << pow(1 - a(i, j), 2) * gaussianKernel[i][j];
+			flist.emplace_back(x, y,wf);
+		}
+		double wb = pow(1 - a, 2) * gaussianKernel[i][j];
+		if(wb > 0)
+		{
+			blist.emplace_back(x, y, wb);
 		}
 	});
 
+	mualpha /= cnt;
+
+	VectorXd Fw(flist.size());
+	VectorXd Bw(blist.size());
 	MatrixXd F(flist.size(), 3), B(blist.size(), 3);
-	for(int i = 0; i<flist.size();i++)
+
+	for (int i = 0; i<flist.size(); i++)
 	{
 		int x = flist[i].x;
 		int y = flist[i].y;
 		F.row(i) << img[y*w + x], img[y*w + x + 1], img[y*w + x + 2];
+		Fw(i) = flist[i].a;
 	}
-	for(int i = 0; i<blist.size();i++)
+	for (int i = 0; i<blist.size(); i++)
 	{
 		int x = blist[i].x;
 		int y = blist[i].y;
 		B.row(i) << img[y*w + x], img[y*w + x + 1], img[y*w + x + 2];
+		Bw(i) = blist[i].a;
 	}
+
+
 	Cluster cF(F, Fw);
 	Cluster cB(B, Bw);
-	Vector3d Fcolor, Bcolor, Ccolor;
+	VectorXd Fcolor(3), Bcolor(3), Ccolor(3);
 	Ccolor << img[y*w + x], img[y*w + x + 1], img[y*w + x + 2];
-	double mualpha = a.mean();
 	double palpha;
 	getFromClusters(cF,cB, mualpha,Ccolor,0.01,Fcolor, Bcolor,palpha);
+	foreImg.row(y*w + x) = Fcolor;
+	backImg.row(y*w + x) = Bcolor;
+	alphaImg(y*w + x) = palpha;
 	return 1;
 }
 
@@ -162,6 +180,12 @@ void Bayesian::solve(char* iname)
 		}
 		while(findSum<unknSum)
 		{
+			if(findSum%100)
+			{
+				char buf[20];
+				sprintf(buf, "%d/%d", findSum, unknSum);
+				fl_alert(buf);
+			}
 			std::list<Point>::iterator pPt = unknPts.begin();
 			while (pPt != unknPts.end()) {
 				Point pixel = *pPt;
@@ -199,35 +223,43 @@ bool Bayesian::openTriImg(char* iname)
 	}
 
 	// release old another image
-	delete[] fore;
-	delete[] back;
+	// delete[] fore;
+	// delete[] back;
 	delete[] unkn;
-	delete[] alpha;
+	// delete[] alpha;
 
-	fore = new bool[w*h];
-	back= new bool[w*h];
+	// fore = new bool[w*h];
+	// back= new bool[w*h];
 	unkn= new bool[w*h];
-	alpha = new float[w*h];
-	memset(fore, 0, w*h);
-	memset(back, 0, w*h);
+	// alpha = new float[w*h];
+	// memset(fore, 0, w*h);
+	// memset(back, 0, w*h);
 	memset(unkn, 0, w*h);
-	memset(alpha, 0, w*h);
+	// memset(alpha, 0, w*h);
 	img = m_pDoc->m_ucOriginal;
 	unknSum = 0;
 	findSum = 0;
 
+	foreImg = MatrixXd(w*h, 3);
+	backImg = MatrixXd(w*h, 3);
+	origImg = MatrixXd(w*h, 3);
+	alphaImg = VectorXd(w*h);
+
 	for(int i=0; i<w*h; i++)
 	{
+		Vector3d C;
+		C << img[i*3]/255.f, img[i*3+1]/255.f, img[i*3+2]/255.f;
+		origImg.row(i) = C;
+		alphaImg(i) = data[i * 3]/255.f;
 		if (data[i * 3] == 0) {
-			back[i] = 1;
+			backImg.row(i) = C;
 		}
 		else if (data[i * 3] == 255) {
-			fore[i] = 1;
-			alpha[i] = 1;
+			foreImg.row(i) = C;
 		}
 		else {
 			unkn[i] = 1;
-			alpha[i] = NAN;
+			alphaImg(i) = NAN;
 			unknSum++;
 		}
 	}
@@ -243,9 +275,9 @@ void Bayesian::outputAlpha()
 	memset(m_pDoc->m_ucPainting, 0, w*h * 3);
 	for(int i = 0; i<w*h; i++)
 	{
-		m_pDoc->m_ucPainting[i * 3] = alpha[i]*255;
-		m_pDoc->m_ucPainting[i * 3+1] = alpha[i]*255;
-		m_pDoc->m_ucPainting[i * 3+2] = alpha[i]*255;
+		m_pDoc->m_ucPainting[i * 3] = alphaImg(i)*255;
+		m_pDoc->m_ucPainting[i * 3+1] = alphaImg(i) *255;
+		m_pDoc->m_ucPainting[i * 3+2] = alphaImg(i) *255;
 	}
 	m_pDoc->saveImage("bayesian_out.bmp");
 }

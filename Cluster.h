@@ -7,6 +7,7 @@ using namespace Eigen;
 class Cluster
 {
 public:
+	Cluster(){}
 	Cluster(MatrixXd m, VectorXd w, double minVar = 0.05);
 	~Cluster();
 	std::vector<std::pair< VectorXd,MatrixXd>> clusters;
