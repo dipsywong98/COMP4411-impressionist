@@ -22,6 +22,8 @@
     <ClCompile Include="Cluster.cpp" />
     <ClCompile Include="node.cpp" />
     <ClCompile Include="PowerIter.cpp" />
+    <ClCompile Include="Tester.cpp" />
+    <ClCompile Include="Test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlphaMapBrush.h" />
@@ -46,5 +48,7 @@
     <ClInclude Include="Cluster.h" />
     <ClInclude Include="node.h" />
     <ClInclude Include="PowerIter.h" />
+    <ClInclude Include="Tester.h" />
+    <ClInclude Include="Test.h" />
   </ItemGroup>
 </Project>
