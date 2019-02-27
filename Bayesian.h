@@ -17,8 +17,10 @@ public:
 	void solve(char* triimg_name);
 	bool openTriImg(char* iname);
 	void outputAlpha();
+	void outputMatrix(char* name, const MatrixXd& m, bool fore);
 	void kernelFun(Point p, std::function<void(int, int, int, int)> cb, int size = ksize);
 	static const int ksize = 25;
+	int minLen = ksize*ksize * 1 / 3;
 private:
 	ImpressionistDoc* m_pDoc;
 	ImpressionistUI* m_pUI;

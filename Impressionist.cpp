@@ -249,6 +249,19 @@ void testSolveClusters()
 	it(ss, "alpha", exp_outAlpha, outAlpha, 0.001);
 }
 
+void testCalAlpha()
+{
+	VectorXd F(3), B(3), C(3);
+	F << 0.9951071, 0.99679727, 0.99607272;
+	B << 0.0, 0.0, 0.0;
+	C << 0.09019607843137255, 0.14901960784313725, 0.12941176470588237;
+	double exp_alpha = 0.1233871;
+	VectorXd FB = F - B;
+	double cbfb = VectorXd(C - B).dot(FB);
+	double alpha = cbfb / FB.squaredNorm();
+	it(ss, "alpha", exp_alpha, alpha);
+}
+
 int main(int	argc, 
 		 char**	argv) 
 {
@@ -257,6 +270,7 @@ int main(int	argc,
 	// testCluster();
 	// testConcat();
 	// testSolveClusters();
+	// testCalAlpha();
 	// OutputDebugString(ss.str().c_str());
 	// return 0;
 	impDoc = new ImpressionistDoc();
@@ -275,8 +289,10 @@ int main(int	argc,
 
 	impUI->show();
 
-	impDoc->loadImage("bayesian/little.bmp");
-	imp_bayesian->solve("bayesian/littleTrimap.bmp");
+	impDoc->loadImage("bayesian/gandalf.bmp");
+	imp_bayesian->solve("bayesian/gandalfTrimap.bmp");
+
+	OutputDebugString(ss.str().c_str());
 
 	return Fl::run();
 }
