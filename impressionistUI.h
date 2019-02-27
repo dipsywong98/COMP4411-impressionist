@@ -194,6 +194,9 @@ private:
 	static void	cb_painterly_layers(Fl_Widget* o, void* v);
 	static void	cb_painterly_r0(Fl_Widget* o, void* v);
 
+	//bayesian
+	static void	cb_bayesian_open_and_solve(Fl_Menu_* o, void* v);
+
 	static Fl_Callback cb_open_colors_dialog;
 
 };
