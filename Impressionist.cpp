@@ -11,8 +11,8 @@
 
 #include <FL/Fl.h>
 #include <FL/Fl_Window.H>
-#include <FL/Fl_Box.H>
 
+#include "Impressionist.h"
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
 #include <functional>

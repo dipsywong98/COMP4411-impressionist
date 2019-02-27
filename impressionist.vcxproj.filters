@@ -1,15 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" 
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="AlphaMapBrush.cpp" />
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="CircleBrush.cpp" />
     <ClCompile Include="CurvedBrush.cpp" />
+    <ClCompile Include="ImageUtils.cpp" />
     <ClCompile Include="ImpBrush.cpp" />
     <ClCompile Include="Impressionist.cpp" />
     <ClCompile Include="ImpressionistDoc.cpp" />
     <ClCompile Include="ImpressionistUI.cpp" />
     <ClCompile Include="LineBrush.cpp" />
+    <ClCompile Include="MosaicBuilder.cpp" />
     <ClCompile Include="OriginalView.cpp" />
     <ClCompile Include="PaintView.cpp" />
     <ClCompile Include="PointBrush.cpp" />
@@ -18,6 +21,7 @@
     <ClCompile Include="ScatteredPointBrush.cpp" />
     <ClCompile Include="VideoProcessor.cpp" />
     <ClCompile Include="WarpBrush.cpp" />
+    <ClCompile Include="MosaicImage.cpp" />
     <ClCompile Include="Bayesian.cpp" />
     <ClCompile Include="Cluster.cpp" />
     <ClCompile Include="node.cpp" />
@@ -30,11 +34,13 @@
     <ClInclude Include="bitmap.h" />
     <ClInclude Include="CircleBrush.h" />
     <ClInclude Include="CurvedBrush.h" />
+    <ClInclude Include="ImageUtils.h" />
     <ClInclude Include="ImpBrush.h" />
     <ClInclude Include="impressionist.h" />
     <ClInclude Include="impressionistDoc.h" />
     <ClInclude Include="impressionistUI.h" />
     <ClInclude Include="LineBrush.h" />
+    <ClInclude Include="MosaicBuilder.h" />
     <ClInclude Include="OriginalView.h" />
     <ClInclude Include="PaintView.h" />
     <ClInclude Include="PointBrush.h" />
@@ -43,6 +49,7 @@
     <ClInclude Include="ScatteredPointBrush.h" />
     <ClInclude Include="VideoProcessor.h" />
     <ClInclude Include="WarpBrush.h" />
+    <ClInclude Include="MosaicImage.h" />
     <ClInclude Include="Bayesian.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Cluster.h" />

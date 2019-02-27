@@ -58,7 +58,7 @@ public:
 	 * Sets the full image auto-run manipulation function that modifies the input image to a stylized output image.
 	 * @param callbackFunction The image manipulation function.
 	 */
-	void setManipulationMethod(const std::function<void(void*)>& callbackFunction);
+	void setManipulationMethod(const std::function<void()>& callbackFunction);
 
 	/**
 	 * Continues with the processing when one image is done.
@@ -106,8 +106,8 @@ public:
 	 */
 	long int frameIndex = 0L;
 
-	static std::function<void(void*)> methodAutoFill;
-	static std::function<void(void*)> methodPaintly;
+	static std::function<void()> methodAutoFill;
+	static std::function<void()> methodPaintly;
 
 	static Fl_Callback cbVideoAutoFill;
 	static Fl_Callback cbVideoPaintly;
@@ -127,9 +127,9 @@ private:
 	static VideoProcessor* singletonPtr;
 
 	BITMAPINFOHEADER bmpInfo{};
-	PADDING padding;
-	unsigned long byteLength;
-	std::function<void(void*)> perImageFunction = [&](void*){};
+	PADDING padding{};
+	unsigned long byteLength = 0;
+	std::function<void()> perImageFunction = [&](){};
 	HRESULT errorCode = 0;
 	long int streamStartingIndex = 0;
 	long int totalFrames = 0;

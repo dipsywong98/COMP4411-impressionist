@@ -7,12 +7,10 @@
 #include "impressionist.h"
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
-#include "paintview.h"
+#include "PaintView.h"
 #include "ImpBrush.h"
 #include <vector>
 #include <algorithm>
-#include <random>
-#include <chrono>
 #include "VideoProcessor.h"
 
 
@@ -520,7 +518,7 @@ void PaintView::paintLayer(unsigned char* canvas, unsigned char* ref, int r)
 
 
 	// 3. randomly choose point order
-	std::random_shuffle(strokes.begin(), strokes.end());
+	std::shuffle(strokes.begin(), strokes.end(), rng);
 	// std::random_shuffle(nob.begin(), nob.end());
 	int sizeOriginal = m_pDoc->getSize();
 	for(auto&& p:strokes)

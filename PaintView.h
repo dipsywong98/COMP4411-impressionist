@@ -13,6 +13,8 @@
 #include <GL/glu.h>
 #include <stdlib.h>
 #include <vector>
+#include <chrono>
+#include <random>
 
 class ImpressionistDoc;
 
@@ -56,6 +58,8 @@ private:
 			m_nEndCol,
 			m_nWindowWidth, 
 			m_nWindowHeight;
+	std::default_random_engine rng = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
+
 
 };
 

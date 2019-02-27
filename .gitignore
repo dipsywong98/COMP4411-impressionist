@@ -339,3 +339,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+images/*.bmp
+images/30/colors
+images/30/gradients
