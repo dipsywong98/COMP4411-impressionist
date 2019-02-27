@@ -48,8 +48,8 @@ int main(int	argc,
 
 	impUI->show();
 
-	// impDoc->loadImage("bayesian/gandalf.bmp");
-	// imp_bayesian->solve("bayesian/gandalfTrimap.bmp");
+	impDoc->loadImage("bayesian/gandalf.bmp");
+	imp_bayesian->solve("bayesian/gandalfTrimap.bmp");
 
 	// OutputDebugString(ss.str().c_str());
 

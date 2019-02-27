@@ -20,7 +20,7 @@ public:
 	void outputMatrix(char* name, const MatrixXd& m, bool fore);
 	void kernelFun(Point p, std::function<void(int, int, int, int)> cb, int size = ksize);
 	static const int ksize = 25;
-	int minLen = ksize*ksize * 1 / 3;
+	int minLen = 10;// ksize*ksize * 1 / 3;
 	MatrixXd foreImg, backImg, origImg, alphaImg;
 private:
 	ImpressionistDoc* m_pDoc;
