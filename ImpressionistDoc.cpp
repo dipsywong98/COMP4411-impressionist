@@ -23,6 +23,7 @@
 #include "AlphaMapBrush.h"
 #include "CurvedBrush.h"
 #include "WarpBrush.h"
+#include "Bayesian.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -140,6 +141,26 @@ int ImpressionistDoc::getEdgeThreshold()
 	return m_pUI->getEdgeThreshold();
 }
 
+void ImpressionistDoc::runBayesian()
+{
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", getImageName());
+	if (newfile != NULL) {
+		m_bayesian->solve(newfile);
+		if(m_ucAnother)
+		{
+			for(int i = 0; i<m_nWidth*m_nHeight; i++)
+			{
+				double alpha = m_ucPainting[i*3] / 255.0;
+				m_ucPainting[i*3+2] = max(0, min(alpha*m_ucOriginal[i*3] + (1 - alpha)*m_ucAnother[i*3],255));
+				m_ucPainting[i*3+1] = max(0, min(alpha*m_ucOriginal[i*3+1] + (1 - alpha)*m_ucAnother[i*3+1],255));
+				m_ucPainting[i*3] = max(0, min(alpha*m_ucOriginal[i*3+2] + (1 - alpha)*m_ucAnother[i*3+2],255));
+			}
+		}
+		// saveImage("test.bmp");
+		m_pUI->m_paintView->refresh();
+	}
+}
+
 //---------------------------------------------------------
 // Returns the size of the brush.
 //---------------------------------------------------------
@@ -253,6 +274,8 @@ int ImpressionistDoc::loadAnotherImage(char *iname)
 	if (m_ucAnother) delete[] m_ucAnother;
 
 	m_ucAnother = data;
+	m_ucBitmap = m_ucAnother;
+	m_pUI->m_origView->refresh();
 
 	return 1;
 }

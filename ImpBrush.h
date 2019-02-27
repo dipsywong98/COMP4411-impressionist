@@ -42,12 +42,14 @@ class Point
 public:
 	Point() {};
 	Point(int xx, int yy) { x = xx; y = yy; };
+	Point(int xx, int yy, double aa) { x = xx; y = yy; a = aa; };
 	Point operator =(Point pt) { x = pt.x; y = pt.y; return *this; }
 	float norm2() const { return sqrt(x*x + y*y); }
 	const ::Point& operator+=(const Point& point);
 	Point T() const { return Point(y, x); };
 
 	int x, y;
+	double a;
 };
 
 class ImpBrush 

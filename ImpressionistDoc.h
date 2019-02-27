@@ -12,6 +12,8 @@
 
 class ImpressionistUI;
 
+class Bayesian;
+
 class ImpressionistDoc 
 {
 public:
@@ -41,6 +43,7 @@ public:
 	void recordHistory();
 	void autoFill();
 	int getEdgeThreshold();
+	void runBayesian();
 
 
 	// Attributes
@@ -65,6 +68,7 @@ public:
 	int m_nSize;							
 
 	ImpressionistUI*	m_pUI;
+	Bayesian* m_bayesian;
 
 	unsigned char* m_ucHistory; //for undo
 	unsigned char* m_ucAnother; //for another image

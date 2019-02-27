@@ -5,7 +5,7 @@
 #include <string>
 #include <functional>
 #include "impressionistUI.h"
-#include "bitmap.h"
+#include "Bitmap.h"
 
 class Fl_Widget;
 

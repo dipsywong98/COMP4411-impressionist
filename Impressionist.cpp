@@ -16,9 +16,18 @@
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
 #include <functional>
+#include "Bayesian.h"
+#include "node.h"
+#include <Eigen/Dense>
+#include <iostream>
+#include "Cluster.h"
+#include "PowerIter.h"
+using namespace Eigen;
 
 ImpressionistUI *impUI;
 ImpressionistDoc *impDoc;
+Bayesian* imp_bayesian;
+std::stringstream ss;
 
 int main(int	argc, 
 		 char**	argv) 
@@ -28,6 +37,9 @@ int main(int	argc,
 	// Create the UI
 	impUI = new ImpressionistUI();
 
+	imp_bayesian = new Bayesian(impDoc, impUI);
+	impDoc->m_bayesian = imp_bayesian;
+
 	// Set the impDoc which is used as the bridge between UI and brushes
 	impUI->setDocument(impDoc);
 	impDoc->setUI(impUI);
@@ -35,6 +47,11 @@ int main(int	argc,
 	Fl::visual(FL_DOUBLE|FL_INDEX);
 
 	impUI->show();
+
+	// impDoc->loadImage("bayesian/gandalf.bmp");
+	// imp_bayesian->solve("bayesian/gandalfTrimap.bmp");
+
+	// OutputDebugString(ss.str().c_str());
 
 	return Fl::run();
 }
