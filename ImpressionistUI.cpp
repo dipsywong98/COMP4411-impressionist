@@ -741,16 +741,12 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
     { "&Load Another Img", FL_ALT + 'l', (Fl_Callback*)ImpressionistUI::cb_load_another_image },
     { "&Load Mural Img", FL_ALT + 'm', (Fl_Callback*)ImpressionistUI::cb_load_mural_image },
     { "&Load Alpha Map Img", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_load_alpha_map_image },
-<<<<<<< HEAD
-    { "Video Auto-Fill", 0, VideoProcessor::cbVideoAutoFill },
-    { "Video Paintly", 0, VideoProcessor::cbVideoPaintly },
     { "Bayesian", 0, (Fl_Callback*)ImpressionistUI::cb_bayesian_open_and_solve },
-    == == == = { "Video", 0, nullptr, nullptr, FL_SUBMENU },
+    { "Video", 0, nullptr, nullptr, FL_SUBMENU },
     { "Video Auto-Fill", 0, VideoProcessor::cbVideoAutoFill },
-    { "Video Paintly", 0, VideoProcessor::cbVideoPaintly },
+    { "Video Painterly", 0, VideoProcessor::cbVideoPaintly },
     { nullptr },
     { "Mosaic...", 0, MosaicBuilder::openUi },
->>>>>>> origin/master
     { 0 },
     { "&Help", 0, 0, 0, FL_SUBMENU },
     { "&About", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_about },

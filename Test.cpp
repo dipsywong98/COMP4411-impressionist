@@ -6,7 +6,7 @@
 #include "PowerIter.h"
 #include "Bayesian.h"
 
-Test::Test(stringstream ss):Tester(ss)
+Test::Test(std::stringstream ss):Tester(ss)
 {
 }
 
@@ -114,20 +114,20 @@ void Test::eig()
 		-6.944444, 119.44445444, 20.83333333,
 		-27.083333, 20.8333333, 63.19445444;
 	// EigenSolver<MatrixXd> es(cov1);
-	// ss <<"~1~"<<endl<< es.eigenvalues().real()<<endl << es.eigenvectors().real()<<endl;
+	// ss <<"~1~"<<std::endl<< es.eigenvalues().real()<<std::endl << es.eigenvectors().real()<<std::endl;
 	PowerIter ess(cov1);
-	ss << "~1~22222\n" << ess.l << endl << ess.e << endl;
-	ss << "err" << VectorXd(cov1*ess.e - ess.l*ess.e).norm() << endl;
+	ss << "~1~22222\n" << ess.l << std::endl << ess.e << std::endl;
+	ss << "err" << VectorXd(cov1*ess.e - ess.l*ess.e).norm() << std::endl;
 
 	Matrix3d cov2;
 	cov2 << 1283.81, -1182.31, 2643.28,
 		-1182.31, 1089.14, -2434.61,
 		2643.28, -2434.61, 20442.9;
 	// EigenSolver<MatrixXd> es2(cov2);
-	// ss << "~2~" << es2.eigenvalues().real() << es2.eigenvectors().real() << endl;
+	// ss << "~2~" << es2.eigenvalues().real() << es2.eigenvectors().real() << std::endl;
 	PowerIter ess2(cov2);
-	ss << "~2~2222\n" << ess2.l << endl << ess2.e << endl;
-	ss << "err" << VectorXd(cov2*ess2.e - ess2.l*ess2.e).norm() << endl;
+	ss << "~2~2222\n" << ess2.l << std::endl << ess2.e << std::endl;
+	ss << "err" << VectorXd(cov2*ess2.e - ess2.l*ess2.e).norm() << std::endl;
 }
 
 void Test::concat()
@@ -137,7 +137,7 @@ void Test::concat()
 	A12 << 5, 6, 7, 8;
 	A21 << 9, 10, 11, 12;
 	A22 << 13, 14, 15, 16;
-	ss << A11 << endl << A12 << endl << A21 << endl << A22 << endl;
+	ss << A11 << std::endl << A12 << std::endl << A21 << std::endl << A22 << std::endl;
 	Matrix4d A;
 	A << A11, A12, A21, A22;
 	ss << A;

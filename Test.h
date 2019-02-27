@@ -4,12 +4,11 @@
 #include <Eigen/Dense>
 #include "Tester.h"
 using namespace Eigen;
-using namespace std;
 
 class Test: public Tester
 {
 public:
-	Test(stringstream ss);
+	Test(std::stringstream ss);
 	~Test();
 	void node();
 	void cluster();

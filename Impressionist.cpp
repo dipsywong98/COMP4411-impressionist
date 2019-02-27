@@ -23,12 +23,11 @@
 #include "Cluster.h"
 #include "PowerIter.h"
 using namespace Eigen;
-using namespace std;
 
 ImpressionistUI *impUI;
 ImpressionistDoc *impDoc;
 Bayesian* imp_bayesian;
-stringstream ss;
+std::stringstream ss;
 
 int main(int	argc, 
 		 char**	argv) 
