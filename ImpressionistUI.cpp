@@ -610,10 +610,7 @@ void ImpressionistUI::cb_painterly_r0(Fl_Widget* o, void* v)
 void ImpressionistUI::cb_bayesian_open_and_solve(Fl_Menu_* o, void* v)
 {
 	ImpressionistDoc *pDoc = whoami(o)->getDocument();
-	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
-	if (newfile != NULL) {
-		pDoc->m_bayesian->solve(newfile);
-	}
+	pDoc->runBayesian();
 }
 
 void ImpressionistUI::cb_open_colors_dialog(Fl_Widget* o, void* v)

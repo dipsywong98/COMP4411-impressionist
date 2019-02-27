@@ -21,6 +21,7 @@ public:
 	void kernelFun(Point p, std::function<void(int, int, int, int)> cb, int size = ksize);
 	static const int ksize = 25;
 	int minLen = ksize*ksize * 1 / 3;
+	MatrixXd foreImg, backImg, origImg, alphaImg;
 private:
 	ImpressionistDoc* m_pDoc;
 	ImpressionistUI* m_pUI;
@@ -31,7 +32,6 @@ private:
 	// float *alpha = NULL;
 	int unknSum = 0;
 	int findSum = 0;
-	MatrixXd foreImg, backImg, origImg, alphaImg;
 	std::vector<std::vector<float>> gaussianKernel;
 };
 

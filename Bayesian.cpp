@@ -307,7 +307,7 @@ void Bayesian::outputAlpha()
 		m_pDoc->m_ucPainting[i * 3+1] = alphaImg(i) *255;
 		m_pDoc->m_ucPainting[i * 3+2] = alphaImg(i) *255;
 	}
-	m_pDoc->saveImage("bayesian_out.bmp");
+	// m_pDoc->saveImage("bayesian_out.bmp");
 }
 
 
