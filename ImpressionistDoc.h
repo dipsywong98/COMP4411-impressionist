@@ -43,6 +43,7 @@ public:
 	void recordHistory();
 	void autoFill();
 	int getEdgeThreshold();
+	void runBayesian();
 
 
 	// Attributes
