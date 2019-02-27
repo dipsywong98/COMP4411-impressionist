@@ -256,9 +256,9 @@ int main(int	argc,
 	// testEig();
 	// testCluster();
 	// testConcat();
-	testSolveClusters();
-	OutputDebugString(ss.str().c_str());
-	return 0;
+	// testSolveClusters();
+	// OutputDebugString(ss.str().c_str());
+	// return 0;
 	impDoc = new ImpressionistDoc();
 
 	// Create the UI
@@ -275,8 +275,8 @@ int main(int	argc,
 
 	impUI->show();
 
-	impDoc->loadImage("bayesian/gandalf.bmp");
-	imp_bayesian->solve("bayesian/gandalfTrimap.bmp");
+	impDoc->loadImage("bayesian/little.bmp");
+	imp_bayesian->solve("bayesian/littleTrimap.bmp");
 
 	return Fl::run();
 }

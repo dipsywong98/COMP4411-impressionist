@@ -103,7 +103,7 @@ bool Bayesian::trySolvePix(Point pt)
 	{
 		unknCnt += unkn[y*w + x];
 	}, 3);
-	if (unknCnt == 9)return 0; // need more than half for evaluation
+	if (unknCnt > ksize/2)return 0; // need more than half for evaluation
 
 	std::vector<Point> flist;
 	std::vector<Point> blist;
@@ -140,22 +140,21 @@ bool Bayesian::trySolvePix(Point pt)
 	{
 		int x = flist[i].x;
 		int y = flist[i].y;
-		F.row(i) << img[y*w + x], img[y*w + x + 1], img[y*w + x + 2];
+		F.row(i) = foreImg.row(y*w + x);
 		Fw(i) = flist[i].a;
 	}
 	for (int i = 0; i<blist.size(); i++)
 	{
 		int x = blist[i].x;
 		int y = blist[i].y;
-		B.row(i) << img[y*w + x], img[y*w + x + 1], img[y*w + x + 2];
+		B.row(i) = backImg.row(y*w + x);
 		Bw(i) = blist[i].a;
 	}
-
 
 	Cluster cF(F, Fw);
 	Cluster cB(B, Bw);
 	VectorXd Fcolor(3), Bcolor(3), Ccolor(3);
-	Ccolor << img[y*w + x], img[y*w + x + 1], img[y*w + x + 2];
+	Ccolor = origImg.row(y*w+x);
 	double palpha;
 	getFromClusters(cF,cB, mualpha,Ccolor,0.01,Fcolor, Bcolor,palpha);
 	foreImg.row(y*w + x) = Fcolor;
