@@ -144,6 +144,7 @@
     <ClCompile Include="AlphaMapBrush.cpp" />
     <ClCompile Include="Bayesian.cpp" />
     <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="BlurBrush.cpp" />
     <ClCompile Include="CircleBrush.cpp" />
     <ClCompile Include="Cluster.cpp" />
     <ClCompile Include="CurvedBrush.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="ScatteredCircleBrush.cpp" />
     <ClCompile Include="ScatteredLineBrush.cpp" />
     <ClCompile Include="ScatteredPointBrush.cpp" />
+    <ClCompile Include="KernelBrush.cpp" />
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="Tester.cpp" />
     <ClCompile Include="VideoProcessor.cpp" />
@@ -172,6 +174,7 @@
     <ClInclude Include="AlphaMapBrush.h" />
     <ClInclude Include="Bayesian.h" />
     <ClInclude Include="bitmap.h" />
+    <ClInclude Include="BlurBrush.h" />
     <ClInclude Include="CircleBrush.h" />
     <ClInclude Include="Cluster.h" />
     <ClInclude Include="CurvedBrush.h" />
@@ -192,6 +195,7 @@
     <ClInclude Include="ScatteredCircleBrush.h" />
     <ClInclude Include="ScatteredLineBrush.h" />
     <ClInclude Include="ScatteredPointBrush.h" />
+    <ClInclude Include="KernelBrush.h" />
     <ClInclude Include="Test.h" />
     <ClInclude Include="Tester.h" />
     <ClInclude Include="VideoProcessor.h" />

@@ -22,6 +22,8 @@ enum
 	ALPHA_MAP,
 	CURVED_BRUSH,
 	WARP_BRUSH,
+	BLUR_BRUSH,
+	SHARPEN_BRUSH,
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
 };
 
