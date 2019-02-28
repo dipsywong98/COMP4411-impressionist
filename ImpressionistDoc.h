@@ -75,6 +75,7 @@ public:
 
 	unsigned char* m_ucHistory; //for undo
 	unsigned char* m_ucAnother; //for another image
+	unsigned char *m_ucBackup = NULL;
 	int m_alphaMapWidth;
 	int m_alphaMapHeight;
 

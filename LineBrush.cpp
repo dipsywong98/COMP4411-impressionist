@@ -85,7 +85,7 @@ void LineBrush::BrushEnd(const Point source, const Point target)
 
 void LineBrush::RightBegin(const Point source, const Point target)
 {
-	start = source;
+	start = target;
 }
 
 void LineBrush::RightMove(const Point source, const Point target)
@@ -93,7 +93,7 @@ void LineBrush::RightMove(const Point source, const Point target)
 	glColor3f(1, 0, 0);
 	glBegin(GL_LINES);
 	glVertex2d(start.x, start.y);
-	glVertex2d(source.x, source.y);
+	glVertex2d(target.x, target.y);
 	glEnd();
 }
 
@@ -101,7 +101,7 @@ void LineBrush::RightEnd(const Point source, const Point target)
 {
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
-	int angle = static_cast<int>(radToDeg(atan2(source.y - start.y, source.x - start.x)));
+	int angle = static_cast<int>(radToDeg(atan2(target.y - start.y, target.x - start.x)));
 	dlg->setLineAngle(angle);
 }
 

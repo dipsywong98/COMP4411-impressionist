@@ -140,7 +140,7 @@ void ImpressionistDoc::swapContent()
 	m_ucPainting = m_ucBitmap;
 	m_ucBitmap = temp;
 	m_ucOriginal = temp;
-	memcpy(m_ucBackup, m_ucPainting, m_nWidth*m_nHeight * 3);
+	//memcpy(m_ucBackup, m_ucPainting, m_nWidth*m_nHeight * 3);
 	m_pUI->m_origView->refresh();
 	m_pUI->m_paintView->refresh();
 }
