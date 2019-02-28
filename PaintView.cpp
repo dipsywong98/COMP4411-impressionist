@@ -117,6 +117,11 @@ void PaintView::draw()
 	drawWidth = min( m_nWindowWidth, m_pDoc->m_nPaintWidth );
 	drawHeight = min( m_nWindowHeight, m_pDoc->m_nPaintHeight );
 
+	// if (uc_backup)
+	// {
+	// 	memcpy(m_pDoc->m_ucPainting, uc_backup, drawWidth*drawHeight * 3);
+	// }
+
 	startrow = m_pDoc->m_nPaintHeight - (scrollpos.y + drawHeight);
 	if ( startrow < 0 ) startrow = 0;
 
@@ -134,7 +139,7 @@ void PaintView::draw()
 	if ( m_pDoc->m_ucPainting && !isAnEvent) 
 	{
 		RestoreContent();
-		updateViewport();
+		// updateViewport();
 	}
 
 	bool willSave = false;
@@ -152,20 +157,20 @@ void PaintView::draw()
 		switch (eventToDo) 
 		{
 		case LEFT_MOUSE_DOWN:
-			updatePainting();
+			// updatePainting();
 			m_pDoc->recordHistory();
 			m_pDoc->m_pCurrentBrush->BrushBegin( source, target );
-			updateViewport();
+			// updateViewport();
 			break;
 		case LEFT_MOUSE_DRAG:
-			updatePainting();
+			// updatePainting();
 			m_pDoc->m_pCurrentBrush->BrushMove( source, target );
 			SaveCurrentContent();
-			updateViewport();
+			// updateViewport();
 			break;
 		case LEFT_MOUSE_UP:
 			m_pDoc->m_pCurrentBrush->BrushEnd( source, target );
-			updatePainting();
+			// updatePainting();
 			// SaveCurrentContent();
 			// RestoreContent();
 			willSave = true;
@@ -220,7 +225,11 @@ void PaintView::draw()
 	if(willSave)
 	{
 		SaveCurrentContent();
-		updateViewport();
+		glFlush();
+		delete[] uc_backup;
+		uc_backup = new unsigned char[drawWidth*drawHeight * 3];
+		memcpy(uc_backup, m_pDoc->m_ucPainting, drawWidth*drawHeight * 3);
+		// updateViewport();
 	}
 
 
