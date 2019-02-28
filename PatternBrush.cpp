@@ -4,6 +4,7 @@
 #include "CurvedBrush.h"
 #include <FL/Fl_Native_File_Chooser.H>
 
+volatile bool PatternBrush::isGenerating = false;
 std::vector< ImageWrapper<GLubyte> > PatternBrush::patterns{};
 std::vector< ImageWrapper<GLubyte> > PatternBrush::scaledPatterns{};
 std::random_device PatternBrush::rd{};
@@ -71,6 +72,7 @@ void PatternBrush::BrushBegin(const Point source, const Point target)
 
 	if (newSize != size)
 	{
+		isGenerating = true;
 		size = newSize;
 		//make scaled images
 		const Dim newDim = { size, size };
@@ -95,6 +97,7 @@ void PatternBrush::BrushBegin(const Point source, const Point target)
 
 			scaledPatterns.push_back(v);
 		}
+		isGenerating = false;
 	}
 
 	BrushMove(source, target);
@@ -109,6 +112,11 @@ void PatternBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 
+	if (isGenerating)
+	{
+		return; //Scaled brushes still generating
+	}
+
 	if (source.x > docPtr->m_nPaintWidth || source.y < 0)
 	{
 		return;
@@ -117,7 +125,9 @@ void PatternBrush::BrushMove(const Point source, const Point target)
 	if (step == 0)
 	{
 		//Make new pattern
-		auto& alpha = scaledPatterns[dis(gen)];
+		const auto i = dis(gen);
+		if (i < 0 || scaledPatterns.size() >= i) return;
+		auto& alpha = scaledPatterns[i];
 
 		const int tX0 = target.x - alpha.dim.width / 2;
 		const int tY0 = target.y - alpha.dim.height / 2;

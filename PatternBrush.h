@@ -12,6 +12,7 @@ public:
 	int step = 0;
 	static Fl_Callback cb_set_patterns;
 	static std::vector< ImageWrapper<GLubyte> > patterns;
+	static volatile bool isGenerating;
 
 	static void setPatterns(const std::string& directoryName);
 
