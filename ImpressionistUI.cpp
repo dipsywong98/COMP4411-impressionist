@@ -621,6 +621,38 @@ void ImpressionistUI::cb_tracer_update(Fl_Widget* o, void* v)
 	uiPtr->m_paintView->redraw();
 }
 
+void ImpressionistUI::cb_dissolve(Fl_Widget* o, void*)
+{
+	auto* uiPtr = static_cast<ImpressionistUI*>(o->user_data());
+
+	const auto dissolveRatio = uiPtr->m_dissolveOpacitySlider->value();
+
+	auto* fileName = fl_file_chooser("Open File?", "*.bmp", nullptr);
+	if (fileName != nullptr) {
+		auto width = 0;
+		auto height = 0;
+		ImageWrapper imageWrapper = {
+			readBMP(fileName, width, height),
+			{ width, height }
+		};
+
+		ImageUtils::eachPixel<unsigned char>(uiPtr->m_pDoc->m_ucPainting, {uiPtr->m_pDoc->m_nPaintWidth, uiPtr->m_pDoc->m_nPaintHeight }, [&](unsigned char* rgbArray, long x, long y)
+		{
+			auto* otherPixel = imageWrapper.getPixelPtr(x, y);
+			rgbArray[0] = static_cast<unsigned char>(dissolveRatio * rgbArray[0] + (1 - dissolveRatio) * otherPixel[0]);
+			rgbArray[1] = static_cast<unsigned char>(dissolveRatio * rgbArray[1] + (1 - dissolveRatio) * otherPixel[1]);
+			rgbArray[2] = static_cast<unsigned char>(dissolveRatio * rgbArray[2] + (1 - dissolveRatio) * otherPixel[2]);
+		});
+
+		uiPtr->m_paintView->draw();
+	}
+	else
+	{
+		fl_alert("File not selected!");
+	}
+}
+
+
 
 
 //---------------------------------- per instance functions --------------------------------------
@@ -1123,4 +1155,21 @@ ImpressionistUI::ImpressionistUI()
 		m_tracerOpacitySlider->callback(cb_tracer_update);
     }
 	m_tracerDialog->end();
+
+	m_dissolveDialog = new Fl_Window(320, 100, "Dissolve...");
+    {
+		m_dissolveOpacitySlider = new Fl_Value_Slider(10, 10, 300, 20, "Original Opacity");
+		m_dissolveOpacitySlider->user_data(static_cast<void*>(this));
+		m_dissolveOpacitySlider->type(FL_HOR_NICE_SLIDER);
+		m_dissolveOpacitySlider->minimum(0.0);
+		m_dissolveOpacitySlider->maximum(100.0);
+		m_dissolveOpacitySlider->step(1.0);
+		m_dissolveOpacitySlider->value(20.0);
+		m_dissolveOpacitySlider->align(FL_ALIGN_BOTTOM);
+
+		m_dissolveLoadImageBtn = new Fl_Button(270, 65, 100, 25, "Load Image");
+		m_dissolveLoadImageBtn->user_data(static_cast<void*>(this));
+		m_dissolveLoadImageBtn->callback(cb_dissolve);
+    }
+	m_dissolveDialog->end();
 }

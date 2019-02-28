@@ -78,6 +78,10 @@ public:
 	Fl_Window*			m_tracerDialog;
 	Fl_Value_Slider*	m_tracerOpacitySlider;
 
+	Fl_Window*			m_dissolveDialog;
+	Fl_Value_Slider*	m_dissolveOpacitySlider;
+	Fl_Button*			m_dissolveLoadImageBtn;
+
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -203,6 +207,7 @@ private:
 	static Fl_Callback cb_open_colors_dialog;
 	static Fl_Callback cb_open_tracer_dialog;
 	static Fl_Callback cb_tracer_update;
+	static Fl_Callback cb_dissolve;
 
 };
 
