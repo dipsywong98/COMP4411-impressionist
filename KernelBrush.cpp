@@ -72,7 +72,7 @@ void KernelBrush::BrushEnd(const Point source, const Point target)
 	delete[] ref;
 }
 
-void KernelBrush::ApplyKernel(const Point source, const Point target, GLubyte* ref)
+void KernelBrush::ApplyKernel(const Point source, const Point target, unsigned char* ref)
 {
 	ImpressionistDoc* pDoc = GetDocument();
 	int w = pDoc->m_nPaintWidth, h = pDoc->m_nPaintHeight;

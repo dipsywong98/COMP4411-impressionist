@@ -93,10 +93,10 @@
     <ClCompile Include="Tester.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BlurBrush.cpp">
+    <ClCompile Include="KernelBrush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="KernelBrush.cpp">
+    <ClCompile Include="PixelizeBrush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -182,10 +182,10 @@
     <ClInclude Include="Tester.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BlurBrush.h">
+    <ClInclude Include="KernelBrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KernelBrush.h">
+    <ClInclude Include="PixelizeBrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

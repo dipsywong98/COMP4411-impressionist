@@ -144,10 +144,10 @@
     <ClCompile Include="AlphaMapBrush.cpp" />
     <ClCompile Include="Bayesian.cpp" />
     <ClCompile Include="Bitmap.cpp" />
-    <ClCompile Include="BlurBrush.cpp" />
     <ClCompile Include="CircleBrush.cpp" />
     <ClCompile Include="Cluster.cpp" />
     <ClCompile Include="CurvedBrush.cpp" />
+    <ClCompile Include="PixelizeBrush.cpp" />
     <ClCompile Include="PowerIter.cpp" />
     <ClCompile Include="ImageUtils.cpp" />
     <ClCompile Include="ImpBrush.cpp" />
@@ -174,10 +174,10 @@
     <ClInclude Include="AlphaMapBrush.h" />
     <ClInclude Include="Bayesian.h" />
     <ClInclude Include="bitmap.h" />
-    <ClInclude Include="BlurBrush.h" />
     <ClInclude Include="CircleBrush.h" />
     <ClInclude Include="Cluster.h" />
     <ClInclude Include="CurvedBrush.h" />
+    <ClInclude Include="PixelizeBrush.h" />
     <ClInclude Include="PowerIter.h" />
     <ClInclude Include="ImageUtils.h" />
     <ClInclude Include="ImpBrush.h" />

@@ -12,7 +12,11 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
 >
 > Underline: wanted to do
 
-- [ ] (1W each) more brushes
+- [x] (1W each) more brushes
+  - [ ] pattern brush
+  - [x] pixelize brush
+  - [ ] random polygon
+  - [ ] clone brush
 - [x] **(1W)** clipped bushes
 - [x] **(1W)** cursor on original image
 - [x] (1W) swap content and original
