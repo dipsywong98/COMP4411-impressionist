@@ -224,6 +224,12 @@ void PaintView::draw()
 
 
 	VideoProcessor::continueWriteStream();
+	glFlush();
+	if(m_pDoc->m_ucPainting && m_pDoc->m_ucBackup)
+	{
+
+	memcpy(m_pDoc->m_ucPainting, m_pDoc->m_ucBackup, drawWidth*drawHeight * 3);
+	}
 }
 
 void PaintView::prepareAutoFill()
