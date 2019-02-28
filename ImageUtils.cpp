@@ -88,18 +88,9 @@ void ImageUtils::eachPixel(T* imgDataPtr, const Dim& dim,
 template <typename T>
 void ImageUtils::eachValue(T* imgDataPtr, const Dim& dim, const std::function<void(T& value)>& eachCallback)
 {
-	auto *pixelPtr = imgDataPtr;
-
-	for (auto j = 0; j < dim.height; ++j)
+	for (auto* pixelPtr = imgDataPtr; pixelPtr < imgDataPtr + dim.width * dim.height * 3; ++pixelPtr)
 	{
-		for (auto i = 0; i < dim.width; ++i)
-		{
-			for (auto k = 0; k < 3; k++)
-			{
-				eachCallback(*pixelPtr);
-				++pixelPtr;
-			}
-		}
+		eachCallback(*pixelPtr);
 	}
 }
 
@@ -188,21 +179,22 @@ T* ImageUtils::subImage(T* sourceImgDataPtr, const Dim& sourceDim, const long st
 }
 
 template <typename T>
-void ImageUtils::pasteImage(T* sourceImgDataPtr, const Dim& sourceDim, long startX, long startY, T* pasteImgDataPtr,
+void ImageUtils::pasteImage(T* sourceImgDataPtr, const Dim& sourceDim, const long startX, const long startY, T* pasteImgDataPtr,
 	const Dim& pasteDim)
 {
-	for (auto x = 0L; x < pasteDim.width; x++)
+	eachPixel<T>(pasteImgDataPtr, pasteDim, [&](auto* pPixel, auto x, auto y)
 	{
-		for (auto y = 0L; y < pasteDim.height; y++)
-		{
-			auto* pPixel = getPixelPtr(pasteImgDataPtr, pasteDim, x, y);
-			auto* sPixel = getPixelPtr(sourceImgDataPtr, sourceDim, startX + x, startY + y);
+		const auto tX = startX + x;
+		const auto tY = startY + y;
 
-			sPixel[0] = pPixel[0];
-			sPixel[1] = pPixel[1];
-			sPixel[2] = pPixel[2];
-		}
-	}
+		if (tX < 0 || tX >= sourceDim.width || tY < 0 || tY >= sourceDim.height) return;
+
+		auto* sPixel = getPixelPtr(sourceImgDataPtr, sourceDim, startX + x, startY + y);
+
+		sPixel[0] = pPixel[0];
+		sPixel[1] = pPixel[1];
+		sPixel[2] = pPixel[2];
+	});
 }
 
 template <typename T>
