@@ -61,7 +61,6 @@ private:
 	std::default_random_engine rng = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 	Point scrollpos{0, 0};
 	int startrow = 0;
-	unsigned char *uc_backup = NULL;
 
 	void updateViewport();
 	void updatePainting();

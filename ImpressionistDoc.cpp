@@ -140,6 +140,7 @@ void ImpressionistDoc::swapContent()
 	m_ucPainting = m_ucBitmap;
 	m_ucBitmap = temp;
 	m_ucOriginal = temp;
+	memcpy(m_ucBackup, m_ucPainting, m_nWidth*m_nHeight * 3);
 	m_pUI->m_origView->refresh();
 	m_pUI->m_paintView->refresh();
 }
@@ -254,6 +255,7 @@ int ImpressionistDoc::loadImageFromData(unsigned char* dataPtr, const int width,
 	}
 	delete[] m_ucPainting;
 	delete[] m_ucEdge;
+	delete[] m_ucBackup;
 	delete[] viewport.dataPtr;
 
 	m_ucBitmap = dataPtr;
@@ -265,9 +267,11 @@ int ImpressionistDoc::loadImageFromData(unsigned char* dataPtr, const int width,
 	m_ucPainting = new unsigned char[width*height * 3];
 	m_ucHistory = new unsigned char[width*height * 3];
 	m_ucEdge = new unsigned char[width*height * 3];
+	m_ucBackup = new unsigned char[width*height * 3];
 	memset(m_ucPainting, 0, width*height * 3);
 	memset(m_ucHistory, 0, width*height * 3);
 	memset(m_ucEdge, 0, width*height * 3);
+	memset(m_ucBackup, 0, width*height * 3);
 
 	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(),
 		m_pUI->m_mainWindow->y(),
