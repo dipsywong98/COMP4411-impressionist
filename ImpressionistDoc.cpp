@@ -254,6 +254,7 @@ int ImpressionistDoc::loadImageFromData(unsigned char* dataPtr, const int width,
 	}
 	delete[] m_ucPainting;
 	delete[] m_ucEdge;
+	delete[] m_ucBackup;
 	delete[] viewport.dataPtr;
 
 	m_ucBitmap = dataPtr;
@@ -265,9 +266,11 @@ int ImpressionistDoc::loadImageFromData(unsigned char* dataPtr, const int width,
 	m_ucPainting = new unsigned char[width*height * 3];
 	m_ucHistory = new unsigned char[width*height * 3];
 	m_ucEdge = new unsigned char[width*height * 3];
+	m_ucBackup = new unsigned char[width*height * 3];
 	memset(m_ucPainting, 0, width*height * 3);
 	memset(m_ucHistory, 0, width*height * 3);
 	memset(m_ucEdge, 0, width*height * 3);
+	memset(m_ucBackup, 0, width*height * 3);
 
 	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(),
 		m_pUI->m_mainWindow->y(),

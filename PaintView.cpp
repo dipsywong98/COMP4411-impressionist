@@ -60,8 +60,9 @@ void PaintView::updateViewport()
 	});
 
 	m_pPaintBitstart = m_pDoc->viewport.dataPtr + 3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
-
 	RestoreContent();
+	m_pPaintBitstart = m_pDoc->m_ucPainting +
+		3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
 }
 
 void PaintView::updatePainting()
@@ -117,10 +118,10 @@ void PaintView::draw()
 	drawWidth = min( m_nWindowWidth, m_pDoc->m_nPaintWidth );
 	drawHeight = min( m_nWindowHeight, m_pDoc->m_nPaintHeight );
 
-	// if (uc_backup)
-	// {
-	// 	memcpy(m_pDoc->m_ucPainting, uc_backup, drawWidth*drawHeight * 3);
-	// }
+	if (m_pDoc->m_ucBackup)
+	{
+		memcpy(m_pDoc->m_ucPainting, m_pDoc->m_ucBackup, drawWidth*drawHeight * 3);
+	}
 
 	startrow = m_pDoc->m_nPaintHeight - (scrollpos.y + drawHeight);
 	if ( startrow < 0 ) startrow = 0;
@@ -139,7 +140,7 @@ void PaintView::draw()
 	if ( m_pDoc->m_ucPainting && !isAnEvent) 
 	{
 		RestoreContent();
-		// updateViewport();
+		updateViewport();
 	}
 
 	bool willSave = false;
@@ -202,15 +203,6 @@ void PaintView::draw()
 		painterly();
 		willPainterly = false;
 		willSave = true;
-	} else
-	{
-		// for debugging purpose
-		// Point source(coord.x + m_nStartCol, m_nEndRow - coord.y);
-		// Point target(coord.x, m_nWindowHeight - coord.y);
-		// if(source.x>=0 && source.y>=0 && source.x <= m_nWindowWidth-1 && source.y <= m_nWindowHeight)
-		// {
-		// 	m_pDoc->m_pCurrentBrush->BrushMove(source, target);
-		// }
 	}
 
 
@@ -226,11 +218,9 @@ void PaintView::draw()
 	{
 		SaveCurrentContent();
 		glFlush();
-		delete[] uc_backup;
-		uc_backup = new unsigned char[drawWidth*drawHeight * 3];
-		memcpy(uc_backup, m_pDoc->m_ucPainting, drawWidth*drawHeight * 3);
-		// updateViewport();
+		memcpy(m_pDoc->m_ucBackup, m_pDoc->m_ucPainting, drawWidth*drawHeight * 3);
 	}
+	updateViewport();
 
 
 	VideoProcessor::continueWriteStream();
