@@ -768,6 +768,7 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
     { "Warp Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)WARP_BRUSH },
     { "Blur Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BLUR_BRUSH },
     { "Sharpen Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)SHARPEN_BRUSH },
+    { "Pixelize Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)PIXELIZE_BRUSH },
     { 0 }
 };
 

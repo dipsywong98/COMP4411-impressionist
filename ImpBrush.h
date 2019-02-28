@@ -24,6 +24,7 @@ enum
 	WARP_BRUSH,
 	BLUR_BRUSH,
 	SHARPEN_BRUSH,
+	PIXELIZE_BRUSH,
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
 };
 
