@@ -27,6 +27,7 @@
 #include "KernelBrush.h"
 #include "PixelizeBrush.h"
 #include "PatternBrush.h"
+#include "PolygonBrush.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -78,6 +79,10 @@ ImpressionistDoc::ImpressionistDoc()
 		= new PixelizeBrush( this, "Pixelize Brush" );
 	ImpBrush::c_pBrushes[BRUSH_PATTERN]
 		= new PatternBrush( this, "Pattern Brush" );
+	ImpBrush::c_pBrushes[POLYGON_BRUSH]
+		= new PolygonBrush( this, "Polygon Brush" );
+	ImpBrush::c_pBrushes[SCATTERED_POLYGON_BRUSH]
+		= new PolygonBrush( this, "Polygon Brush", true );
 
 	std::vector<std::vector<float>> blurKernel = {
 		{1,2,1},

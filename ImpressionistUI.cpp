@@ -836,6 +836,8 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
     { "Sharpen Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)SHARPEN_BRUSH },
     { "Pixelize Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)PIXELIZE_BRUSH },
     { "Pattern Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_PATTERN },
+    { "Polygon Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)POLYGON_BRUSH },
+    { "Scattered Polygon Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)SCATTERED_POLYGON_BRUSH },
     { 0 }
 };
 

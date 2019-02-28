@@ -15,7 +15,8 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
 - [x] (1W each) more brushes
   - [x] pattern brush
   - [x] pixelize brush
-  - [ ] random polygon
+  - [X] random polygon
+  - [X] random scattered polygon
   - [ ] clone brush
 - [x] **(1W)** clipped bushes
 - [x] **(1W)** cursor on original image
