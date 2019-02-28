@@ -118,11 +118,6 @@ void PaintView::draw()
 	drawWidth = min( m_nWindowWidth, m_pDoc->m_nPaintWidth );
 	drawHeight = min( m_nWindowHeight, m_pDoc->m_nPaintHeight );
 
-	if (m_pDoc->m_ucBackup)
-	{
-		memcpy(m_pDoc->m_ucPainting, m_pDoc->m_ucBackup, drawWidth*drawHeight * 3);
-	}
-
 	startrow = m_pDoc->m_nPaintHeight - (scrollpos.y + drawHeight);
 	if ( startrow < 0 ) startrow = 0;
 
@@ -166,7 +161,7 @@ void PaintView::draw()
 		case LEFT_MOUSE_DRAG:
 			// updatePainting();
 			m_pDoc->m_pCurrentBrush->BrushMove( source, target );
-			SaveCurrentContent();
+			// SaveCurrentContent();
 			// updateViewport();
 			break;
 		case LEFT_MOUSE_UP:
