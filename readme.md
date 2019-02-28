@@ -23,7 +23,7 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
 - [x] (1B) change color of image (change channel)
 - [x] **(1B)** blur brush and sharpen brush (wait for kernel brush)
 - [x] **(1B)** undo
-- [ ] (1B) Dissolve one image into another
+- [x] (1B) Dissolve one image into another
   - [x] (1B1W) original image overlay
 - [x] _(1B1W)_ mural image (load another image without resetting)
 - [x] (1B1W) alpha mapping brush
