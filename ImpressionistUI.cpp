@@ -608,6 +608,21 @@ void ImpressionistUI::cb_open_colors_dialog(Fl_Widget* o, void* v)
     whoami(dynamic_cast<Fl_Menu_*>(o))->m_colorPickerDialog->show();
 }
 
+void ImpressionistUI::cb_open_tracer_dialog(Fl_Widget* o, void*)
+{
+	whoami(dynamic_cast<Fl_Menu_*>(o))->m_tracerDialog->show();
+}
+
+void ImpressionistUI::cb_tracer_update(Fl_Widget* o, void* v)
+{
+	auto* self = dynamic_cast<Fl_Value_Slider*>(o);
+	auto* uiPtr = static_cast<ImpressionistUI*>(o->user_data());
+	ImpressionistDoc::viewportTracerRatio = self->value() / 100.0;
+	uiPtr->m_paintView->redraw();
+}
+
+
+
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -737,6 +752,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
     { "&Bonus", 0, 0, 0, FL_SUBMENU },
     { "&Swap Content", FL_ALT + 's', (Fl_Callback*)ImpressionistUI::cb_swap_content },
     { "&Undo", FL_ALT + 'z', (Fl_Callback*)ImpressionistUI::cb_undo },
+    { "Tracer...", 0, cb_open_tracer_dialog },
     { "&Auto Fill", FL_ALT + 'f', (Fl_Callback*)ImpressionistUI::cb_auto_fill_menu },
     { "&Load Another Img", FL_ALT + 'l', (Fl_Callback*)ImpressionistUI::cb_load_another_image },
     { "&Load Mural Img", FL_ALT + 'm', (Fl_Callback*)ImpressionistUI::cb_load_mural_image },
@@ -1091,4 +1107,18 @@ ImpressionistUI::ImpressionistUI()
         m_colorChooser->rgb(1.0, 1.0, 1.0);
     }
     m_colorPickerDialog->end();
+
+	m_tracerDialog = new Fl_Window(320, 50, "Tracer...");
+    {
+		m_tracerOpacitySlider = new Fl_Value_Slider(10, 10, 300, 20, "Opacity");
+		m_tracerOpacitySlider->user_data(static_cast<void*>(this));
+		m_tracerOpacitySlider->type(FL_HOR_NICE_SLIDER);
+		m_tracerOpacitySlider->minimum(0.0);
+		m_tracerOpacitySlider->maximum(100.0);
+		m_tracerOpacitySlider->step(1.0);
+		m_tracerOpacitySlider->value(20.0);
+		m_tracerOpacitySlider->align(FL_ALIGN_BOTTOM);
+		m_tracerOpacitySlider->callback(cb_tracer_update);
+    }
+	m_tracerDialog->end();
 }

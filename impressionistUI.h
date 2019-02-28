@@ -75,6 +75,9 @@ public:
 	Fl_Window*			m_colorPickerDialog;
 	Fl_Color_Chooser*	m_colorChooser;
 
+	Fl_Window*			m_tracerDialog;
+	Fl_Value_Slider*	m_tracerOpacitySlider;
+
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -198,6 +201,8 @@ private:
 	static void	cb_bayesian_open_and_solve(Fl_Menu_* o, void* v);
 
 	static Fl_Callback cb_open_colors_dialog;
+	static Fl_Callback cb_open_tracer_dialog;
+	static Fl_Callback cb_tracer_update;
 
 };
 

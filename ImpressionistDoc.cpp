@@ -27,6 +27,8 @@
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
+double ImpressionistDoc::viewportTracerRatio = 0.5;
+
 ImpressionistDoc::ImpressionistDoc() 
 {
 	// Set NULL image name as init. 
@@ -222,11 +224,14 @@ int ImpressionistDoc::loadImageFromData(unsigned char* dataPtr, const int width,
 	}
 	delete[] m_ucPainting;
 	delete[] m_ucEdge;
+	delete[] viewport.dataPtr;
 
 	m_ucBitmap = dataPtr;
 	m_ucOriginal = dataPtr;
 
 	// allocate space for draw view
+	viewport.dim = { width, height };
+	viewport.dataPtr = new unsigned char[viewport.dim.getLength()];
 	m_ucPainting = new unsigned char[width*height * 3];
 	m_ucHistory = new unsigned char[width*height * 3];
 	m_ucEdge = new unsigned char[width*height * 3];
