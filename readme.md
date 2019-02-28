@@ -13,7 +13,7 @@ Programming project 1 of HKUST Computer Graphics course COMP4411
 > Underline: wanted to do
 
 - [x] (1W each) more brushes
-  - [ ] pattern brush
+  - [x] pattern brush
   - [x] pixelize brush
   - [X] random polygon
   - [X] random scattered polygon

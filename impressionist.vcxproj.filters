@@ -72,6 +72,12 @@
     <ClCompile Include="PaintView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PatternBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PolygonBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="PixelizeBrush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -162,6 +168,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PaintView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PatternBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PolygonBrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PixelizeBrush.h">
