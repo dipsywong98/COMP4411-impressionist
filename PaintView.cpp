@@ -169,19 +169,23 @@ void PaintView::draw()
 		case LEFT_MOUSE_UP:
 			m_pDoc->m_pCurrentBrush->BrushEnd(source, target);
 			updatePainting();
-			// SaveCurrentContent();
-			// RestoreContent();
+			SaveCurrentContent();
+			RestoreContent();
 			willSave = true;
 			break;
 		case RIGHT_MOUSE_DOWN:
+			updateViewport();
 			m_pDoc->m_pCurrentBrush->RightBegin(source, target);
 			break;
 		case RIGHT_MOUSE_DRAG:
 			updatePainting();
+			updateViewport();
 			m_pDoc->m_pCurrentBrush->RightMove(source, target);
+			glFlush();
 			break;
 		case RIGHT_MOUSE_UP:
 			updatePainting();
+			updateViewport();
 			m_pDoc->m_pCurrentBrush->RightEnd(source, target);
 			break;
 
