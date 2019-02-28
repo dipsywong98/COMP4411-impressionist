@@ -59,6 +59,11 @@ private:
 			m_nWindowWidth, 
 			m_nWindowHeight;
 	std::default_random_engine rng = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
+	Point scrollpos{0, 0};
+	int startrow = 0;
+
+	void updateViewport();
+	void updatePainting();
 
 
 };

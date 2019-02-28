@@ -128,16 +128,19 @@ void MosaicBuilder::prepareTiles()
 
 ImageWrapper<unsigned char> MosaicBuilder::makeGradientImage(const ImageWrapper<unsigned char>& imgWrapper)
 {
+	const auto r = 3.0 / 1020;
 	auto doubleImg = imgWrapper.toNewType<double>();
 	doubleImg.toGray();
 
 	auto doubleSobelX = doubleImg;
-	doubleSobelX.convolve(ImageUtils::SOBEL_X, 3);
+	doubleSobelX.grayConvolve(ImageUtils::SOBEL_X, 3);
+	doubleSobelX.eachValue([&](auto& v){v = max( min(v, 510.0), -510.0); });
 	doubleSobelX.mapColor(-510, 510);
 	auto sobelX = doubleSobelX.toNewType<unsigned char>();
 
 	auto doubleSobelY = doubleImg;
-	doubleSobelY.convolve(ImageUtils::SOBEL_Y, 3);
+	doubleSobelY.grayConvolve(ImageUtils::SOBEL_Y, 3);
+	doubleSobelY.eachValue([&](auto& v) {v = max( min(v, 510.0), -510.0); });
 	doubleSobelY.mapColor(-510, 510);
 	auto sobelY = doubleSobelY.toNewType<unsigned char>();
 
@@ -147,7 +150,7 @@ ImageWrapper<unsigned char> MosaicBuilder::makeGradientImage(const ImageWrapper<
 		rgbArray[2] = 255;
 	});
 
-	auto gradient = sobelY.maxPool(5);
+	auto gradient = sobelY.maxMagnitudePool(5);
 
 	return gradient;
 }

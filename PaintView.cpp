@@ -34,6 +34,44 @@ static int		eventToDo;
 static int		isAnEvent=0;
 static Point	coord;
 
+void PaintView::updateViewport()
+{
+	const auto& dim = m_pDoc->viewport.dim;
+
+	//Draw trace
+	m_pDoc->viewport.eachPixel([&](unsigned char* rgbArray, const long x, const long y)
+	{
+		const auto* oriPtr = ImageUtils::getPixelPtr(m_pDoc->m_ucOriginal, dim, x, y);
+		const auto* paintPtr = ImageUtils::getPixelPtr(m_pDoc->m_ucPainting, dim, x, y);
+		const auto requiresTracing = paintPtr[0] + paintPtr[1] + paintPtr[2] == 0;
+
+		if (requiresTracing)
+		{
+			rgbArray[0] = static_cast<unsigned char>(ImpressionistDoc::viewportTracerRatio * oriPtr[0]);
+			rgbArray[1] = static_cast<unsigned char>(ImpressionistDoc::viewportTracerRatio * oriPtr[1]);
+			rgbArray[2] = static_cast<unsigned char>(ImpressionistDoc::viewportTracerRatio * oriPtr[2]);
+		}
+		else
+		{
+			rgbArray[0] = paintPtr[0];
+			rgbArray[1] = paintPtr[1];
+			rgbArray[2] = paintPtr[2];
+		}
+	});
+
+	m_pPaintBitstart = m_pDoc->viewport.dataPtr + 3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
+
+	RestoreContent();
+}
+
+void PaintView::updatePainting()
+{
+	m_pPaintBitstart = m_pDoc->m_ucPainting +
+		3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
+	RestoreContent();
+	glFlush();
+}
+
 PaintView::PaintView(int			x, 
 					 int			y, 
 					 int			w, 
@@ -68,7 +106,7 @@ void PaintView::draw()
 		glClear( GL_COLOR_BUFFER_BIT );
 	}
 
-	Point scrollpos;// = GetScrollPosition();
+	scrollpos;// = GetScrollPosition();
 	scrollpos.x = 0;
 	scrollpos.y	= 0;
 
@@ -79,7 +117,7 @@ void PaintView::draw()
 	drawWidth = min( m_nWindowWidth, m_pDoc->m_nPaintWidth );
 	drawHeight = min( m_nWindowHeight, m_pDoc->m_nPaintHeight );
 
-	int startrow = m_pDoc->m_nPaintHeight - (scrollpos.y + drawHeight);
+	startrow = m_pDoc->m_nPaintHeight - (scrollpos.y + drawHeight);
 	if ( startrow < 0 ) startrow = 0;
 
 	m_pPaintBitstart = m_pDoc->m_ucPainting + 
@@ -96,6 +134,7 @@ void PaintView::draw()
 	if ( m_pDoc->m_ucPainting && !isAnEvent) 
 	{
 		RestoreContent();
+		updateViewport();
 	}
 
 	bool willSave = false;
@@ -113,14 +152,20 @@ void PaintView::draw()
 		switch (eventToDo) 
 		{
 		case LEFT_MOUSE_DOWN:
+			updatePainting();
 			m_pDoc->recordHistory();
 			m_pDoc->m_pCurrentBrush->BrushBegin( source, target );
+			updateViewport();
 			break;
 		case LEFT_MOUSE_DRAG:
+			updatePainting();
 			m_pDoc->m_pCurrentBrush->BrushMove( source, target );
+			SaveCurrentContent();
+			updateViewport();
 			break;
 		case LEFT_MOUSE_UP:
 			m_pDoc->m_pCurrentBrush->BrushEnd( source, target );
+			updatePainting();
 			// SaveCurrentContent();
 			// RestoreContent();
 			willSave = true;
@@ -175,8 +220,9 @@ void PaintView::draw()
 	if(willSave)
 	{
 		SaveCurrentContent();
-		// RestoreContent();
+		updateViewport();
 	}
+
 
 	VideoProcessor::continueWriteStream();
 }
