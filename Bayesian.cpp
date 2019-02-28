@@ -120,15 +120,11 @@ bool Bayesian::trySolvePix(Point pt)
 	std::vector<Point> blist;
 
 	double mualpha = 0;
-	int cnt = 0;
+	int cnt = 0, ttl = 0;
 
 	kernelFun(pt, [&](int i, int j, int x, int y)
 	{
 		double a = alphaImg(y*w + x);
-		if(a>1)
-		{
-			
-		}
 		if (!unkn[y*w+x] && a==a) {
 			mualpha += a;
 			double wf = pow(a, 2) * gaussianKernel[i][j];
@@ -143,13 +139,10 @@ bool Bayesian::trySolvePix(Point pt)
 			}
 			cnt++;
 		}
-		else
-		{
-			
-		}
+		ttl++;
 	});
-
-	if(flist.size()<minLen || blist.size()<minLen)
+	int thre = double(ttl) / double(ksize*ksize)*minLen;
+	if(flist.size()< thre || blist.size()< thre)
 	{
 		return 0;
 	}
@@ -219,11 +212,11 @@ void Bayesian::solve(char* iname)
 					unknPts.erase(pPt++);
 					unkn[pixel.x + w*pixel.y] = 0;
 					findSum++;
-					if (!bounced && minLen*1.1 <= ksize*ksize * 1 / 3)
-					{
-						minLen *= 1.1;
-						bounced = true;
-					}
+					// if (!bounced && minLen*1.1 <= ksize*ksize * 1 / 3)
+					// {
+					// 	minLen *= 1.1;
+					// 	bounced = true;
+					// }
 				}else
 				{
 					pPt++;
