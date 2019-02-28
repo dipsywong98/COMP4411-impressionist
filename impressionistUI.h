@@ -207,6 +207,7 @@ private:
 	static Fl_Callback cb_open_colors_dialog;
 	static Fl_Callback cb_open_tracer_dialog;
 	static Fl_Callback cb_tracer_update;
+	static Fl_Callback cb_open_dissolve_dialog;
 	static Fl_Callback cb_dissolve;
 
 };
