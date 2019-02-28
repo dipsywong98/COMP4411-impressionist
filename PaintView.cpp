@@ -31,7 +31,7 @@ extern std::vector<std::vector<float>> getGaussianKernel(float sigma, int size);
 #endif
 
 static int		eventToDo;
-static int		isAnEvent=0;
+static int		isAnEvent = 0;
 static Point	coord;
 
 void PaintView::updateViewport()
@@ -60,7 +60,9 @@ void PaintView::updateViewport()
 	});
 
 	m_pPaintBitstart = m_pDoc->viewport.dataPtr + 3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
+
 	RestoreContent();
+
 	m_pPaintBitstart = m_pDoc->m_ucPainting +
 		3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
 }
@@ -73,66 +75,66 @@ void PaintView::updatePainting()
 	glFlush();
 }
 
-PaintView::PaintView(int			x, 
-					 int			y, 
-					 int			w, 
-					 int			h, 
-					 const char*	l)
-						: Fl_Gl_Window(x,y,w,h,l)
+PaintView::PaintView(int			x,
+	int			y,
+	int			w,
+	int			h,
+	const char*	l)
+	: Fl_Gl_Window(x, y, w, h, l)
 {
-	m_nWindowWidth	= w;
-	m_nWindowHeight	= h;
+	m_nWindowWidth = w;
+	m_nWindowHeight = h;
 }
 
 
 void PaintView::draw()
 {
-	#ifndef MESA
+#ifndef MESA
 	// To avoid flicker on some machines.
 	glDrawBuffer(GL_FRONT_AND_BACK);
-	#endif // !MESA
+#endif // !MESA
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	if(!valid())
+	if (!valid())
 	{
 
 		glClearColor(0.7f, 0.7f, 0.7f, 1.0);
 
 		// We're only using 2-D, so turn off depth 
-		glDisable( GL_DEPTH_TEST );
+		glDisable(GL_DEPTH_TEST);
 
 		ortho();
 
-		glClear( GL_COLOR_BUFFER_BIT );
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	scrollpos;// = GetScrollPosition();
 	scrollpos.x = 0;
-	scrollpos.y	= 0;
+	scrollpos.y = 0;
 
-	m_nWindowWidth	= w();
-	m_nWindowHeight	= h();
+	m_nWindowWidth = w();
+	m_nWindowHeight = h();
 
 	int drawWidth, drawHeight;
-	drawWidth = min( m_nWindowWidth, m_pDoc->m_nPaintWidth );
-	drawHeight = min( m_nWindowHeight, m_pDoc->m_nPaintHeight );
+	drawWidth = min(m_nWindowWidth, m_pDoc->m_nPaintWidth);
+	drawHeight = min(m_nWindowHeight, m_pDoc->m_nPaintHeight);
 
 	startrow = m_pDoc->m_nPaintHeight - (scrollpos.y + drawHeight);
-	if ( startrow < 0 ) startrow = 0;
+	if (startrow < 0) startrow = 0;
 
-	m_pPaintBitstart = m_pDoc->m_ucPainting + 
+	m_pPaintBitstart = m_pDoc->m_ucPainting +
 		3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
 
-	m_nDrawWidth	= drawWidth;
-	m_nDrawHeight	= drawHeight;
+	m_nDrawWidth = drawWidth;
+	m_nDrawHeight = drawHeight;
 
-	m_nStartRow		= startrow;
-	m_nEndRow		= startrow + drawHeight;
-	m_nStartCol		= scrollpos.x;
-	m_nEndCol		= m_nStartCol + drawWidth;
+	m_nStartRow = startrow;
+	m_nEndRow = startrow + drawHeight;
+	m_nStartCol = scrollpos.x;
+	m_nEndCol = m_nStartCol + drawWidth;
 
-	if ( m_pDoc->m_ucPainting && !isAnEvent) 
+	if (m_pDoc->m_ucPainting && !isAnEvent)
 	{
 		RestoreContent();
 		updateViewport();
@@ -140,33 +142,33 @@ void PaintView::draw()
 
 	bool willSave = false;
 
-	if ( m_pDoc->m_ucPainting && isAnEvent) 
+	if (m_pDoc->m_ucPainting && isAnEvent)
 	{
 
 		// Clear it after processing.
-		isAnEvent	= 0;	
+		isAnEvent = 0;
 
-		Point source( coord.x + m_nStartCol, m_nEndRow - coord.y );
-		Point target( coord.x, m_nWindowHeight - coord.y );
-		
+		Point source(coord.x + m_nStartCol, m_nEndRow - coord.y);
+		Point target(coord.x, m_nWindowHeight - coord.y);
+
 		// This is the event handler
-		switch (eventToDo) 
+		switch (eventToDo)
 		{
 		case LEFT_MOUSE_DOWN:
-			// updatePainting();
+			updatePainting();
 			m_pDoc->recordHistory();
-			m_pDoc->m_pCurrentBrush->BrushBegin( source, target );
-			// updateViewport();
+			m_pDoc->m_pCurrentBrush->BrushBegin(source, target);
+			updateViewport();
 			break;
 		case LEFT_MOUSE_DRAG:
-			// updatePainting();
-			m_pDoc->m_pCurrentBrush->BrushMove( source, target );
-			// SaveCurrentContent();
-			// updateViewport();
+			updatePainting();
+			m_pDoc->m_pCurrentBrush->BrushMove(source, target);
+			SaveCurrentContent();
+			updateViewport();
 			break;
 		case LEFT_MOUSE_UP:
-			m_pDoc->m_pCurrentBrush->BrushEnd( source, target );
-			// updatePainting();
+			m_pDoc->m_pCurrentBrush->BrushEnd(source, target);
+			updatePainting();
 			// SaveCurrentContent();
 			// RestoreContent();
 			willSave = true;
@@ -175,29 +177,42 @@ void PaintView::draw()
 			m_pDoc->m_pCurrentBrush->RightBegin(source, target);
 			break;
 		case RIGHT_MOUSE_DRAG:
-			RestoreContent();
+			updatePainting();
 			m_pDoc->m_pCurrentBrush->RightMove(source, target);
 			break;
 		case RIGHT_MOUSE_UP:
-			RestoreContent();
+			updatePainting();
 			m_pDoc->m_pCurrentBrush->RightEnd(source, target);
 			break;
 
 		default:
-			printf("Unknown event!!\n");		
+			printf("Unknown event!!\n");
 			break;
 		}
 	}
-	if(willAutoFill)
+	if (willAutoFill)
 	{
 		autoFill();
 		willAutoFill = false;
 		willSave = true;
-	} else if (willPainterly)
+		glFlush();
+	}
+	else if (willPainterly)
 	{
 		painterly();
 		willPainterly = false;
 		willSave = true;
+		glFlush();
+	}
+	else
+	{
+		// for debugging purpose
+		// Point source(coord.x + m_nStartCol, m_nEndRow - coord.y);
+		// Point target(coord.x, m_nWindowHeight - coord.y);
+		// if(source.x>=0 && source.y>=0 && source.x <= m_nWindowWidth-1 && source.y <= m_nWindowHeight)
+		// {
+		// 	m_pDoc->m_pCurrentBrush->BrushMove(source, target);
+		// }
 	}
 
 
@@ -209,22 +224,15 @@ void PaintView::draw()
 	glDrawBuffer(GL_BACK);
 #endif // !MESA
 
-	if(willSave)
+	if (willSave)
 	{
 		SaveCurrentContent();
 		glFlush();
-		memcpy(m_pDoc->m_ucBackup, m_pDoc->m_ucPainting, drawWidth*drawHeight * 3);
+		updateViewport();
 	}
-	updateViewport();
 
 
 	VideoProcessor::continueWriteStream();
-	glFlush();
-	if(m_pDoc->m_ucPainting && m_pDoc->m_ucBackup)
-	{
-
-	memcpy(m_pDoc->m_ucPainting, m_pDoc->m_ucBackup, drawWidth*drawHeight * 3);
-	}
 }
 
 void PaintView::prepareAutoFill()
@@ -242,41 +250,41 @@ void PaintView::preparePainterly()
 
 int PaintView::handle(int event)
 {
-	switch(event)
+	switch (event)
 	{
 	case FL_ENTER:
 		// refresh();
-	    // redraw();
+		// redraw();
 		break;
 	case FL_PUSH:
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
-		if (Fl::event_button()>1)
-			eventToDo=RIGHT_MOUSE_DOWN;
+		if (Fl::event_button() > 1)
+			eventToDo = RIGHT_MOUSE_DOWN;
 		else
-			eventToDo=LEFT_MOUSE_DOWN;
-		isAnEvent=1;
+			eventToDo = LEFT_MOUSE_DOWN;
+		isAnEvent = 1;
 		redraw();
 		break;
 	case FL_DRAG:
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
-		if (Fl::event_button()>1)
-			eventToDo=RIGHT_MOUSE_DRAG;
+		if (Fl::event_button() > 1)
+			eventToDo = RIGHT_MOUSE_DRAG;
 		else
-			eventToDo=LEFT_MOUSE_DRAG;
-		isAnEvent=1;
+			eventToDo = LEFT_MOUSE_DRAG;
+		isAnEvent = 1;
 		redraw();
 		m_pDoc->m_pUI->m_origView->setCursor(coord);
 		break;
 	case FL_RELEASE:
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
-		if (Fl::event_button()>1)
-			eventToDo=RIGHT_MOUSE_UP;
+		if (Fl::event_button() > 1)
+			eventToDo = RIGHT_MOUSE_UP;
 		else
-			eventToDo=LEFT_MOUSE_UP;
-		isAnEvent=1;
+			eventToDo = LEFT_MOUSE_UP;
+		isAnEvent = 1;
 		redraw();
 		break;
 	case FL_MOVE:
@@ -311,16 +319,16 @@ void PaintView::SaveCurrentContent()
 	// out paint strokes
 	glReadBuffer(GL_BACK);
 
-	glPixelStorei( GL_PACK_ALIGNMENT, 1 );
-	glPixelStorei( GL_PACK_ROW_LENGTH, m_pDoc->m_nPaintWidth );
-	
-	glReadPixels( 0, 
-				  m_nWindowHeight - m_nDrawHeight, 
-				  m_nDrawWidth, 
-				  m_nDrawHeight, 
-				  GL_RGB, 
-				  GL_UNSIGNED_BYTE, 
-				  m_pPaintBitstart );
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glPixelStorei(GL_PACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+
+	glReadPixels(0,
+		m_nWindowHeight - m_nDrawHeight,
+		m_nDrawWidth,
+		m_nDrawHeight,
+		GL_RGB,
+		GL_UNSIGNED_BYTE,
+		m_pPaintBitstart);
 }
 
 
@@ -328,18 +336,18 @@ void PaintView::RestoreContent()
 {
 	glDrawBuffer(GL_BACK);
 
-	glClear( GL_COLOR_BUFFER_BIT );
+	glClear(GL_COLOR_BUFFER_BIT);
 
-	glRasterPos2i( 0, m_nWindowHeight - m_nDrawHeight );
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-	glPixelStorei( GL_UNPACK_ROW_LENGTH, m_pDoc->m_nPaintWidth );
-	glDrawPixels( m_nDrawWidth, 
-				  m_nDrawHeight, 
-				  GL_RGB, 
-				  GL_UNSIGNED_BYTE, 
-				  m_pPaintBitstart);
+	glRasterPos2i(0, m_nWindowHeight - m_nDrawHeight);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, m_pDoc->m_nPaintWidth);
+	glDrawPixels(m_nDrawWidth,
+		m_nDrawHeight,
+		GL_RGB,
+		GL_UNSIGNED_BYTE,
+		m_pPaintBitstart);
 
-//	glDrawBuffer(GL_FRONT);
+	//	glDrawBuffer(GL_FRONT);
 }
 
 void PaintView::autoFill()
@@ -362,26 +370,26 @@ void PaintView::autoFill()
 	{
 		for (int j = 0; j < h; j += s)
 		{
-			points.emplace_back(randAlter(i,r), randAlter(j,r));
+			points.emplace_back(randAlter(i, r), randAlter(j, r));
 		}
 	}
 	unsigned const seed = std::chrono::system_clock::now().time_since_epoch().count();
-	std::shuffle(points.begin(), points.end(),std::default_random_engine(seed));
+	std::shuffle(points.begin(), points.end(), std::default_random_engine(seed));
 
-	for(auto& pt: points){
+	for (auto& pt : points) {
 		const int i = pt.x;
 		const int j = pt.y;
 		// const Point source(i + m_nStartCol, m_nEndRow - j);
-		if(randAttr)
+		if (randAttr)
 		{
-			m_pDoc->m_pUI->setSize(randAlter(size,r));
-			m_pDoc->m_pUI->setLineWidth(randAlter(lineWidth,r));
-			m_pDoc->m_pUI->setLineAngle(randAlter(lineAngle,r));
+			m_pDoc->m_pUI->setSize(randAlter(size, r));
+			m_pDoc->m_pUI->setLineWidth(randAlter(lineWidth, r));
+			m_pDoc->m_pUI->setLineAngle(randAlter(lineAngle, r));
 		}
 		const Point target(i, j + m_nWindowHeight - m_nDrawHeight);
 		m_pDoc->m_pCurrentBrush->BrushBegin(target, target);
 		m_pDoc->m_pCurrentBrush->BrushEnd(target, target);
-		
+
 	}
 	// glFlush();
 
@@ -410,23 +418,23 @@ void PaintView::kernelHelper(unsigned char* before, unsigned char* target, const
 {
 	int size = kernel.size();
 	float total = 0;
-	for (int i = 0; i<size; i++)
+	for (int i = 0; i < size; i++)
 	{
-		for (int j = 0; j<size; j++)
+		for (int j = 0; j < size; j++)
 		{
 			total += kernel[i][j];
 		}
 	}
 	for (int i = 0; i < w; i++)
 	{
-		for (int j = 0; j< h; j++)
+		for (int j = 0; j < h; j++)
 		{
 			float c[] = { 0,0,0 };
-			for (int a = 0; a<size; a++)
+			for (int a = 0; a < size; a++)
 			{
-				for (int b = 0; b<size; b++)
+				for (int b = 0; b < size; b++)
 				{
-					for (int d = 0; d<3; d++)
+					for (int d = 0; d < 3; d++)
 					{
 						const int x = max(0, min(i - (size) / 2 + a, w - 1));
 						const int y = max(0, min(j - (size) / 2 + b, h - 1));
@@ -471,22 +479,23 @@ void PaintView::painterly()
 
 	// 4. calculate a list of brush size
 	std::vector<int> radii;
-	for(int i=0; i<layers; i++)
+	for (int i = 0; i < layers; i++)
 	{
 		radii.push_back(pow(2, r0));
 		r0 = max(0, r0 - 1);
 	}
 
 	// 5. for each brush size, from big to small, paint a layer
-	for(int r: radii)
+	for (int r : radii)
 	{
 		float blur = m_pDoc->m_pUI->m_painterlyBlur;
 		std::vector<std::vector<float>> kernel = getGaussianKernel(blur, r);
 		unsigned char* ref = new unsigned char[w*h * 3];
-		if(blur == 0)
+		if (blur == 0)
 		{
 			memcpy(ref, m_pDoc->m_ucOriginal, w*h * 3);
-		}else
+		}
+		else
 		{
 			kernelHelper(m_pDoc->m_ucOriginal, ref, kernel, w, h, false);
 		}
@@ -504,7 +513,7 @@ void PaintView::paintLayer(unsigned char* canvas, unsigned char* ref, int r)
 {
 	const int w = m_pDoc->m_nWidth;
 	const int h = m_pDoc->m_nHeight;
-	int grid= r * m_pDoc->m_pUI->m_painterlyGridSize;
+	int grid = r * m_pDoc->m_pUI->m_painterlyGridSize;
 	int threshold = m_pDoc->m_pUI->m_painterlyThreshold;
 
 	std::vector<Point> strokes;
@@ -512,11 +521,11 @@ void PaintView::paintLayer(unsigned char* canvas, unsigned char* ref, int r)
 	std::vector<float> diff(w*h);
 
 	// 1. calculate difference matrix
-	for(int i = 0; i<w; i++)
+	for (int i = 0; i < w; i++)
 	{
-		for(int j = 0; j<h; j++)
+		for (int j = 0; j < h; j++)
 		{
-			for(int c=0; c<3; c++)
+			for (int c = 0; c < 3; c++)
 			{
 				diff[j*w + i] += pow(canvas[(j*w + i) * 3 + c] - ref[(j*w + i) * 3 + c], 2);
 			}
@@ -525,23 +534,23 @@ void PaintView::paintLayer(unsigned char* canvas, unsigned char* ref, int r)
 	}
 
 	// 2. for each grid, push argmax error point to vector
-	for(int x=0; x<w; x+=grid)
+	for (int x = 0; x < w; x += grid)
 	{
-		for(int y=0; y<h; y+=grid)
+		for (int y = 0; y < h; y += grid)
 		{
 			//cal area sum
 			float sumError = 0;
-			Point argMax(0,0);
+			Point argMax(0, 0);
 			float error = -1;
 			int gridSum = 0;
-			for(int a = max(x-grid/2,0); a<x+grid/2 && a<w; a++)
+			for (int a = max(x - grid / 2, 0); a < x + grid / 2 && a < w; a++)
 			{
-				for (int b = max(y - grid / 2,0); b < y + grid / 2 && b<h; b++)
+				for (int b = max(y - grid / 2, 0); b < y + grid / 2 && b < h; b++)
 				{
 					float e = diff[b*w + a];
 					sumError += e;
 					gridSum++;
-					if(e>error)
+					if (e > error)
 					{
 						argMax = Point(a, b);
 						error = e;
@@ -551,11 +560,12 @@ void PaintView::paintLayer(unsigned char* canvas, unsigned char* ref, int r)
 			}
 			sumError /= gridSum;
 
-			if(sumError > threshold)
+			if (sumError > threshold)
 			{
 				// std::vector<Point>s = makeStrokes(r, x, y, ref, w);
 				strokes.push_back(argMax);
-			}else
+			}
+			else
 			{
 				nob.push_back(argMax);
 			}
@@ -567,10 +577,10 @@ void PaintView::paintLayer(unsigned char* canvas, unsigned char* ref, int r)
 	std::shuffle(strokes.begin(), strokes.end(), rng);
 	// std::random_shuffle(nob.begin(), nob.end());
 	int sizeOriginal = m_pDoc->getSize();
-	for(auto&& p:strokes)
+	for (auto&& p : strokes)
 	{
 		m_pDoc->m_pUI->setSize(r);
-		m_pDoc->m_pCurrentBrush->BrushBegin(p.x,p.y,r,ref,canvas);
+		m_pDoc->m_pCurrentBrush->BrushBegin(p.x, p.y, r, ref, canvas);
 		m_pDoc->m_pCurrentBrush->BrushEnd(p, p);
 	}
 	m_pDoc->m_pUI->setSize(sizeOriginal);
