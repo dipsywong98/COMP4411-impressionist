@@ -14,6 +14,7 @@
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
 #include <sstream>
+#include "PatternBrush.h"
 
 /*
 //------------------------------ Widget Examples -------------------------------------------------
@@ -363,6 +364,16 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
             return;
         }
     }
+
+    if (type == static_cast<int>(BRUSH_PATTERN)) {
+        if (PatternBrush::patterns.empty()) {
+            fl_alert("Please load alpha patterns first.");
+            pUI->m_BrushTypeChoice->value(0);
+            pUI->m_painterlyBrushTypeChoice->value(0);
+            return;
+        }
+    }
+
     pUI->m_BrushTypeChoice->value(type);
     pUI->m_painterlyBrushTypeChoice->value(type);
 
@@ -796,6 +807,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
     { "&Load Another Img", FL_ALT + 'l', (Fl_Callback*)ImpressionistUI::cb_load_another_image },
     { "&Load Mural Img", FL_ALT + 'm', (Fl_Callback*)ImpressionistUI::cb_load_mural_image },
     { "&Load Alpha Map Img", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_load_alpha_map_image },
+    { "Load Patterns", 0, PatternBrush::cb_set_patterns },
     { "Bayesian", 0, (Fl_Callback*)ImpressionistUI::cb_bayesian_open_and_solve },
     { "Video", 0, nullptr, nullptr, FL_SUBMENU },
     { "Video Auto-Fill", 0, VideoProcessor::cbVideoAutoFill },
@@ -806,7 +818,6 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
     { "&Help", 0, 0, 0, FL_SUBMENU },
     { "&About", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_about },
     { 0 },
-
     { 0 }
 };
 
@@ -824,6 +835,7 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
     { "Blur Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BLUR_BRUSH },
     { "Sharpen Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)SHARPEN_BRUSH },
     { "Pixelize Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)PIXELIZE_BRUSH },
+    { "Pattern Brush", FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_brushChoice, (void*)BRUSH_PATTERN },
     { 0 }
 };
 

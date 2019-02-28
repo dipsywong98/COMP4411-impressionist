@@ -26,6 +26,7 @@
 #include "Bayesian.h"
 #include "KernelBrush.h"
 #include "PixelizeBrush.h"
+#include "PatternBrush.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -75,6 +76,8 @@ ImpressionistDoc::ImpressionistDoc()
 		= new KernelBrush( this, "Sharpen Brush" );
 	ImpBrush::c_pBrushes[PIXELIZE_BRUSH]
 		= new PixelizeBrush( this, "Pixelize Brush" );
+	ImpBrush::c_pBrushes[BRUSH_PATTERN]
+		= new PatternBrush( this, "Pattern Brush" );
 
 	std::vector<std::vector<float>> blurKernel = {
 		{1,2,1},

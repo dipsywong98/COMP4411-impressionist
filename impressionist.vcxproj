@@ -147,6 +147,7 @@
     <ClCompile Include="CircleBrush.cpp" />
     <ClCompile Include="Cluster.cpp" />
     <ClCompile Include="CurvedBrush.cpp" />
+    <ClCompile Include="PatternBrush.cpp" />
     <ClCompile Include="PixelizeBrush.cpp" />
     <ClCompile Include="PowerIter.cpp" />
     <ClCompile Include="ImageUtils.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="CircleBrush.h" />
     <ClInclude Include="Cluster.h" />
     <ClInclude Include="CurvedBrush.h" />
+    <ClInclude Include="PatternBrush.h" />
     <ClInclude Include="PixelizeBrush.h" />
     <ClInclude Include="PowerIter.h" />
     <ClInclude Include="ImageUtils.h" />
