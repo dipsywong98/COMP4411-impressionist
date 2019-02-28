@@ -148,6 +148,7 @@
     <ClCompile Include="Cluster.cpp" />
     <ClCompile Include="CurvedBrush.cpp" />
     <ClCompile Include="PixelizeBrush.cpp" />
+    <ClCompile Include="PolygonBrush.cpp" />
     <ClCompile Include="PowerIter.cpp" />
     <ClCompile Include="ImageUtils.cpp" />
     <ClCompile Include="ImpBrush.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Cluster.h" />
     <ClInclude Include="CurvedBrush.h" />
     <ClInclude Include="PixelizeBrush.h" />
+    <ClInclude Include="PolygonBrush.h" />
     <ClInclude Include="PowerIter.h" />
     <ClInclude Include="ImageUtils.h" />
     <ClInclude Include="ImpBrush.h" />
