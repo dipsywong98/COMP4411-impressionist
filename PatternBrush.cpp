@@ -142,7 +142,7 @@ void PatternBrush::BrushMove(const Point source, const Point target)
 		}
 		glEnd();
 
-		step = alpha.dim.width / 8;
+		step = alpha.dim.width / 4;
 	}
 	else
 	{
