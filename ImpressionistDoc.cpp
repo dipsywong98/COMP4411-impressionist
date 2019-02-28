@@ -24,8 +24,7 @@
 #include "CurvedBrush.h"
 #include "WarpBrush.h"
 #include "Bayesian.h"
-#include "BlurBrush.h"
-#include "SharpenBrush.h"
+#include "KernelBrush.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -68,9 +67,26 @@ ImpressionistDoc::ImpressionistDoc()
 	ImpBrush::c_pBrushes[WARP_BRUSH]
 		= new WarpBrush( this, "Warp Brush" );
 	ImpBrush::c_pBrushes[BLUR_BRUSH]
-		= new BlurBrush( this, "Blur Brush" );
+		= new KernelBrush( this, "Blur Brush" );
 	ImpBrush::c_pBrushes[SHARPEN_BRUSH]
-		= new SharpenBrush( this, "Sharpen Brush" );
+		= new KernelBrush( this, "Sharpen Brush" );
+
+	std::vector<std::vector<float>> blurKernel = {
+		{1,2,1},
+	{2,4,2},
+	{1,2,1} };
+	double s = 0;
+	for (int i = 0; i < 3; i++)for (int j = 0; j < 3; j++)s += blurKernel[i][j];
+	for (int i = 0; i < 3; i++)for (int j = 0; j < 3; j++)blurKernel[i][j] /= s;
+
+	std::vector<std::vector<float>> sharpKernel = {
+		{-1,-1,-1},
+		{-1,9,-1},
+		{-1,-1,-1}
+	};
+
+	((KernelBrush*)ImpBrush::c_pBrushes[BLUR_BRUSH])->SetKernel(blurKernel);
+	((KernelBrush*)ImpBrush::c_pBrushes[SHARPEN_BRUSH])->SetKernel(sharpKernel);
 
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];

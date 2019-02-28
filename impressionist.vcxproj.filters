@@ -96,7 +96,7 @@
     <ClCompile Include="BlurBrush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SharpenBrush.cpp">
+    <ClCompile Include="KernelBrush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -185,7 +185,7 @@
     <ClInclude Include="BlurBrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SharpenBrush.h">
+    <ClInclude Include="KernelBrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
