@@ -10,6 +10,70 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AlphaMapBrush.cpp" />
+    <ClCompile Include="Bayesian.cpp" />
+    <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="CircleBrush.cpp" />
+    <ClCompile Include="Cluster.cpp" />
+    <ClCompile Include="CurvedBrush.cpp" />
+    <ClCompile Include="ImageUtils.cpp" />
+    <ClCompile Include="ImpBrush.cpp" />
+    <ClCompile Include="Impressionist.cpp" />
+    <ClCompile Include="ImpressionistDoc.cpp" />
+    <ClCompile Include="ImpressionistUI.cpp" />
+    <ClCompile Include="KernelBrush.cpp" />
+    <ClCompile Include="LineBrush.cpp" />
+    <ClCompile Include="MosaicBuilder.cpp" />
+    <ClCompile Include="MosaicImage.cpp" />
+    <ClCompile Include="MosiacBuilder.cpp" />
+    <ClCompile Include="node.cpp" />
+    <ClCompile Include="OriginalView.cpp" />
+    <ClCompile Include="PaintView.cpp" />
+    <ClCompile Include="PixelizeBrush.cpp" />
+    <ClCompile Include="PointBrush.cpp" />
+    <ClCompile Include="PolygonBrush.cpp" />
+    <ClCompile Include="PowerIter.cpp" />
+    <ClCompile Include="ScatteredCircleBrush.cpp" />
+    <ClCompile Include="ScatteredLineBrush.cpp" />
+    <ClCompile Include="ScatteredPointBrush.cpp" />
+    <ClCompile Include="Test.cpp" />
+    <ClCompile Include="Tester.cpp" />
+    <ClCompile Include="VideoProcessor.cpp" />
+    <ClCompile Include="WarpBrush.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AlphaMapBrush.h" />
+    <ClInclude Include="Bayesian.h" />
+    <ClInclude Include="Bitmap.h" />
+    <ClInclude Include="CircleBrush.h" />
+    <ClInclude Include="Cluster.h" />
+    <ClInclude Include="CurvedBrush.h" />
+    <ClInclude Include="ImageUtils.h" />
+    <ClInclude Include="ImpBrush.h" />
+    <ClInclude Include="Impressionist.h" />
+    <ClInclude Include="ImpressionistDoc.h" />
+    <ClInclude Include="impressionistUI.h" />
+    <ClInclude Include="KernelBrush.h" />
+    <ClInclude Include="LineBrush.h" />
+    <ClInclude Include="MosaicBuilder.h" />
+    <ClInclude Include="MosaicImage.h" />
+    <ClInclude Include="MosiacBuilder.h" />
+    <ClInclude Include="node.h" />
+    <ClInclude Include="OriginalView.h" />
+    <ClInclude Include="PaintView.h" />
+    <ClInclude Include="PixelizeBrush.h" />
+    <ClInclude Include="PointBrush.h" />
+    <ClInclude Include="PolygonBrush.h" />
+    <ClInclude Include="PowerIter.h" />
+    <ClInclude Include="ScatteredCircleBrush.h" />
+    <ClInclude Include="ScatteredLineBrush.h" />
+    <ClInclude Include="ScatteredPointBrush.h" />
+    <ClInclude Include="Test.h" />
+    <ClInclude Include="Tester.h" />
+    <ClInclude Include="VideoProcessor.h" />
+    <ClInclude Include="WarpBrush.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <SccProjectName />
     <SccLocalPath>Desktop</SccLocalPath>
@@ -140,69 +204,6 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="AlphaMapBrush.cpp" />
-    <ClCompile Include="Bayesian.cpp" />
-    <ClCompile Include="Bitmap.cpp" />
-    <ClCompile Include="CircleBrush.cpp" />
-    <ClCompile Include="Cluster.cpp" />
-    <ClCompile Include="CurvedBrush.cpp" />
-    <ClCompile Include="PixelizeBrush.cpp" />
-    <ClCompile Include="PolygonBrush.cpp" />
-    <ClCompile Include="PowerIter.cpp" />
-    <ClCompile Include="ImageUtils.cpp" />
-    <ClCompile Include="ImpBrush.cpp" />
-    <ClCompile Include="Impressionist.cpp" />
-    <ClCompile Include="ImpressionistDoc.cpp" />
-    <ClCompile Include="ImpressionistUI.cpp" />
-    <ClCompile Include="LineBrush.cpp" />
-    <ClCompile Include="node.cpp" />
-    <ClCompile Include="MosaicBuilder.cpp" />
-    <ClCompile Include="MosaicImage.cpp" />
-    <ClCompile Include="OriginalView.cpp" />
-    <ClCompile Include="PaintView.cpp" />
-    <ClCompile Include="PointBrush.cpp" />
-    <ClCompile Include="ScatteredCircleBrush.cpp" />
-    <ClCompile Include="ScatteredLineBrush.cpp" />
-    <ClCompile Include="ScatteredPointBrush.cpp" />
-    <ClCompile Include="KernelBrush.cpp" />
-    <ClCompile Include="Test.cpp" />
-    <ClCompile Include="Tester.cpp" />
-    <ClCompile Include="VideoProcessor.cpp" />
-    <ClCompile Include="WarpBrush.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="AlphaMapBrush.h" />
-    <ClInclude Include="Bayesian.h" />
-    <ClInclude Include="bitmap.h" />
-    <ClInclude Include="CircleBrush.h" />
-    <ClInclude Include="Cluster.h" />
-    <ClInclude Include="CurvedBrush.h" />
-    <ClInclude Include="PixelizeBrush.h" />
-    <ClInclude Include="PolygonBrush.h" />
-    <ClInclude Include="PowerIter.h" />
-    <ClInclude Include="ImageUtils.h" />
-    <ClInclude Include="ImpBrush.h" />
-    <ClInclude Include="impressionist.h" />
-    <ClInclude Include="impressionistDoc.h" />
-    <ClInclude Include="impressionistUI.h" />
-    <ClInclude Include="LineBrush.h" />
-    <ClInclude Include="node.h" />
-    <ClInclude Include="MosaicBuilder.h" />
-    <ClInclude Include="MosaicImage.h" />
-    <ClInclude Include="OriginalView.h" />
-    <ClInclude Include="PaintView.h" />
-    <ClInclude Include="PointBrush.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="ScatteredCircleBrush.h" />
-    <ClInclude Include="ScatteredLineBrush.h" />
-    <ClInclude Include="ScatteredPointBrush.h" />
-    <ClInclude Include="KernelBrush.h" />
-    <ClInclude Include="Test.h" />
-    <ClInclude Include="Tester.h" />
-    <ClInclude Include="VideoProcessor.h" />
-    <ClInclude Include="WarpBrush.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

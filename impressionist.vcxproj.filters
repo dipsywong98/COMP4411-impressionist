@@ -18,10 +18,16 @@
     <ClCompile Include="AlphaMapBrush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Bayesian.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Bitmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CircleBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cluster.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CurvedBrush.cpp">
@@ -42,10 +48,22 @@
     <ClCompile Include="ImpressionistUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="KernelBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="LineBrush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MosaicBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MosaicImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MosiacBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OriginalView.cpp">
@@ -54,7 +72,16 @@
     <ClCompile Include="PaintView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PixelizeBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="PointBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PolygonBrush.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PowerIter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScatteredCircleBrush.cpp">
@@ -66,40 +93,16 @@
     <ClCompile Include="ScatteredPointBrush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VideoProcessor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WarpBrush.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MosaicImage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bayesian.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Cluster.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PowerIter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="node.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tester.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="KernelBrush.cpp">
+    <ClCompile Include="VideoProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PixelizeBrush.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PolygonBrush.cpp">
+    <ClCompile Include="WarpBrush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,10 +110,16 @@
     <ClInclude Include="AlphaMapBrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bitmap.h">
+    <ClInclude Include="Bayesian.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bitmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CircleBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cluster.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CurvedBrush.h">
@@ -122,13 +131,16 @@
     <ClInclude Include="ImpBrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="impressionist.h">
+    <ClInclude Include="Impressionist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="impressionistDoc.h">
+    <ClInclude Include="ImpressionistDoc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="impressionistUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KernelBrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LineBrush.h">
@@ -137,13 +149,31 @@
     <ClInclude Include="MosaicBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MosaicImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MosiacBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="OriginalView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PaintView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PixelizeBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="PointBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PolygonBrush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerIter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScatteredCircleBrush.h">
@@ -155,43 +185,16 @@
     <ClInclude Include="ScatteredPointBrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VideoProcessor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WarpBrush.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MosaicImage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bayesian.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cluster.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PowerIter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tester.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KernelBrush.h">
+    <ClInclude Include="VideoProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PixelizeBrush.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PolygonBrush.h">
+    <ClInclude Include="WarpBrush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
