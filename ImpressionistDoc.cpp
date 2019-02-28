@@ -24,6 +24,8 @@
 #include "CurvedBrush.h"
 #include "WarpBrush.h"
 #include "Bayesian.h"
+#include "BlurBrush.h"
+#include "SharpenBrush.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -65,6 +67,10 @@ ImpressionistDoc::ImpressionistDoc()
 		= new CurvedBrush( this, "Curved Brush" );
 	ImpBrush::c_pBrushes[WARP_BRUSH]
 		= new WarpBrush( this, "Warp Brush" );
+	ImpBrush::c_pBrushes[BLUR_BRUSH]
+		= new BlurBrush( this, "Blur Brush" );
+	ImpBrush::c_pBrushes[SHARPEN_BRUSH]
+		= new SharpenBrush( this, "Sharpen Brush" );
 
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
