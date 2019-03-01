@@ -181,6 +181,7 @@ void ImpressionistDoc::runBayesian()
 {
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", getImageName());
 	if (newfile != NULL) {
+		recordHistory();
 		m_bayesian->solve(newfile);
 		if(m_ucAnother)
 		{

@@ -46,9 +46,9 @@ void PatternBrush::setPatterns(const std::string& directoryName)
 				//Entry should be an alpha map.
 				auto width = 0;
 				auto height = 0;
-
+				auto xxxxx = readBMP(entry.path().string().c_str(), width, height);
 				patterns.push_back({
-					readBMP(entry.path().string().c_str(), width, height),
+					xxxxx,
 					{width, height}
 				});
 			}
@@ -126,7 +126,7 @@ void PatternBrush::BrushMove(const Point source, const Point target)
 	{
 		//Make new pattern
 		const auto i = dis(gen);
-		if (i < 0 || scaledPatterns.size() >= i) return;
+		if (i < 0 || i >= scaledPatterns.size()) return;
 		auto& alpha = scaledPatterns[i];
 
 		const int tX0 = target.x - alpha.dim.width / 2;

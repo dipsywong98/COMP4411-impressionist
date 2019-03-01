@@ -212,18 +212,25 @@ bool MosaicBuilder::loadAllTiles()
 				auto width = 0;
 				auto height = 0;
 
+				auto a = readBMP(entry.path().string().c_str(), width, height);
+				const Dim ad = { width, height };
+				auto b = readBMP(resultGradientPath.string().c_str(), width, height);
+				const Dim bd = { width, height };
+				auto c = readBMP(resultColorPath.string().c_str(), width, height);
+				const Dim cd = { width, height };
+
 				imagePool[name] = ImageSet{
 					new ImageWrapper<unsigned char>{
-						readBMP(entry.path().string().c_str(), width, height),
-						{ width, height }
+						a,
+						ad
 					},
 					new ImageWrapper<unsigned char>{
-						readBMP(resultGradientPath.string().c_str(), width, height),
-						{ width, height }
+						b,
+						bd
 					},
 					new ImageWrapper<unsigned char>{
-						readBMP(resultColorPath.string().c_str(), width, height),
-						{ width, height }
+						c,
+						cd
 					}
 				};
 			}

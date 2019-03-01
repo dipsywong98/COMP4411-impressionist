@@ -646,10 +646,12 @@ void ImpressionistUI::cb_dissolve(Fl_Widget* o, void*)
 
 	auto* fileName = fl_file_chooser("Open File?", "*.bmp", nullptr);
 	if (fileName != nullptr) {
+		uiPtr->m_pDoc->recordHistory();
 		auto width = 0;
 		auto height = 0;
+		auto oPtr = readBMP(fileName, width, height);
 		ImageWrapper imageWrapper = {
-			readBMP(fileName, width, height),
+			oPtr,
 			{ width, height }
 		};
 
